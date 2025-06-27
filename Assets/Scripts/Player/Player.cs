@@ -30,6 +30,8 @@ public class Player : Entity
     public GameObject sword {  get ; private set; }
     public PlayerFX fx { get; private set; }
 
+    public PlayerAimSwordState aimSword { get; private set; }
+    public PlayerCatchSwordState catchSword { get; private set; }
 
     #region States
     public PlayerStateMachine stateMachine { get; private set; }
@@ -46,7 +48,7 @@ public class Player : Entity
     public PlayerCounterAttackState counterAttack { get; private set; }
 
     public PlayerAimSwordState aimSowrd { get; private set; }
-    public PlayerCatchSwordState catchSword { get; private set; }
+    //public PlayerCatchSwordState catchSword { get; private set; }
     public PlayerBlackholeState blackHole { get; private set; }
     public PlayerDeadState deadState { get; private set; }
     #endregion

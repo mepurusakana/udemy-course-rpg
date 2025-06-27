@@ -27,31 +27,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1101 &-8718245764612600344
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 2
-    m_ConditionEvent: AimSword
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -6302434593686496502}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!1101 &-8554678950058880381
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -367,6 +342,32 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1102 &-4236134995178552016
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Bladelight
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 86661038465bf5348a233e10bc36f01b, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-2641478480765457068
 AnimatorState:
   serializedVersion: 6
@@ -451,6 +452,12 @@ AnimatorController:
   m_Name: Player_AC
   serializedVersion: 5
   m_AnimatorParameters:
+  - m_Name: bladelight
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   - m_Name: Die
     m_Type: 4
     m_DefaultFloat: 0
@@ -633,7 +640,7 @@ AnimatorStateMachine:
     m_Position: {x: 350, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8251732239194244732}
-    m_Position: {x: 350, y: 80, z: 0}
+    m_Position: {x: 350, y: 90, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8793889347016318192}
     m_Position: {x: 350, y: 150, z: 0}
@@ -651,16 +658,19 @@ AnimatorStateMachine:
     m_Position: {x: 350, y: 450, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6577201052870638430}
-    m_Position: {x: 100, y: 520, z: 0}
+    m_Position: {x: 350, y: 650, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6302434593686496502}
     m_Position: {x: 350, y: 520, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5490919999124580772}
-    m_Position: {x: 350, y: 590, z: 0}
+    m_Position: {x: 340, y: 590, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3102967190594377452}
     m_Position: {x: 350, y: -60, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -4236134995178552016}
+    m_Position: {x: 385, y: 5, z: 0}
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: 2462275182282909292}
@@ -673,7 +683,6 @@ AnimatorStateMachine:
   - {fileID: 1672081393048586727}
   - {fileID: 8424752469620064250}
   - {fileID: -7311600453861333369}
-  - {fileID: 3373696012482724272}
   - {fileID: -6974191034367331773}
   - {fileID: -8155607350218250956}
   m_StateMachineTransitions: {}
@@ -842,23 +851,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1109 &3373696012482724272
-AnimatorTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: AimSword
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 6577201052870638430}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 1
 --- !u!206 &3419835859559776177
 BlendTree:
   m_ObjectHideFlags: 1
@@ -1044,8 +1036,7 @@ AnimatorState:
   m_Name: PlayerAimSword
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -8718245764612600344}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
