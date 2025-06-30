@@ -6,6 +6,7 @@ TagManager:
   tags:
   - StatValue
   - StatName
+  - MovingPlatform
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - Enemy
   - Sword
   - Item
-  - 
+  - MovindGround
   - 
   - 
   - 
@@ -69,4 +70,7 @@ TagManager:
     locked: 0
   - name: FX
     uniqueID: 1515849559
+    locked: 0
+  - name: MovingPlatform
+    uniqueID: 2903809967
     locked: 0

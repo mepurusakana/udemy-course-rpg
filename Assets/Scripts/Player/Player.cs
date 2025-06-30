@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -32,6 +33,11 @@ public class Player : Entity
 
     public PlayerAimSwordState aimSword { get; private set; }
     public PlayerCatchSwordState catchSword { get; private set; }
+
+
+
+
+    
 
     #region States
     public PlayerStateMachine stateMachine { get; private set; }
@@ -186,4 +192,6 @@ public class Player : Entity
     {
         knockbackPower = new Vector2(0, 0);
     }
+
+    
 }

@@ -4,9 +4,12 @@ public class MovingPlatform : MonoBehaviour
 {
     [SerializeField] private Transform pointA;
     [SerializeField] private Transform pointB;
-    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float platformMoveSpeed = 2f;
 
     private Vector3 target;
+    public Vector2 platformVelocity;
+
+    public Player player;
 
     private void Start()
     {
@@ -15,7 +18,13 @@ public class MovingPlatform : MonoBehaviour
 
     private void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, target, platformMoveSpeed * Time.deltaTime);
+
+
+        Vector2 oldPos = transform.position;
+        // 移動平台的邏輯
+        // transform.position = ...
+        platformVelocity = (Vector2)transform.position - oldPos;
 
         if (Vector3.Distance(transform.position, target) < 0.1f)
         {
@@ -23,21 +32,17 @@ public class MovingPlatform : MonoBehaviour
         }
     }
 
-    // 把玩家附著上平台
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.SetParent(transform);
-        }
+    void FixedUpdate() {
+        // 移動平台
+        transform.position += (Vector3)platformVelocity * Time.fixedDeltaTime;
     }
 
-    // 玩家離開平台時解除附著
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.SetParent(null);
+    void OnCollisionStay2D(Collision2D collision) {
+        if (collision.gameObject.CompareTag("Player")) {
+            if (player != null) {
+                // 將平台速度加到玩家身上
+                player.rb.velocity += platformVelocity;
+            }
         }
     }
 }
