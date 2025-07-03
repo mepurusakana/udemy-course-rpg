@@ -19,7 +19,7 @@ using UnityEngine;
                 return;
 
             //if (player != null)
-            //    player.Move(movement);
+                //player.Move(movement);
             else
                 rigidbody.MovePosition(rigidbody.position + movement);
         }

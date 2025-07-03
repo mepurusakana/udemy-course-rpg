@@ -1819,7 +1819,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingItems:
   - {fileID: 11400000, guid: d8f58e18c1da00143accd968a6c18188, type: 2}
-  - {fileID: 11400000, guid: 799e1c3e34db60c4388bf2537ac816ba, type: 2}
+  - {fileID: 0}
   - {fileID: 11400000, guid: 0dd5b227fb7b62541b0fbccda677392d, type: 2}
   - {fileID: 11400000, guid: 7d1998873a09b094e99b326bbbc9cccc, type: 2}
   - {fileID: 11400000, guid: 9209f5c03870ad140b30358835f156bb, type: 2}
@@ -143897,6 +143897,7 @@ GameObject:
   - component: {fileID: 2053229881}
   - component: {fileID: 2053229878}
   - component: {fileID: 2053229877}
+  - component: {fileID: 2053229883}
   m_Layer: 10
   m_Name: MovingPlatform
   m_TagString: MovingPlatform
@@ -144008,9 +144009,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointA: {fileID: 1539036333}
   pointB: {fileID: 549196068}
-  platformMoveSpeed: 2
-  platformVelocity: {x: 0, y: 0}
-  player: {fileID: 0}
+  moveSpeed: 2
+--- !u!251 &2053229883
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053229874}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 180
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1 &2055743032
 GameObject:
   m_ObjectHideFlags: 0

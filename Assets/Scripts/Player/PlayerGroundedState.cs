@@ -48,6 +48,22 @@ public class PlayerGroundedState : PlayerState
 
         if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected())
             stateMachine.ChangeState(player.jumpState);
+
+
+
+
+        if (player.IsGroundDetected() && player.rb.velocity.y <= 0.1f)
+        {
+            Collider2D hit = Physics2D.OverlapCircle(player.groundCheck.position, 0.1f, player.whatIsGround);
+            if (hit != null)
+            {
+                MovingPlatform platform = hit.GetComponent<MovingPlatform>();
+                if (platform != null)
+                {
+                    player.rb.velocity += platform.CurrentVelocity;
+                }
+            }
+        }
     }
 
     private bool HasNoSword()
@@ -60,4 +76,5 @@ public class PlayerGroundedState : PlayerState
         player.sword.GetComponent<Sword_Skill_Controller>().ReturnSword();
         return false;
     }
+
 }

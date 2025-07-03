@@ -23,11 +23,11 @@ public class Entity : MonoBehaviour
     [Header("Collision info")]
     public Transform attackCheck;
     public float attackCheckRadius = 1.2f;
-    [SerializeField] protected Transform groundCheck;
+    [SerializeField] public Transform groundCheck;
     [SerializeField] protected float groundCheckDistance = 1;
     [SerializeField] protected Transform wallCheck;
     [SerializeField] protected float wallCheckDistance = .8f;
-    [SerializeField] protected LayerMask whatIsGround;
+    [SerializeField] public LayerMask whatIsGround;
 
     public int knockbackDir { get; private set; }
     public int facingDir { get; private set; } = 1;
