@@ -39,4 +39,14 @@ public class PlayerAnimationTriggers : MonoBehaviour
     {
         SkillManager.instance.sword.CreateSword();
     }
+
+    public void SlashTrigger()
+    {
+        player.SpawnSlashEffect();
+    }
+
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
 }

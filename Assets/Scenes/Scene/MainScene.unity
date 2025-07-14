@@ -9729,7 +9729,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.340291, y: 1.05, z: -11.148502}
+  m_LocalPosition: {x: -8.88029, y: 1.05, z: -11.148502}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15791,7 +15791,7 @@ Animator:
   m_GameObject: {fileID: 568365763}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7cac41482fc152a4bb7b1ac03d697b3c, type: 2}
+  m_Controller: {fileID: 9100000, guid: 230049fc498a3054ea796c3a46c01a69, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -31468,6 +31468,7 @@ MonoBehaviour:
   swordReturnImpact: 10
   dashSpeed: 25
   dashDuration: 0.2
+  platformCatcher: 0
 --- !u!4 &1195560130
 Transform:
   m_ObjectHideFlags: 0
@@ -31477,7 +31478,7 @@ Transform:
   m_GameObject: {fileID: 1195560128}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.32, y: -1.62, z: 0}
+  m_LocalPosition: {x: -5.36, y: -1.62, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -56432,7 +56433,7 @@ Transform:
   m_GameObject: {fileID: 1836490064}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.340291, y: 1.05, z: -11.148502}
+  m_LocalPosition: {x: -8.88029, y: 1.05, z: -11.148502}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

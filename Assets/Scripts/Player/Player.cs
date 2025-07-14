@@ -25,7 +25,11 @@ public class Player : Entity
     public float dashDuration;
     private float defaultDashSpeed;
 
-    public float platformCatcher;
+    [Header("BladeLight info")]
+    public GameObject slashEffectPrefab;
+    public Transform slashSpawnPoint;
+
+    //public float platformCatcher;
 
 
     public float dashDir { get; private set; }
@@ -197,5 +201,28 @@ public class Player : Entity
         knockbackPower = new Vector2(0, 0);
     }
 
-    
+    public void SpawnSlashEffect()
+    {
+        GameObject effect = Instantiate(slashEffectPrefab, slashSpawnPoint.position, slashSpawnPoint.rotation);
+        Animator anim = effect.GetComponent<Animator>();
+        float duration = anim.GetCurrentAnimatorStateInfo(0).length;
+
+        Destroy(gameObject);
+    }
+
+    //public void AttackDealDamage(bool isUpAttack)
+    //{
+    //    PlayerSlash slash = Instantiate(slashPrefab, transform, false);
+    //    slash.transform.localPosition = Vector3.zero;
+    //    if (isUpAttack)
+    //    {
+    //        slash.transform.localPosition += Vector3.up * 0.5f;
+    //        slash.transform.localRotation = Quaternion.Euler(0, 0, 90);
+    //    }
+    //    else
+    //    {
+    //        slash.transform.localPosition += Vector3.right * 1f;
+    //    }
+    //    slash.player = this;
+    //}
 }
