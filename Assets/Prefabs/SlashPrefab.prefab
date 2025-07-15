@@ -201,7 +201,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 0.0990566, b: 0.29261652, a: 1}
-  m_Intensity: 0.8
+  m_Intensity: 0.2
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: c9ad6cf089997cf4bd46aad7753b6e39d1347e40d3e09b96c5c0fda2
@@ -218,8 +218,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0.23525, y: 0.31710005, z: 0}
-    m_Extent: {x: 4.36945, y: 1.8982, z: 0}
+    m_Center: {x: 0.15925002, y: 0.3067, z: 0}
+    m_Extent: {x: 4.28045, y: 1.7405, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -227,10 +227,22 @@ MonoBehaviour:
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 0.36
+  m_ShapeLightFalloffSize: 0.21
   m_ShapeLightFalloffOffset: {x: 0, y: 0}
   m_ShapePath:
-  - {x: -3.774414, y: -1.2235775, z: 0}
-  - {x: 4.2446365, y: -0.1128273, z: 0}
-  - {x: 4.21373, y: 1.5193996, z: 0}
-  - {x: -3.7257614, y: 1.8552208, z: 0}
+  - {x: -3.7535782, y: -1.2235775, z: 0}
+  - {x: -0.3534546, y: -0.9545269, z: -0.0000001937151}
+  - {x: 2.2294922, y: -0.47543144, z: -0.0000001937151}
+  - {x: 3.8071976, y: 0.09547424, z: 0}
+  - {x: 4.229187, y: 0.7327194, z: -0.0000001937151}
+  - {x: 3.4638443, y: 1.2694359, z: 0}
+  - {x: 0.45892334, y: 1.774231, z: -0.0000001937151}
+  - {x: -2.6864395, y: 1.8367214, z: -0.0000001937151}
+  - {x: -3.9132385, y: 1.605259, z: 0}
+  - {x: -1.6657562, y: 1.7117405, z: -0.0000001937151}
+  - {x: 0.81303406, y: 1.6075897, z: -0.0000001937151}
+  - {x: 2.4586182, y: 1.2743053, z: -0.0000001937151}
+  - {x: 3.2085114, y: 0.7118912, z: -0.0000001937151}
+  - {x: 2.7919083, y: 0.1911354, z: -0.0000001937151}
+  - {x: 2.0836792, y: -0.16297913, z: -0.0000001937151}
+  - {x: 0.7088852, y: -0.60041237, z: -0.0000001937151}

@@ -20513,6 +20513,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 52d36c9579fb18d4cb410f83790d2469, type: 3}
+    - target: {fileID: 8033496631934753374, guid: 46317e74ae695e8488b496bd5e2cbfdf, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d24ff04eab5d6e14d96d7f78119467ed, type: 2}
     m_RemovedComponents:
     - {fileID: 3874316222883360111, guid: 46317e74ae695e8488b496bd5e2cbfdf, type: 3}
     - {fileID: 3779426938700018260, guid: 46317e74ae695e8488b496bd5e2cbfdf, type: 3}
@@ -26019,7 +26023,7 @@ Transform:
   m_GameObject: {fileID: 1231181821}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.1, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

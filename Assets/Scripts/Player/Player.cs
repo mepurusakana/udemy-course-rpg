@@ -204,10 +204,6 @@ public class Player : Entity
     public void SpawnSlashEffect()
     {
         GameObject effect = Instantiate(slashEffectPrefab, slashSpawnPoint.position, slashSpawnPoint.rotation);
-        Animator anim = effect.GetComponent<Animator>();
-        float duration = anim.GetCurrentAnimatorStateInfo(0).length;
-
-        Destroy(gameObject);
     }
 
     //public void AttackDealDamage(bool isUpAttack)
