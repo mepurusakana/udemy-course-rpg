@@ -26,7 +26,7 @@ public class PlayerStats : CharacterStats
         GameManager.instance.lostCurrencyAmount = PlayerManager.instance.currency;
         PlayerManager.instance.currency = 0;
 
-        GetComponent<PlayerItemDrop>()?.GenerateDrop();
+        //GetComponent<PlayerItemDrop>()?.GenerateDrop();
     }
 
     protected override void DecreaseHealthBy(int _damage)
@@ -47,15 +47,15 @@ public class PlayerStats : CharacterStats
             
         }
 
-        ItemData_Equipment currentArmor = Inventory.instance.GetEquipment(EquipmentType.Armor);
+        //ItemData_Equipment currentArmor = Inventory.instance.GetEquipment(EquipmentType.Armor);
 
-        if (currentArmor != null)
-            currentArmor.Effect(player.transform);
+        //if (currentArmor != null)
+        //    currentArmor.Effect(player.transform);
     }
 
     public override void OnEvasion()
     {
-        player.skill.dodge.CreateMirageOnDodge();
+        //player.skill.dodge.CreateMirageOnDodge();
     }
 
     public void CloneDoDamage(CharacterStats _targetStats,float _multiplier)

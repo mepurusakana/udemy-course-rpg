@@ -22,23 +22,23 @@ public class PlayerGroundedState : PlayerState
     {
         base.Update();
 
-        if (Input.GetKeyDown(KeyCode.R) && player.skill.blackhole.blackholeUnlocked)
-        {
-            if (player.skill.blackhole.cooldownTimer > 0)
-            {
-                player.fx.CreatePopUpText("Cooldown!");
-                return;
-            }
+        //if (Input.GetKeyDown(KeyCode.R) && player.skill.blackhole.blackholeUnlocked)
+        //{
+        //    if (player.skill.blackhole.cooldownTimer > 0)
+        //    {
+        //        player.fx.CreatePopUpText("Cooldown!");
+        //        return;
+        //    }
 
 
-            stateMachine.ChangeState(player.blackHole);
-        }
+        //    stateMachine.ChangeState(player.blackHole);
+        //}
 
-        if (Input.GetKeyDown(KeyCode.Mouse1) && HasNoSword() && player.skill.sword.swordUnlocked)
-            stateMachine.ChangeState(player.aimSowrd);
+        //if (Input.GetKeyDown(KeyCode.Mouse1) && HasNoSword() && player.skill.sword.swordUnlocked)
+        //    stateMachine.ChangeState(player.aimSowrd);
 
-        if (Input.GetKeyDown(KeyCode.Q) && player.skill.parry.parryUnlocked)
-            stateMachine.ChangeState(player.counterAttack);
+        //if (Input.GetKeyDown(KeyCode.Q) && player.skill.parry.parryUnlocked)
+        //    stateMachine.ChangeState(player.counterAttack);
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
             stateMachine.ChangeState(player.primaryAttack);
@@ -48,6 +48,11 @@ public class PlayerGroundedState : PlayerState
 
         if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected())
             stateMachine.ChangeState(player.jumpState);
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            stateMachine.ChangeState(player.dashState);
+        }
 
 
 
@@ -79,7 +84,7 @@ public class PlayerGroundedState : PlayerState
             return true;
         }
 
-        player.sword.GetComponent<Sword_Skill_Controller>().ReturnSword();
+        //player.sword.GetComponent<Sword_Skill_Controller>().ReturnSword();
         return false;
     }
 

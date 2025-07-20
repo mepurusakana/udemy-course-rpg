@@ -35,7 +35,7 @@ public class Player : Entity
     public float dashDir { get; private set; }
 
 
-    public SkillManager skill { get; private set; }
+    //public SkillManager skill { get; private set; }
     public GameObject sword { get; private set; }
     public PlayerFX fx { get; private set; }
 
@@ -65,6 +65,7 @@ public class Player : Entity
     //public PlayerCatchSwordState catchSword { get; private set; }
     public PlayerBlackholeState blackHole { get; private set; }
     public PlayerDeadState deadState { get; private set; }
+    public PlayerHealingState healingState { get; private set; }
     #endregion
 
     protected override void Awake()
@@ -88,6 +89,7 @@ public class Player : Entity
         blackHole = new PlayerBlackholeState(this, stateMachine, "Jump");
 
         deadState = new PlayerDeadState(this, stateMachine, "Die");
+        healingState = new PlayerHealingState(this, stateMachine, "Healing");
     }
 
     protected override void Start()
@@ -96,7 +98,7 @@ public class Player : Entity
 
         fx = GetComponent<PlayerFX>();
 
-        skill = SkillManager.instance;
+        //skill = SkillManager.instance;
 
         stateMachine.Initialize(idleState);
 
@@ -119,11 +121,11 @@ public class Player : Entity
         CheckForDashInput();
 
 
-        if (Input.GetKeyDown(KeyCode.F) && skill.crystal.crystalUnlocked)
-            skill.crystal.CanUseSkill();
+        //if (Input.GetKeyDown(KeyCode.F) && skill.crystal.crystalUnlocked)
+        //    skill.crystal.CanUseSkill();
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            Inventory.instance.UseFlask();
+        //if (Input.GetKeyDown(KeyCode.Alpha1))
+        //    Inventory.instance.UseFlask();
     }
 
     public override void SlowEntityBy(float _slowPercentage, float _slowDuration)
@@ -172,21 +174,9 @@ public class Player : Entity
         if (IsWallDetected())
             return;
 
-        if (skill.dash.dashUnlocked == false)
-            return;
+        //if (skill.dash.dashUnlocked == false)
+        //    return;
 
-
-        if (Input.GetKeyDown(KeyCode.LeftShift) && SkillManager.instance.dash.CanUseSkill())
-        {
-
-            dashDir = Input.GetAxisRaw("Horizontal");
-
-            if (dashDir == 0)
-                dashDir = facingDir;
-
-
-            stateMachine.ChangeState(dashState);
-        }
     }
 
     public override void Die()

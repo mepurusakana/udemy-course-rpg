@@ -1,15 +1,17 @@
-﻿using System.Collections;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
 
 public class ArcherDeadState : EnemyState
 {
-    private Enemy_Archer enemy;
 
-    public ArcherDeadState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animBoolName, Enemy_Archer _enemy) : base(_enemyBase, _stateMachine, _animBoolName)
+    private Archer enemy;
+
+    public ArcherDeadState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string animBoolName, Archer _enemy) : base(_enemyBase, _stateMachine, animBoolName)
     {
         this.enemy = _enemy;
     }
+
     public override void Enter()
     {
         base.Enter();
@@ -18,7 +20,7 @@ public class ArcherDeadState : EnemyState
         enemy.anim.speed = 0;
         enemy.cd.enabled = false;
 
-        stateTimer = .15f;
+        stateTimer = .1f;
     }
 
     public override void Update()

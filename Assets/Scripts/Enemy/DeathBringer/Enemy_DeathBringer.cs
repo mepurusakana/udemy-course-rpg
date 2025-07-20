@@ -77,7 +77,7 @@ public class Enemy_DeathBringer : Enemy
         Vector3 spellPosition = new Vector3(player.transform.position.x + xOffset, player.transform.position.y + spellOffset.y);
 
         GameObject newSpell = Instantiate(spellPrefab, spellPosition, Quaternion.identity);
-        newSpell.GetComponent<DeathBringerSpell_Controller>().SetupSpell(stats);
+        //newSpell.GetComponent<DeathBringerSpell_Controller>().SetupSpell(stats);
     }
 
     public void FindPosition()

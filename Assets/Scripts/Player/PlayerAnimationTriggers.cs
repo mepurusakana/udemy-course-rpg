@@ -26,10 +26,10 @@ public class PlayerAnimationTriggers : MonoBehaviour
                 if(_target != null) 
                     player.stats.DoDamage(_target);
 
-                ItemData_Equipment weaponData = Inventory.instance.GetEquipment(EquipmentType.Weapon);
+                //ItemData_Equipment weaponData = Inventory.instance.GetEquipment(EquipmentType.Weapon);
 
-                if (weaponData != null)
-                    weaponData.Effect(_target.transform);
+                //if (weaponData != null)
+                //    weaponData.Effect(_target.transform);
 
 
             }
@@ -37,7 +37,7 @@ public class PlayerAnimationTriggers : MonoBehaviour
     }
     private void ThrowSword()
     {
-        SkillManager.instance.sword.CreateSword();
+        //SkillManager.instance.sword.CreateSword();
     }
 
     public void SlashTrigger()

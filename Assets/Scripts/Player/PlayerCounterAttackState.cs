@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerCounterAttackState : PlayerState
 {
-    private bool canCreateClone;
+    //private bool canCreateClone;
 
     public PlayerCounterAttackState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
     {
@@ -12,7 +12,7 @@ public class PlayerCounterAttackState : PlayerState
     {
         base.Enter();
 
-        canCreateClone = true;
+        //canCreateClone = true;
         stateTimer = player.counterAttackDuration;
         player.anim.SetBool("SuccessfulCounterAttack", false);
     }
@@ -32,32 +32,32 @@ public class PlayerCounterAttackState : PlayerState
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(player.attackCheck.position, player.attackCheckRadius);
 
-        foreach (var hit in colliders)
-        {
+        //foreach (var hit in colliders)
+        //{
 
-            if (hit.GetComponent<Arrow_Controller>() != null)
-            {
-                hit.GetComponent<Arrow_Controller>().FlipArrow();
-                SuccesfulCounterAttack();
-            }
+        //    //if (hit.GetComponent<Arrow_Controller>() != null)
+        //    //{
+        //    //    hit.GetComponent<Arrow_Controller>().FlipArrow();
+        //    //    SuccesfulCounterAttack();
+        //    }
 
 
-            if (hit.GetComponent<Enemy>() != null)
-            {
-                if (hit.GetComponent<Enemy>().CanBeStunned())
-                    {
-                        SuccesfulCounterAttack();
+        //    if (hit.GetComponent<Enemy>() != null)
+        //    {
+        //        if (hit.GetComponent<Enemy>().CanBeStunned())
+        //            {
+        //                SuccesfulCounterAttack();
 
-                        player.skill.parry.UseSkill(); // goint to use to restore health on parry
+        //                //player.skill.parry.UseSkill(); // goint to use to restore health on parry
 
-                        if (canCreateClone)
-                        {
-                            canCreateClone = false;
-                            player.skill.parry.MakeMirageOnParry(hit.transform);
-                        }
-                    }
-            }
-        }
+        //                if (canCreateClone)
+        //                {
+        //                    canCreateClone = false;
+        //                    //player.skill.parry.MakeMirageOnParry(hit.transform);
+        //                }
+        //            }
+        //    }
+        //}
 
         if (stateTimer < 0 || triggerCalled)
             stateMachine.ChangeState(player.idleState);

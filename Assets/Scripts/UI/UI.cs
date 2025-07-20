@@ -18,12 +18,12 @@ public class UI : MonoBehaviour, ISaveManager
 
 
 
-    public UI_SkillToolTip skillToolTip;
-    public UI_ItemTooltip itemToolTip;
-    public UI_StatToolTip statToolTip;
-    public UI_CraftWindow craftWindow;
+    //public UI_SkillToolTip skillToolTip;
+    //public UI_ItemTooltip itemToolTip;
+    //public UI_StatToolTip statToolTip;
+    //public UI_CraftWindow craftWindow;
 
-    [SerializeField] private UI_VolumeSlider[] volumeSettings;
+    //[SerializeField] private UI_VolumeSlider[] volumeSettings;
 
     private void Awake()
     {
@@ -36,8 +36,8 @@ public class UI : MonoBehaviour, ISaveManager
     {
         SwitchTo(inGameUI);
 
-        itemToolTip.gameObject.SetActive(false);
-        statToolTip.gameObject.SetActive(false);
+        //itemToolTip.gameObject.SetActive(false);
+        //statToolTip.gameObject.SetActive(false);
 
         //gameObject.SetActive(false);
     }
@@ -136,23 +136,23 @@ public class UI : MonoBehaviour, ISaveManager
 
     public void LoadData(GameData _data)
     {
-        foreach (KeyValuePair<string, float> pair in _data.volumeSettings)
-        {
-            foreach (UI_VolumeSlider item in volumeSettings)
-            {
-                if (item.parametr == pair.Key)
-                    item.LoadSlider(pair.Value);
-            }
-        }
+        //foreach (KeyValuePair<string, float> pair in _data.volumeSettings)
+        //{
+        //    foreach (UI_VolumeSlider item in volumeSettings)
+        //    {
+        //        if (item.parametr == pair.Key)
+        //            item.LoadSlider(pair.Value);
+        //    }
+        //}
     }
 
     public void SaveData(ref GameData _data)
     {
         _data.volumeSettings.Clear();
 
-        foreach (UI_VolumeSlider item in volumeSettings)
-        {
-            _data.volumeSettings.Add(item.parametr, item.slider.value);
-        }
+        //foreach (UI_VolumeSlider item in volumeSettings)
+        //{
+        //    _data.volumeSettings.Add(item.parametr, item.slider.value);
+        //}
     }
 }

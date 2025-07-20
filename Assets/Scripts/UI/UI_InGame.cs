@@ -15,7 +15,7 @@ public class UI_InGame : MonoBehaviour
     [SerializeField] private Image blackholeImage;
     [SerializeField] private Image flaskImage;
 
-    private SkillManager skills;
+    //private SkillManager skills;
 
 
     [Header("Souls info")]
@@ -28,40 +28,40 @@ public class UI_InGame : MonoBehaviour
         if (playerStats != null)
             playerStats.onHealthChanged += UpdateHealthUI;
 
-        skills = SkillManager.instance;
+        //skills = SkillManager.instance;
     }
 
     
     void Update()
     {
-        UpdateSoulsUI();
+        //UpdateSoulsUI();
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && skills.dash.dashUnlocked)
-            SetCooldownOf(dashImage);
+        //if (Input.GetKeyDown(KeyCode.LeftShift) && skills.dash.dashUnlocked)
+        //    SetCooldownOf(dashImage);
 
-        if (Input.GetKeyDown(KeyCode.Q) && skills.parry.parryUnlocked)
-            SetCooldownOf(parryImage);
+        //if (Input.GetKeyDown(KeyCode.Q) && skills.parry.parryUnlocked)
+        //    SetCooldownOf(parryImage);
 
-        if (Input.GetKeyDown(KeyCode.F) && skills.crystal.crystalUnlocked)
-            SetCooldownOf(crystalImage);
+        //if (Input.GetKeyDown(KeyCode.F) && skills.crystal.crystalUnlocked)
+        //    SetCooldownOf(crystalImage);
 
-        if (Input.GetKeyDown(KeyCode.Mouse1) && skills.sword.swordUnlocked)
-            SetCooldownOf(swordImage);
+        //if (Input.GetKeyDown(KeyCode.Mouse1) && skills.sword.swordUnlocked)
+        //    SetCooldownOf(swordImage);
 
-        if (Input.GetKeyDown(KeyCode.R) && skills.blackhole.blackholeUnlocked)
-            SetCooldownOf(blackholeImage);
+        //if (Input.GetKeyDown(KeyCode.R) && skills.blackhole.blackholeUnlocked)
+        //    SetCooldownOf(blackholeImage);
 
 
-        if (Input.GetKeyDown(KeyCode.Alpha1) && Inventory.instance.GetEquipment(EquipmentType.Flask) != null)
-            SetCooldownOf(flaskImage);
+        //if (Input.GetKeyDown(KeyCode.Alpha1) && Inventory.instance.GetEquipment(EquipmentType.Flask) != null)
+        //    SetCooldownOf(flaskImage);
 
-        CheckCooldownOf(dashImage, skills.dash.cooldown);
-        CheckCooldownOf(parryImage, skills.parry.cooldown);
-        CheckCooldownOf(crystalImage, skills.crystal.cooldown);
-        CheckCooldownOf(swordImage, skills.sword.cooldown);
-        CheckCooldownOf(blackholeImage, skills.blackhole.cooldown);
+        //CheckCooldownOf(dashImage, skills.dash.cooldown);
+        //CheckCooldownOf(parryImage, skills.parry.cooldown);
+        //CheckCooldownOf(crystalImage, skills.crystal.cooldown);
+        //CheckCooldownOf(swordImage, skills.sword.cooldown);
+        //CheckCooldownOf(blackholeImage, skills.blackhole.cooldown);
 
-        CheckCooldownOf(flaskImage, Inventory.instance.flaskCooldown);
+        //CheckCooldownOf(flaskImage, Inventory.instance.flaskCooldown);
 
     }
 

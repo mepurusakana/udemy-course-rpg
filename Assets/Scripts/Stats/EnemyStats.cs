@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyStats : CharacterStats
 {
     private Enemy enemy;
-    private ItemDrop myDropSystem;
+    //private ItemDrop myDropSystem;
     public Stat soulsDropAmount;
 
     [Header("Level details")]
@@ -22,7 +22,7 @@ public class EnemyStats : CharacterStats
         base.Start();
 
         enemy = GetComponent<Enemy>();
-        myDropSystem = GetComponent<ItemDrop>();
+        //myDropSystem = GetComponent<ItemDrop>();
     }
 
     private void ApplyLevelModifiers()
@@ -67,7 +67,7 @@ public class EnemyStats : CharacterStats
     {
         base.Die();
 
-        myDropSystem.GenerateDrop();
+        //myDropSystem.GenerateDrop();
 
 
         enemy.Die();

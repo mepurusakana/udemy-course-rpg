@@ -71,7 +71,7 @@ public class Enemy_Shady : Enemy
     public override void AnimationSpecialAttackTrigger()
     {
         GameObject newExplosive = Instantiate(explosivePrefab, attackCheck.position, Quaternion.identity);
-        newExplosive.GetComponent<Explosive_Controller>().SetupExplosive(stats, growSpeed, maxSize, attackCheckRadius);
+        //newExplosive.GetComponent<Explosive_Controller>().SetupExplosive(stats, growSpeed, maxSize, attackCheckRadius);
 
         cd.enabled = false;
         rb.gravityScale = 0;

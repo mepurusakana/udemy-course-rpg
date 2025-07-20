@@ -399,7 +399,6 @@ GameObject:
   - component: {fileID: 3027312042917415642}
   - component: {fileID: 356070711756330298}
   - component: {fileID: 3673319261937221879}
-  - component: {fileID: 1621574855507884946}
   m_Layer: 7
   m_Name: Mummy
   m_TagString: Untagged
@@ -626,21 +625,6 @@ CapsuleCollider2D:
   m_Offset: {x: -1.5247673, y: -2.7244089}
   m_Size: {x: 2.8221023, y: 6.448816}
   m_Direction: 0
---- !u!114 &1621574855507884946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4171474866766658422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5d919b49c547184da9b10d7bfd2876f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxItemsToDrop: 0
-  itemPool: []
-  dropPrefab: {fileID: 8730514117533583190, guid: 7aaa3324c1c4b054ebebaafe3343bf25, type: 3}
 --- !u!1 &5047237253217715228
 GameObject:
   m_ObjectHideFlags: 0

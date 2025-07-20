@@ -309,7 +309,7 @@ public class CharacterStats : MonoBehaviour
         if (closestEnemy != null)
         {
             GameObject newShockStrike = Instantiate(shockStrikePrefab, transform.position, Quaternion.identity);
-            newShockStrike.GetComponent<ShockStrike_Controller>().Setup(shockDamage, closestEnemy.GetComponent<CharacterStats>());
+            //newShockStrike.GetComponent<ShockStrike_Controller>().Setup(shockDamage, closestEnemy.GetComponent<CharacterStats>());
         }
     }
     private void ApplyIgniteDamage()
