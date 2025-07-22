@@ -58,9 +58,9 @@ public class ArcherBattleState : EnemyState
 
     private bool CanAttack()
     {
-        if (Time.time >= enemy.lastTimeAttacked + enemy.attackCooldown)
+        if (Time.time >= enemy.lastAttackTime + enemy.attackCooldown)
         {
-            enemy.lastTimeAttacked = Time.time;
+            enemy.lastAttackTime = Time.time;
             return true;
         }
 

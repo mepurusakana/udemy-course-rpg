@@ -58,7 +58,6 @@ public class Mummy : Enemy
     public override void Die()
     {
         base.Die();
-        base.Die();
         stateMachine.ChangeState(deadState);
     }
 }

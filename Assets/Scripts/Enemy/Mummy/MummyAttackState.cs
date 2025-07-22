@@ -19,7 +19,7 @@ public class MummyAttackState : EnemyState
     {
         base.Exit();
 
-        enemy.lastTimeAttacked = Time.time;
+        enemy.lastAttackTime = Time.time;
     }
 
     public override void Update()

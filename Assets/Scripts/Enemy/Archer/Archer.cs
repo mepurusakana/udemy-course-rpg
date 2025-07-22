@@ -5,6 +5,10 @@ using UnityEngine;
 public class Archer : Enemy
 {
 
+    public Transform arrowSpawnPoint;
+    public GameObject arrowPrefab;
+    public float safeDistance;
+
     #region States
 
     public ArcherIdleState idleState { get; private set; }
@@ -58,7 +62,20 @@ public class Archer : Enemy
     public override void Die()
     {
         base.Die();
-        base.Die();
         stateMachine.ChangeState(deadState);
+    }
+    public void FireArrow()
+    {
+        Vector3 spawnPos = arrowSpawnPoint.position;
+
+        if (facingDir == -1)
+        {
+            spawnPos.x = transform.position.x - Mathf.Abs(arrowSpawnPoint.localPosition.x);
+        }
+
+        GameObject arrow = Instantiate(arrowPrefab, spawnPos, Quaternion.identity);
+        arrow.GetComponent<Arrow_Controller>().SetDirection(facingDir);
+
+        lastAttackTime = Time.time;
     }
 }

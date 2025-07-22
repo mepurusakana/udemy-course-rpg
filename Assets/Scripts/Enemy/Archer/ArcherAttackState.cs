@@ -19,7 +19,7 @@ public class ArcherAttackState : EnemyState
     {
         base.Exit();
 
-        enemy.lastTimeAttacked = Time.time;
+        enemy.lastAttackTime = Time.time;
     }
 
     public override void Update()
@@ -29,6 +29,8 @@ public class ArcherAttackState : EnemyState
         enemy.SetZeroVelocity();
 
         if (triggerCalled)
+        {
             stateMachine.ChangeState(enemy.battleState);
+        }
     }
 }

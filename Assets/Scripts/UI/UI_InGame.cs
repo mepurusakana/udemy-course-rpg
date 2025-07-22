@@ -8,12 +8,12 @@ public class UI_InGame : MonoBehaviour
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private Slider slider;
 
-    [SerializeField] private Image dashImage;
-    [SerializeField] private Image parryImage;
-    [SerializeField] private Image crystalImage;
-    [SerializeField] private Image swordImage;
-    [SerializeField] private Image blackholeImage;
-    [SerializeField] private Image flaskImage;
+    //[SerializeField] private Image dashImage;
+    //[SerializeField] private Image parryImage;
+    //[SerializeField] private Image crystalImage;
+    //[SerializeField] private Image swordImage;
+    //[SerializeField] private Image blackholeImage;
+    //[SerializeField] private Image flaskImage;
 
     //private SkillManager skills;
 

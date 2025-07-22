@@ -1,9 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Arrow_Controller : MonoBehaviour
 {
+    private Enemy enemy;
+
     [SerializeField] private int damage;
     [SerializeField] private string targetLayerName = "Player";
 
@@ -42,14 +44,23 @@ public class Arrow_Controller : MonoBehaviour
         Destroy(gameObject, Random.Range(5, 7));
     }
 
+    public void SetDirection(int dir)
+    {
+        if (dir == -1)
+        {
+            FlipArrow();
+        }
+        canMove = true;
+    }
+
     public void FlipArrow()
     {
         if (flipped)
             return;
 
-        xVelocity = xVelocity * -1;
+        xVelocity *= -1;
         flipped = true;
-        transform.Rotate(0, 100, 0);
-        targetLayerName = "Enemy";
+
+        transform.Rotate(0, 180, 0); // ⬅️ 水平翻轉箭頭
     }
 }
