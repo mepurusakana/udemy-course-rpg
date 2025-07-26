@@ -23,13 +23,16 @@ public class Arrow_Controller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
         if (collision.gameObject.layer == LayerMask.NameToLayer(targetLayerName))
         {
             collision.GetComponent<CharacterStats>()?.TakeDamage(damage);
             StuckInto(collision);
         }
         else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
             StuckInto(collision);
+        }
     }
 
     private void StuckInto(Collider2D collision)

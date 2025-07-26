@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class PlayerGroundedState : PlayerState
@@ -52,10 +53,10 @@ public class PlayerGroundedState : PlayerState
         if (Input.GetKeyDown(KeyCode.LeftShift))
             stateMachine.ChangeState(player.dashState);
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            stateMachine.ChangeState(player.healingState);
-        }
+        //if (Input.GetKeyDown(KeyCode.A))
+        //{
+        //    stateMachine.ChangeState(player.healingState);
+        //}
 
 
 
