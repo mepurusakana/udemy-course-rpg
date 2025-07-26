@@ -50,8 +50,11 @@ public class PlayerGroundedState : PlayerState
             stateMachine.ChangeState(player.jumpState);
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
             stateMachine.ChangeState(player.dashState);
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            stateMachine.ChangeState(player.healingState);
         }
 
 

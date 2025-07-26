@@ -29,6 +29,12 @@ public class Player : Entity
     public GameObject slashEffectPrefab;
     public Transform slashSpawnPoint;
 
+    [Header("Healing Chant")]
+    public int maxChantCharges = 4;
+    public int chantCharges;
+
+    [SerializeField] private List<GameObject> chantIcons; // ¹Ï¥Ü¦Cªí
+
     //public float platformCatcher;
 
 
@@ -105,6 +111,9 @@ public class Player : Entity
         defaultMoveSpeed = moveSpeed;
         defaultJumpForce = jumpForce;
         defaultDashSpeed = dashSpeed;
+
+        chantCharges = maxChantCharges;
+        UpdateChantUI();
     }
 
 
@@ -211,4 +220,20 @@ public class Player : Entity
     //    }
     //    slash.player = this;
     //}
+
+    public void UseChantCharge()
+    {
+        if (chantCharges <= 0) return;
+
+        chantCharges--;
+        UpdateChantUI();
+    }
+
+    public void UpdateChantUI()
+    {
+        for (int i = 0; i < chantIcons.Count; i++)
+        {
+            chantIcons[i].SetActive(i < chantCharges);
+        }
+    }
 }
