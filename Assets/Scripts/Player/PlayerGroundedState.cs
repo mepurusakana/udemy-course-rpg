@@ -53,6 +53,8 @@ public class PlayerGroundedState : PlayerState
         if (Input.GetKeyDown(KeyCode.LeftShift))
             stateMachine.ChangeState(player.dashState);
 
+        if (Input.GetKeyDown(KeyCode.Q) && player.chantCharges > 0)
+            stateMachine.ChangeState(player.healingState);
         //if (Input.GetKeyDown(KeyCode.A))
         //{
         //    stateMachine.ChangeState(player.healingState);

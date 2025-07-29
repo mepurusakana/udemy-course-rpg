@@ -12,6 +12,10 @@ public class PlayerHealingState : PlayerGroundedState
     {
         base.Enter();
 
+        player.holdTime = 0f;
+        player.rb.velocity = Vector2.zero;
+
+
         if (player.chantCharges <= 0)
         {
             stateMachine.ChangeState(player.idleState); // 沒有咏唱次數直接退出
@@ -30,10 +34,22 @@ public class PlayerHealingState : PlayerGroundedState
     {
         base.Update();
 
-        if (triggerCalled) // 放在Animation最後
+        player.rb.velocity = Vector2.zero;
+
+        if (Input.GetKey(KeyCode.Q))
         {
-            player.stats.IncreaseHealthBy(30); // 回復 30 HP
-            player.UseChantCharge(); // 消耗一次咏唱次數
+            player.holdTime += Time.deltaTime;
+
+            if (player.holdTime >= player.healHoldTime)
+            {
+                player.Heal(10);            // 回血量
+                player.UseChantCharge();    // 扣掉一格血藥
+                stateMachine.ChangeState(player.idleState);
+            }
+        }
+        else
+        {
+            // 若玩家鬆開 Q，則取消治療
             stateMachine.ChangeState(player.idleState);
         }
     }

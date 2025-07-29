@@ -52,4 +52,6 @@ public class PlayerStats : CharacterStats
         //if (currentArmor != null)
         //    currentArmor.Effect(player.transform);
     }
+
+
 }

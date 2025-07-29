@@ -29,11 +29,15 @@ public class Player : Entity
     public GameObject slashEffectPrefab;
     public Transform slashSpawnPoint;
 
-    [Header("Healing Chant")]
+    [Header("Healing Info")]
     public int maxChantCharges = 4;
     public int chantCharges;
+    public List<GameObject> chantIcons; // 圖示列表
+    public float holdTime;
+    public float healHoldTime;
+    public ParticleSystem healingVFX;
 
-    [SerializeField] private List<GameObject> chantIcons; // 圖示列表
+
 
     //public float platformCatcher;
 
@@ -236,4 +240,42 @@ public class Player : Entity
             chantIcons[i].SetActive(i < chantCharges);
         }
     }
+
+    public void Heal(int amount)
+    {
+        stats.IncreaseHealthBy(amount);
+    }
+    //public int GetRemainingHeals()
+    //{
+    //    int count = 0;
+    //    foreach (var icon in healIcons)
+    //    {
+    //        if (icon.activeSelf)
+    //            count++;
+    //    }
+    //    return count;
+    //}
+
+    //public bool HasHealLeft()
+    //{
+    //    return GetRemainingHeals() > 0;
+    //}
+
+    //public void ConsumeHeal()
+    //{
+    //    // 消耗第一個亮著的血藥
+    //    foreach (var icon in healIcons)
+    //    {
+    //        if (icon.activeSelf)
+    //        {
+    //            icon.SetActive(false); // 關掉代表已使用
+    //            break;
+    //        }
+    //    }
+    //}
+    //public void PerformHealing(int amount)
+    //{
+    //    Heal(amount);
+    //    ConsumeHeal();
+    //}
 }
