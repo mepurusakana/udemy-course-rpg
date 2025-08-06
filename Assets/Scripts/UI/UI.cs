@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI : MonoBehaviour, ISaveManager
+public class UI : MonoBehaviour, ISaveable
 {
     [Header("End screen")]
     [SerializeField] private UI_FadeScreen fadeScreen;
@@ -10,10 +10,10 @@ public class UI : MonoBehaviour, ISaveManager
     [SerializeField] private GameObject restartButton;
     [Space]
 
-    [SerializeField] private GameObject charcaterUI;
-    [SerializeField] private GameObject skillTreeUI;
-    [SerializeField] private GameObject craftUI;
-    [SerializeField] private GameObject optionsUI;
+    [SerializeField] private GameObject PauseUI;
+    //[SerializeField] private GameObject skillTreeUI;
+    //[SerializeField] private GameObject craftUI;
+    //[SerializeField] private GameObject optionsUI;
     [SerializeField] private GameObject inGameUI;
 
 
@@ -46,20 +46,14 @@ public class UI : MonoBehaviour, ISaveManager
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.C))
-            SwitchWithKeyTo(charcaterUI);
-
-        if (Input.GetKeyDown(KeyCode.B))
-            SwitchWithKeyTo(craftUI);
-
-
-        if (Input.GetKeyDown(KeyCode.K))
-            SwitchWithKeyTo(skillTreeUI);
 
         if (Input.GetKeyDown(KeyCode.O))
-            SwitchWithKeyTo(optionsUI);
+            SwitchWithKeyTo(inGameUI);
 
-       
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SwitchWithKeyTo(PauseUI);
+
+
 
     }
 
@@ -148,7 +142,7 @@ public class UI : MonoBehaviour, ISaveManager
 
     public void SaveData(ref GameData _data)
     {
-        _data.volumeSettings.Clear();
+        //_data.volumeSettings.Clear();
 
         //foreach (UI_VolumeSlider item in volumeSettings)
         //{
