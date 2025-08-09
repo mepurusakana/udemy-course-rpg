@@ -6,13 +6,11 @@ using UnityEngine.UIElements;
 
 public class Inventory_Player : Inventory_Base
 {
-    public event Action<int> OnQuickSlotUsed;
-    public Inventory_Storage storage {  get; private set; }
-    public List<Inventory_EquipmentSlot> equipList;
+    //public event Action<int> OnQuickSlotUsed;
+    //public List<Inventory_EquipmentSlot> equipList;
 
     public override void SaveData(ref GameData data)
     {
-        data.inventory.Clear();
         //data.equipedItems.Clear();
 
         //foreach (var item in itemList)
@@ -27,7 +25,7 @@ public class Inventory_Player : Inventory_Base
         //    }
         //}
 
-        foreach(var slot in equipList)
+        //foreach(var slot in equipList)
         {
             //if (slot.HasItem())
             //data.equipedItems[slot.equipmentItem.itemData.saveId] = slot.slotType;

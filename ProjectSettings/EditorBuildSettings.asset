@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Scene/MainMenu.unity
     guid: 20a7a46ff539a7c48957740682be8398
   - enabled: 1
+    path: Assets/Scenes/Scene/SaveSlot.unity
+    guid: 7328f3b45c3246a468750d9191f4ea8e
+  - enabled: 1
     path: Assets/Scenes/Scene/A001.unity
     guid: 99f8652901cabb44aac1ed9ba7b6fe76
   - enabled: 1

@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
+
     public string sceneName;
     public string spawnPosName;
     private bool activated;
@@ -27,4 +28,6 @@ public class SceneLoader : MonoBehaviour
         this.spawnPosName = spawnPosName;
         player.rb.gravityScale = 0f;
     }
+
+    
 }

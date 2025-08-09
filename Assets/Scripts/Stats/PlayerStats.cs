@@ -25,8 +25,6 @@ public class PlayerStats : CharacterStats
 
         GameManager.instance.lostCurrencyAmount = PlayerManager.instance.currency;
         PlayerManager.instance.currency = 0;
-
-        //GetComponent<PlayerItemDrop>()?.GenerateDrop();
     }
 
     protected override void DecreaseHealthBy(int _damage)
@@ -46,12 +44,16 @@ public class PlayerStats : CharacterStats
             AudioManager.instance.PlaySFX(randomSound, null);
             
         }
-
-        //ItemData_Equipment currentArmor = Inventory.instance.GetEquipment(EquipmentType.Armor);
-
-        //if (currentArmor != null)
-        //    currentArmor.Effect(player.transform);
     }
 
+    public void SetHealth(int newHealth)
+    {
+        currentHealth=Mathf.Clamp(newHealth, 0, GetMaxHealthValue());
 
+        if (onHealthChanged != null)
+            onHealthChanged();
+
+        if (currentHealth <= 0 && !isDead)
+            Die();
+    }
 }

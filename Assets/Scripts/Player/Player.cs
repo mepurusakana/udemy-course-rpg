@@ -6,6 +6,8 @@ using UnityEngine.UIElements;
 
 public class Player : Entity
 {
+    public static Player instance;
+
     [Header("Attack details")]
     public Vector2[] attackMovement;
     public float counterAttackDuration = .2f;
@@ -81,6 +83,8 @@ public class Player : Entity
     protected override void Awake()
     {
         base.Awake();
+
+
         stateMachine = new PlayerStateMachine();
 
         idleState = new PlayerIdleState(this, stateMachine, "Idle");
@@ -120,6 +124,7 @@ public class Player : Entity
         UpdateChantUI();
     }
 
+    public void TeleportPlayer(Vector3 position) => transform.position = position;
 
     protected override void Update()
     {

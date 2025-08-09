@@ -5,14 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class UI_MainMenu : MonoBehaviour
 {
+    public string targetSceneName;
+
     [SerializeField] private string sceneName = "MainScene";
     [SerializeField] private GameObject continueButton;
     [SerializeField] UI_FadeScreen fadeScreen;
 
     private void Start()
     {
-        //if (SaveManager.instance.HasSavedData() == false)
-        //    continueButton.SetActive(false);
+
     }
 
     public void ContinueGame()
@@ -29,7 +30,7 @@ public class UI_MainMenu : MonoBehaviour
     public void ExitGame()
     {
         Debug.Log("Exit game");
-        //Application.Quit();
+        Application.Quit();
     }
 
     IEnumerator LoadSceneWithFadeEffect(float _delay)
@@ -39,5 +40,18 @@ public class UI_MainMenu : MonoBehaviour
         yield return new WaitForSeconds(_delay);
 
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void SwitchScene()
+    {
+        if (!string.IsNullOrEmpty(targetSceneName))
+        {
+            SceneManager.LoadScene(targetSceneName);
+            Debug.Log($"切換到場景：{targetSceneName}");
+        }
+        else
+        {
+            Debug.LogError("目標場景名稱未設定!");
+        }
     }
 }
