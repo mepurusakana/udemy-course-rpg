@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UI_Manager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class UI_Manager : MonoBehaviour
     public GameObject audioSettingUI;
     public GameObject videoSettingUI;
     public GameObject instructionsUI;
+    public string targetSceneName;
 
     [Header("其他 UI")]
     public GameObject inGameUI; // 可選擇要不要自動顯示 InGame_UI
@@ -58,6 +60,18 @@ public class UI_Manager : MonoBehaviour
         if (inGameUI != null)
             inGameUI.SetActive(true);
         Debug.Log("繼續遊戲");
+    }
+
+    public void LoadTargetScene()
+    {
+        if (!string.IsNullOrEmpty(targetSceneName))
+        {
+            SceneManager.LoadScene(targetSceneName);
+        }
+        else
+        {
+            Debug.LogError("請在 Inspector 設定 targetSceneName！");
+        }
     }
 
     private void HideAll()
