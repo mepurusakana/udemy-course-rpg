@@ -32,13 +32,22 @@ public class SaveManager : MonoBehaviour
         string fileName = $"saveSlot{slotIndex}.json";
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
         allSaveables = FindISaveables();
+
+        // 外部使用時的保護邏輯
+        var data = dataHandler.LoadData();
+        if (data == null)
+        {
+            Debug.Log("沒有有效存檔，建立新檔案");
+            data = new GameData();
+            dataHandler.SaveData(data);
+        }
     }
 
     public void LoadGame()
     {
         gameData = dataHandler.LoadData();
 
-        if(gameData==null)
+        if (gameData == null)
         {
             Debug.Log($"No save data found in slot {currentSlotIndex}, creating new save!");
             CreateNewGame();
@@ -46,8 +55,19 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
-        foreach(var saveable  in allSaveables)
+        foreach (var saveable in allSaveables)
             saveable.LoadData(gameData);
+
+        //  讀取完資料後，直接設定玩家位置 & 血量
+        var player = FindFirstObjectByType<Player>();
+        if (player != null)
+        {
+            player.TeleportPlayer(gameData.savedCheckpoint);
+
+            var stats = player.GetComponent<PlayerStats>();
+            if (stats != null)
+                stats.SetHealth(gameData.playerHealth);
+        }
     }
 
     public void SaveGame()

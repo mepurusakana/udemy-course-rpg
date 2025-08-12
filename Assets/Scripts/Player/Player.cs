@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Player : Entity
+public class Player : Entity, ISaveable
 {
     public static Player instance;
 
@@ -122,6 +122,9 @@ public class Player : Entity
 
         chantCharges = maxChantCharges;
         UpdateChantUI();
+
+        if (SaveManager.instance != null && SaveManager.instance.gameData != null)
+            transform.position = SaveManager.instance.gameData.savedCheckpoint;
     }
 
     public void TeleportPlayer(Vector3 position) => transform.position = position;
@@ -250,37 +253,14 @@ public class Player : Entity
     {
         stats.IncreaseHealthBy(amount);
     }
-    //public int GetRemainingHeals()
-    //{
-    //    int count = 0;
-    //    foreach (var icon in healIcons)
-    //    {
-    //        if (icon.activeSelf)
-    //            count++;
-    //    }
-    //    return count;
-    //}
 
-    //public bool HasHealLeft()
-    //{
-    //    return GetRemainingHeals() > 0;
-    //}
+    public void LoadData(GameData data)
+    {
+        transform.position = data.savedCheckpoint;
+    }
 
-    //public void ConsumeHeal()
-    //{
-    //    // 消耗第一個亮著的血藥
-    //    foreach (var icon in healIcons)
-    //    {
-    //        if (icon.activeSelf)
-    //        {
-    //            icon.SetActive(false); // 關掉代表已使用
-    //            break;
-    //        }
-    //    }
-    //}
-    //public void PerformHealing(int amount)
-    //{
-    //    Heal(amount);
-    //    ConsumeHeal();
-    //}
+    public void SaveData(ref GameData data)
+    {
+        data.savedCheckpoint = transform.position;
+    }
 }

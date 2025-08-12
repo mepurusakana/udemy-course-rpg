@@ -24,16 +24,7 @@ public class UI_SaveSlot : MonoBehaviour
         }
 
         SaveManager.instance.InitSlot(slotIndex);
-
-        if (SaveManager.instance.HasSaveInSlot(slotIndex))
-        {
             SaveManager.instance.LoadGame();
-        }
-        else
-        {
-            SaveManager.instance.gameData = new GameData();
-            SaveManager.instance.SaveGame();
-        }
 
         SceneManager.LoadScene("A001");
     }

@@ -10,6 +10,10 @@ public class Object_Checkpoint : MonoBehaviour, ISaveable
     private void Awake()
     {
         allCheckpoints = FindObjectsByType<Object_Checkpoint>(FindObjectsSortMode.None);
+
+        player = FindFirstObjectByType<Player>(); // 或 Player.instance
+        if (player != null)
+            stats = player.GetComponent<PlayerStats>();
     }
 
     public void ActivateCheckpoint(bool activate)
@@ -19,8 +23,7 @@ public class Object_Checkpoint : MonoBehaviour, ISaveable
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Player player = collision.gameObject.GetComponent<Player>();
-        if (player)
+        if(collision.gameObject.GetComponent<Player>() != null )
         {
             foreach (var point in allCheckpoints)
                 point.ActivateCheckpoint(false);
@@ -36,14 +39,9 @@ public class Object_Checkpoint : MonoBehaviour, ISaveable
 
     public void LoadData(GameData data)
     {
-        bool active = data.savedCheckpoint == transform.position;
+        // 不直接移動玩家，移動玩家的動作放到 SaveManager.LoadGame 之後統一處理
+        bool active = Vector3.Distance(data.savedCheckpoint, transform.position) < 0.01f;
         ActivateCheckpoint(active);
-
-        if(active)
-        {
-            Player.instance.TeleportPlayer(transform.position);
-            stats.SetHealth(data.playerHealth);
-        }
     }
 
     public void SaveData(ref GameData data)
