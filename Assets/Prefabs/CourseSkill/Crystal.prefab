@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1937890942513740215}
   - component: {fileID: 5430630540162132222}
   - component: {fileID: 2320548361086290944}
-  - component: {fileID: 3069647590158077453}
   - component: {fileID: 1338043624}
   m_Layer: 0
   m_Name: Crystal
@@ -27,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4017398500736977651}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -14.346628, y: -2.7427762, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5430630540162132222
 SpriteRenderer:
@@ -74,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 4
+  m_SortingLayer: 7
   m_SortingOrder: 1
   m_Sprite: {fileID: 1328961470, guid: 0f2d35081db8b2746aed901899e27f62, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -107,21 +106,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &3069647590158077453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4017398500736977651}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f814bb798ff3ed541aee27032ced1b7b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  whatIsEnemy:
-    serializedVersion: 2
-    m_Bits: 128
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!58 &1338043624
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -132,6 +117,25 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0

@@ -2784,7 +2784,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d24ff04eab5d6e14d96d7f78119467ed, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3357,6 +3357,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 481636887588848298, guid: 89b8ecb1adc4e8441b2da94dd02197f2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1827392377210291244, guid: 89b8ecb1adc4e8441b2da94dd02197f2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1860604569422558376, guid: 89b8ecb1adc4e8441b2da94dd02197f2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -3865,12 +3873,12 @@ GameObject:
   - component: {fileID: 666895618}
   - component: {fileID: 666895617}
   m_Layer: 6
-  m_Name: Light 2D
+  m_Name: AttackLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &666895617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3886,9 +3894,9 @@ MonoBehaviour:
   m_ComponentVersion: 1
   m_LightType: 1
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.5
+  m_FalloffIntensity: 0.35
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.25
+  m_Intensity: 0.65
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: c9ad6cf089997cf4bd46aad7753b6e39d1347e40d3e09b96c5c0fda2
@@ -3905,8 +3913,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0.25919986, y: 0.08375001, z: 0}
-    m_Extent: {x: 7.4639997, y: 7.7547503, z: 0}
+    m_Center: {x: 0.25915003, y: 0.083800316, z: 0}
+    m_Extent: {x: 9.773951, y: 10.0647, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -3914,7 +3922,7 @@ MonoBehaviour:
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 4
+  m_ShapeLightFalloffSize: 6.31
   m_ShapeLightFalloffOffset: {x: 0, y: 0}
   m_ShapePath:
   - {x: -3.204136, y: -3.6703687, z: 0}
@@ -9263,6 +9271,37 @@ Sprite:
   m_PhysicsShape: []
   m_Bones: []
   m_SpriteID: 
+--- !u!1 &939723139
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 939723140}
+  m_Layer: 6
+  m_Name: SkillSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &939723140
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939723139}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1469100847}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &942032789
 GameObject:
   m_ObjectHideFlags: 0
@@ -11408,6 +11447,7 @@ GameObject:
   - component: {fileID: 1469100846}
   - component: {fileID: 1469100850}
   - component: {fileID: 1469100854}
+  - component: {fileID: 1469100855}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -11456,6 +11496,7 @@ Transform:
   - {fileID: 928958956}
   - {fileID: 666895618}
   - {fileID: 1231181822}
+  - {fileID: 939723140}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1469100848
@@ -11489,7 +11530,7 @@ MonoBehaviour:
   counterAttackDuration: 0.2
   jumpTimer: 0.5
   moveSpeed: 30
-  jumpForce: 20
+  jumpForce: 30
   swordReturnImpact: 10
   dashSpeed: 25
   dashDuration: 0.2
@@ -11505,6 +11546,7 @@ MonoBehaviour:
   holdTime: 0
   healHoldTime: 2
   healingVFX: {fileID: 0}
+  attackLight: {fileID: 666895617}
 --- !u!114 &1469100850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11640,6 +11682,22 @@ MonoBehaviour:
   shockColor: []
   hitFx: {fileID: 4431538376159538090, guid: 2f387d67210ae6246b602d015d7b9968, type: 3}
   criticalHitFx: {fileID: 3347290265377545998, guid: b74d5da7ef04de04099c0144d41367ce, type: 3}
+--- !u!114 &1469100855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1469100845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e943f94f5125242acd5ec3428ad8fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skills:
+  - {fileID: 11400000, guid: 7632ce4709dcc9e4dbef4eca17dbf9af, type: 2}
+  - {fileID: 11400000, guid: 1f6bd9d7a2091e54a8a3a7fb481fbc75, type: 2}
+  - {fileID: 11400000, guid: 766117df04d6aec48ac308ebe1484db8, type: 2}
 --- !u!1 &1485687397
 GameObject:
   m_ObjectHideFlags: 0
@@ -31129,6 +31187,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Archer
       objectReference: {fileID: 0}
+    - target: {fileID: 1400619153903309980, guid: 6585d09392907d341b5783724f06723f, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 1894090683098891950, guid: 6585d09392907d341b5783724f06723f, type: 3}
       propertyPath: player
       value: 
@@ -31325,6 +31387,10 @@ PrefabInstance:
     - target: {fileID: 4171474866766658422, guid: 93927c7cc3c7d2946af392c242a51be8, type: 3}
       propertyPath: m_Name
       value: Mummy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4171474866766658422, guid: 93927c7cc3c7d2946af392c242a51be8, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 6328824687341838982, guid: 93927c7cc3c7d2946af392c242a51be8, type: 3}
       propertyPath: m_AnchorMax.x

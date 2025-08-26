@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.Rendering.Universal;
 
 public class Player : Entity, ISaveable
 {
@@ -39,9 +40,14 @@ public class Player : Entity, ISaveable
     public float healHoldTime;
     public ParticleSystem healingVFX;
 
-
+    [Header("Attack Light Effect")]
+    public Light2D attackLight;
 
     //public float platformCatcher;
+
+    #region Skill
+    #endregion
+
 
 
     public float dashDir { get; private set; }
@@ -79,6 +85,8 @@ public class Player : Entity, ISaveable
     public PlayerDeadState deadState { get; private set; }
     public PlayerHealingState healingState { get; private set; }
     #endregion
+
+    
 
     protected override void Awake()
     {
@@ -125,6 +133,12 @@ public class Player : Entity, ISaveable
 
         if (SaveManager.instance != null && SaveManager.instance.gameData != null)
             transform.position = SaveManager.instance.gameData.savedCheckpoint;
+
+        if (attackLight != null)
+        {
+            attackLight.enabled = false;
+            attackLight.intensity = 0f;
+        }
     }
 
     public void TeleportPlayer(Vector3 position) => transform.position = position;
@@ -141,12 +155,11 @@ public class Player : Entity, ISaveable
 
         CheckForDashInput();
 
+        if (Time.timeScale == 0) return;
+        base.Update();
+        stateMachine.currentState.Update();
 
-        //if (Input.GetKeyDown(KeyCode.F) && skill.crystal.crystalUnlocked)
-        //    skill.crystal.CanUseSkill();
-
-        //if (Input.GetKeyDown(KeyCode.Alpha1))
-        //    Inventory.instance.UseFlask();
+        
     }
 
     public override void SlowEntityBy(float _slowPercentage, float _slowDuration)
@@ -217,22 +230,6 @@ public class Player : Entity, ISaveable
         GameObject effect = Instantiate(slashEffectPrefab, slashSpawnPoint.position, slashSpawnPoint.rotation);
     }
 
-    //public void AttackDealDamage(bool isUpAttack)
-    //{
-    //    PlayerSlash slash = Instantiate(slashPrefab, transform, false);
-    //    slash.transform.localPosition = Vector3.zero;
-    //    if (isUpAttack)
-    //    {
-    //        slash.transform.localPosition += Vector3.up * 0.5f;
-    //        slash.transform.localRotation = Quaternion.Euler(0, 0, 90);
-    //    }
-    //    else
-    //    {
-    //        slash.transform.localPosition += Vector3.right * 1f;
-    //    }
-    //    slash.player = this;
-    //}
-
     public void UseChantCharge()
     {
         if (chantCharges <= 0) return;
@@ -252,6 +249,24 @@ public class Player : Entity, ISaveable
     public void Heal(int amount)
     {
         stats.IncreaseHealthBy(amount);
+    }
+
+    public IEnumerator FadeOutLight(Light2D light, float duration)
+    {
+        if (light == null) yield break;
+
+        float startIntensity = light.intensity;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            light.intensity = Mathf.Lerp(startIntensity, 0f, time / duration);
+            yield return null;
+        }
+
+        light.intensity = 0f;
+        light.enabled = false;
     }
 
     public void LoadData(GameData data)

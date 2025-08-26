@@ -1,0 +1,119 @@
+using System.Collections;
+using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
+
+public class SkillManager : MonoBehaviour
+{
+    [SerializeField] private SkillData[] skills;
+    private bool[] isOnCooldown;
+    private Animator anim;
+    private Player player;
+    private Transform skillSpawnPoint;
+
+
+    private void Start()
+    {
+        anim = GetComponentInChildren<Animator>();
+        player = GetComponent<Player>();
+        skillSpawnPoint = transform;
+        isOnCooldown = new bool[skills.Length];
+    }
+
+    private void Update()
+    {
+        for (int i = 0; i < skills.Length; i++)
+        {
+            if (Input.GetKeyDown(skills[i].activationKey) && !isOnCooldown[i])
+            {
+                if (CheckSkillCondition(skills[i]))
+                    StartCoroutine(ActivateSkill(skills[i], i));
+            }
+        }
+    }
+
+    private bool CheckSkillCondition(SkillData skill)
+    {
+        if (skill.requiresAirborne && player.IsGroundDetected()) return false;
+        if (skill.requiresGrounded && !player.IsGroundDetected()) return false;
+        if (player.rb == null || player.rb.bodyType == RigidbodyType2D.Static) return false;
+        return true;
+    }
+
+
+    private IEnumerator ActivateSkill(SkillData skill,int index)
+    {
+        isOnCooldown[index] = true;
+
+        if (!string.IsNullOrEmpty(skill.animationTriggerName))
+            anim.SetTrigger(skill.animationTriggerName);
+
+        //投擲物
+        yield return new WaitForSeconds(0.3f);
+
+        if (skill.isProjectile)
+            HandleProjectileSkill(skill);
+
+        //空中憾地
+        else if (skill.requiresAirborne)
+        {
+            yield return StartCoroutine(HandleAirDropSkill(skill));
+        }
+        else
+        {
+            yield return StartCoroutine(HandleNormalSkill(skill));
+        }
+
+        yield return new WaitForSeconds(skill.cooldown);
+        isOnCooldown[index] = false;
+
+        // 生成斬擊Prefab
+        GameObject skillObj = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
+        skillObj.transform.localScale = new Vector3(transform.localScale.x, 1, 1); // 根據玩家方向翻轉
+        SkillAttack attack = skillObj.GetComponent<SkillAttack>();
+        attack.Setup(skill.damageAmount);
+
+        // 技能持續時間後刪除
+        Destroy(skillObj, skill.skillDuration);
+
+        // 等待冷卻
+        yield return new WaitForSeconds(skill.cooldown);
+        isOnCooldown[index] = false;
+    }
+
+    private IEnumerator HandleNormalSkill(SkillData skill)
+    {
+        yield return new WaitForSeconds(0.01f);
+        GameObject skillObj = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
+        skillObj.transform.localScale = new Vector3(transform.localScale.x, 1, 1);
+        skillObj.GetComponent<SkillAttack>().Setup(skill.damageAmount);
+        Destroy(skillObj, skill.skillDuration);
+    }
+
+    private IEnumerator HandleAirDropSkill(SkillData skill)
+    {
+        player.rb.velocity = Vector2.zero; // 強制下降
+        yield return new WaitForSeconds(0.01f);
+        player.rb.gravityScale = 100f; // 增加重力
+
+        while (!player.IsGroundDetected()) // 等待落地
+        {
+            yield return null;
+        }
+
+        anim.SetTrigger("SkillLandImpact"); // 播放落地動畫
+        player.rb.gravityScale = 5f; // 還原重力
+
+        yield return new WaitForSeconds(0.1f);
+        GameObject shockwave = Instantiate(skill.skillPrefab, transform.position, Quaternion.identity);
+        shockwave.GetComponent<SkillAttack>().Setup(skill.damageAmount);
+        Destroy(shockwave, skill.skillDuration);
+    }
+
+    private void HandleProjectileSkill(SkillData skill)
+    {
+        GameObject projectile = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
+        Projectile proj = projectile.GetComponent<Projectile>();
+        proj.Setup(skill.damageAmount, transform.localScale.x); // 帶方向資訊
+    }
+}
+

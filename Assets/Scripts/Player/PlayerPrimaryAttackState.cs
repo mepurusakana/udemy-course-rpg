@@ -21,6 +21,13 @@ public class PlayerPrimaryAttackState : PlayerState
 
         //AudioManager.instance.PlaySFX(2); // attack sound effect
 
+        if (player.attackLight != null)
+        {
+            player.StopCoroutine("FadeOutLight");  // 停止之前的淡出，避免 bug
+            player.attackLight.enabled = true;
+            player.attackLight.intensity = 1.5f; // 設定初始亮度，可調整
+        }
+
         xInput = 0;  // we need this to fix bug on attack direction
 
         if (comboCounter > 2 || Time.time >= lastTimeAttacked + comboWindow)
@@ -44,6 +51,9 @@ public class PlayerPrimaryAttackState : PlayerState
     public override void Exit()
     {
         base.Exit();
+
+        if (player.attackLight != null)
+            player.StartCoroutine(player.FadeOutLight(player.attackLight, 0.3f)); // 0.3 秒淡出，可調整時間
 
         player.StartCoroutine("BusyFor", .15f);
 
