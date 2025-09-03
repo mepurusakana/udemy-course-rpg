@@ -42,6 +42,7 @@ public class Player : Entity, ISaveable
 
     [Header("Attack Light Effect")]
     public Light2D attackLight;
+    private Coroutine fadeOutCoroutine; // 紀錄目前的淡出 Coroutine
 
     //public float platformCatcher;
 
@@ -225,10 +226,10 @@ public class Player : Entity, ISaveable
         knockbackPower = new Vector2(0, 0);
     }
 
-    public void SpawnSlashEffect()
-    {
-        GameObject effect = Instantiate(slashEffectPrefab, slashSpawnPoint.position, slashSpawnPoint.rotation);
-    }
+    //public void SpawnSlashEffect()
+    //{
+    //    GameObject effect = Instantiate(slashEffectPrefab, slashSpawnPoint.position, slashSpawnPoint.rotation);
+    //}
 
     public void UseChantCharge()
     {
@@ -253,21 +254,37 @@ public class Player : Entity, ISaveable
 
     public IEnumerator FadeOutLight(Light2D light, float duration)
     {
-        if (light == null) yield break;
-
         float startIntensity = light.intensity;
-        float time = 0f;
+        float elapsedTime = 0f;
 
-        while (time < duration)
+        while (elapsedTime < duration)
         {
-            time += Time.deltaTime;
-            light.intensity = Mathf.Lerp(startIntensity, 0f, time / duration);
+            if (light == null) yield break;
+
+            elapsedTime += Time.deltaTime;
+            light.intensity = Mathf.Lerp(startIntensity, 0f, elapsedTime / duration);
             yield return null;
         }
 
         light.intensity = 0f;
         light.enabled = false;
     }
+
+    public void StopFadeOut()
+    {
+        if (fadeOutCoroutine != null)
+        {
+            StopCoroutine(fadeOutCoroutine);
+            fadeOutCoroutine = null;
+        }
+    }
+
+    public void StartFadeOut(float duration)
+    {
+        StopFadeOut(); // 確保不會有重複 Coroutine
+        fadeOutCoroutine = StartCoroutine(FadeOutLight(attackLight, duration));
+    }
+
 
     public void LoadData(GameData data)
     {

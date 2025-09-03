@@ -21,11 +21,12 @@ public class PlayerPrimaryAttackState : PlayerState
 
         //AudioManager.instance.PlaySFX(2); // attack sound effect
 
+        // 停止之前的淡出，立即恢復亮度
         if (player.attackLight != null)
         {
-            player.StopCoroutine("FadeOutLight");  // 停止之前的淡出，避免 bug
+            player.StopFadeOut(); // 停止淡出
             player.attackLight.enabled = true;
-            player.attackLight.intensity = 1.5f; // 設定初始亮度，可調整
+            player.attackLight.intensity = 0.32f; // 重設亮度
         }
 
         xInput = 0;  // we need this to fix bug on attack direction
@@ -53,7 +54,7 @@ public class PlayerPrimaryAttackState : PlayerState
         base.Exit();
 
         if (player.attackLight != null)
-            player.StartCoroutine(player.FadeOutLight(player.attackLight, 0.3f)); // 0.3 秒淡出，可調整時間
+            player.StartFadeOut(0.3f); // 使用管理好的方法
 
         player.StartCoroutine("BusyFor", .15f);
 

@@ -15,4 +15,9 @@ public class SkillData : ScriptableObject
     public bool requiresAirborne;
     public bool requiresGrounded; // true = 必須在地面使用
     public bool isProjectile;
+
+    [Header("Spirit Summon Settings")]
+    public bool isSpiritSummon;
+    public GameObject projectilePrefab;
+    public float spiritLifeTime = 8f;
 }

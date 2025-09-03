@@ -42,7 +42,7 @@ public class PlayerAnimationTriggers : MonoBehaviour
 
     public void SlashTrigger()
     {
-        player.SpawnSlashEffect();
+        //player.SpawnSlashEffect();
     }
 
     public void DestroySelf()
