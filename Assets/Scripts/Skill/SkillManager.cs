@@ -18,50 +18,32 @@ public class SkillManager : MonoBehaviour
     }
 
     private void Update()
-    {
-        for (int i = 0; i < skills.Length; i++)
-        {
-            if (Input.GetKeyDown(skills[i].activationKey) && !isOnCooldown[i])
-            {
-                if (CheckSkillCondition(skills[i]))
-                {
-                    if (skills[i].isSpiritSummon) // 新增的判斷
-                    {
-                        StartCoroutine(SummonSpirit(skills[i], i));
-                    }
-                    else
-                    {
-                        StartCoroutine(ActivateSkill(skills[i], i));
-                    }
-                }
-            }
-        }
+    { 
+        for (int i = 0; i < skills.Length; i++) 
+        { 
+            if (Input.GetKeyDown(skills[i].activationKey) && !isOnCooldown[i]) 
+            { 
+                if (CheckSkillCondition(skills[i])) StartCoroutine(ActivateSkill(skills[i], i)); 
+            } 
+        } 
     }
 
     private bool CheckSkillCondition(SkillData skill)
     {
         if (skill.requiresAirborne && player.IsGroundDetected()) return false;
         if (skill.requiresGrounded && !player.IsGroundDetected()) return false;
-        if (player.rb == null || player.rb.bodyType == RigidbodyType2D.Static) return false;
 
+        // ? 確保玩家沒有被擊飛狀態
+        if (player.isKnocked) return false;
+
+        if (player.rb == null || player.rb.bodyType == RigidbodyType2D.Static) return false;
         return true;
     }
 
-    private IEnumerator SummonSpirit(SkillData skill, int index)
+    private void HandleSummonSkill(SkillData skill)
     {
-        isOnCooldown[index] = true;
-
-        if (!string.IsNullOrEmpty(skill.animationTriggerName))
-            anim.SetTrigger(skill.animationTriggerName);
-
-        yield return new WaitForSeconds(0.5f); // 播放召喚動畫的時間
-
-        GameObject spiritObj = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
-        SpiritController spirit = spiritObj.GetComponent<SpiritController>();
-        spirit.Setup(skill.damageAmount, skill.spiritLifeTime, skill.projectilePrefab);
-
-        yield return new WaitForSeconds(skill.cooldown);
-        isOnCooldown[index] = false;
+        GameObject summonObj = Instantiate(skill.skillPrefab, transform.position + Vector3.right * player.facingDir, Quaternion.identity);
+        summonObj.GetComponent<SummonSpirit>().Setup(player.facingDir);
     }
 
     private IEnumerator ActivateSkill(SkillData skill, int index)
@@ -73,12 +55,22 @@ public class SkillManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        if (skill.isProjectile)
+        if (skill.isSummon)
+        {
+            HandleSummonSkill(skill);
+        }
+        else if (skill.isProjectile)
+        {
             HandleProjectileSkill(skill);
+        }
         else if (skill.requiresAirborne)
+        {
             yield return StartCoroutine(HandleAirDropSkill(skill));
+        }
         else
+        {
             yield return StartCoroutine(HandleNormalSkill(skill));
+        }
 
         yield return new WaitForSeconds(skill.cooldown);
         isOnCooldown[index] = false;

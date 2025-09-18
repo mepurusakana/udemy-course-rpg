@@ -18,7 +18,7 @@ public class Entity : MonoBehaviour
     [SerializeField] protected Vector2 knockbackPower = new Vector2(7,12);
     [SerializeField] protected Vector2 knockbackOffset = new Vector2(.5f,2);
     [SerializeField] protected float knockbackDuration = .07f;
-    protected bool isKnocked;
+    public bool isKnocked;
 
     [Header("Collision info")]
     public Transform attackCheck;

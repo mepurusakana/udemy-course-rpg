@@ -21,4 +21,5 @@ MonoBehaviour:
   skillDuration: 1
   requiresAirborne: 0
   requiresGrounded: 1
-  isProjectile: 0
+  isProjectile: 1
+  isSummon: 0

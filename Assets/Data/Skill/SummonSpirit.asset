@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f01ae8c1ec27474e956b69ed1a3bc22, type: 3}
+  m_Name: SummonSpirit
+  m_EditorClassIdentifier: 
+  skillName: Summon Spirit
+  activationKey: 52
+  cooldown: 2
+  skillPrefab: {fileID: 4385374656519173285, guid: 8865a08ce5184e5428e18fa1846ca167, type: 3}
+  animationTriggerName: 
+  damageAmount: 20
+  skillDuration: 1
+  requiresAirborne: 0
+  requiresGrounded: 1
+  isProjectile: 0
+  isSummon: 1

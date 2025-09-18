@@ -1,17 +1,15 @@
 using UnityEngine;
 
-public class SpiritProjectile : MonoBehaviour
+public class SpiritBullet : MonoBehaviour
 {
-    public float speed = 8f;
-    public LayerMask groundLayer;
-    private int damage;
+    public float speed = 10f;
+    public int damage = 15;
     private Vector2 direction;
 
-    public void Setup(int _damage, Vector2 _direction)
+    public void Setup(Vector3 targetPos)
     {
-        damage = _damage;
-        direction = _direction;
-        Destroy(gameObject, 5f); // 最長存在時間
+        direction = (targetPos - transform.position).normalized;
+        Destroy(gameObject, 5f);
     }
 
     private void Update()
@@ -25,12 +23,11 @@ public class SpiritProjectile : MonoBehaviour
         {
             var enemyStats = collision.GetComponent<CharacterStats>();
             if (enemyStats != null)
-            {
                 enemyStats.TakeDamage(damage);
-            }
+
             Destroy(gameObject);
         }
-        else if (((1 << collision.gameObject.layer) & groundLayer) != 0)
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             Destroy(gameObject);
         }

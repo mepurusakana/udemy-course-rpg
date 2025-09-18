@@ -30,7 +30,7 @@ public class Player : Entity, ISaveable
 
     [Header("BladeLight info")]
     public GameObject slashEffectPrefab;
-    public Transform slashSpawnPoint;
+    //public Transform slashSpawnPoint;
 
     [Header("Healing Info")]
     public int maxChantCharges = 4;

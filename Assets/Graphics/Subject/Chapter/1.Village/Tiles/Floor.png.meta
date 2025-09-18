@@ -102,9 +102,9 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 722.6667
+        width: 467
         height: 432
-      alignment: 9
+      alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -121,11 +121,11 @@ TextureImporter:
       name: Floor_1
       rect:
         serializedVersion: 2
-        x: 722
+        x: 846
         y: 0
-        width: 722.6667
+        width: 404
         height: 432
-      alignment: 9
+      alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -142,11 +142,11 @@ TextureImporter:
       name: Floor_2
       rect:
         serializedVersion: 2
-        x: 1444
+        x: 1614
         y: 0
-        width: 722.6667
+        width: 356
         height: 432
-      alignment: 9
+      alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -163,11 +163,11 @@ TextureImporter:
       name: Floor_3
       rect:
         serializedVersion: 2
-        x: 2166
+        x: 2366
         y: 0
-        width: 722.6667
+        width: 356
         height: 432
-      alignment: 9
+      alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -184,11 +184,11 @@ TextureImporter:
       name: Floor_4
       rect:
         serializedVersion: 2
-        x: 2888
+        x: 3086
         y: 0
-        width: 722.6667
+        width: 404
         height: 432
-      alignment: 9
+      alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -205,11 +205,11 @@ TextureImporter:
       name: Floor_5
       rect:
         serializedVersion: 2
-        x: 3610
+        x: 3869
         y: 0
-        width: 722.6667
+        width: 467
         height: 432
-      alignment: 9
+      alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []

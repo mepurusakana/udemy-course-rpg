@@ -17,7 +17,5 @@ public class SkillData : ScriptableObject
     public bool isProjectile;
 
     [Header("Spirit Summon Settings")]
-    public bool isSpiritSummon;
-    public GameObject projectilePrefab;
-    public float spiritLifeTime = 8f;
+    public bool isSummon;
 }
