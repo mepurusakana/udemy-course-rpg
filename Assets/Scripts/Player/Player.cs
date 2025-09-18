@@ -15,7 +15,7 @@ public class Player : Entity, ISaveable
 
     [Header("Jump Info")]
     public float jumpTimer = 0.5f;
-    public bool isBusy { get; private set; }
+    public bool isBusy { get;  set; }
     [Header("Move info")]
     public float moveSpeed = 12f;
     public float jumpForce;
@@ -46,8 +46,6 @@ public class Player : Entity, ISaveable
 
     //public float platformCatcher;
 
-    #region Skill
-    #endregion
 
 
 
@@ -85,9 +83,10 @@ public class Player : Entity, ISaveable
     public PlayerBlackholeState blackHole { get; private set; }
     public PlayerDeadState deadState { get; private set; }
     public PlayerHealingState healingState { get; private set; }
+    public PlayerSkillState[] skillStates { get; private set; }
     #endregion
 
-    
+
 
     protected override void Awake()
     {
@@ -113,6 +112,24 @@ public class Player : Entity, ISaveable
 
         deadState = new PlayerDeadState(this, stateMachine, "Die");
         healingState = new PlayerHealingState(this, stateMachine, "Healing");
+
+        // 初始化技能狀態池
+        SkillManager skillManager = GetComponent<SkillManager>();
+        if (skillManager != null)
+        {
+            skillStates = new PlayerSkillState[skillManager.SkillCount];
+            for (int i = 0; i < skillManager.SkillCount; i++)
+            {
+                skillStates[i] = new PlayerSkillState(
+                this,                     // Player
+                stateMachine,             // StateMachine
+                skillManager.skills[i].animationBoolName // 動畫 Bool
+                );
+
+                // 再設定技能資料
+                skillStates[i].SetSkill(skillManager.skills[i], i);
+            }
+        }
     }
 
     protected override void Start()

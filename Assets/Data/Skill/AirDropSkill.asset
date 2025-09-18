@@ -16,7 +16,11 @@ MonoBehaviour:
   activationKey: 50
   cooldown: 3
   skillPrefab: {fileID: 1125033659123340007, guid: bead0ac7f52ce8b4baae255dc0a41e27, type: 3}
-  animationTriggerName: SkillAirDrop
+  animationBoolName: SkillFall
   damageAmount: 40
   skillDuration: 1
   requiresAirborne: 1
+  requiresGrounded: 0
+  isProjectile: 0
+  isSummon: 0
+  isFlyingSword: 0

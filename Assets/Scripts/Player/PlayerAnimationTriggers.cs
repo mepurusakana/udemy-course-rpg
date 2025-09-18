@@ -11,6 +11,7 @@ public class PlayerAnimationTriggers : MonoBehaviour
         player.AnimationTrigger();
     }
 
+
     private void AttackTrigger()
     {
         AudioManager.instance.PlaySFX(2,null);

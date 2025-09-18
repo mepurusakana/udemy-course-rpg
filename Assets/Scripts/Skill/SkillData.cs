@@ -7,7 +7,7 @@ public class SkillData : ScriptableObject
     public KeyCode activationKey = KeyCode.Alpha1;
     public float cooldown = 2f;
     public GameObject skillPrefab;
-    public string animationTriggerName;
+    public string animationBoolName;
     public int damageAmount = 20;   // 斬擊固定傷害，可擴展倍率
     public float skillDuration = 1f; // 斬擊持續時間
 
@@ -18,4 +18,7 @@ public class SkillData : ScriptableObject
 
     [Header("Spirit Summon Settings")]
     public bool isSummon;
+
+    [Header("Spirit Summon Settings")]
+    public bool isFlyingSword;
 }

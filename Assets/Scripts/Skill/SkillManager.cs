@@ -3,11 +3,13 @@ using UnityEngine;
 
 public class SkillManager : MonoBehaviour
 {
-    [SerializeField] private SkillData[] skills;
     private bool[] isOnCooldown;
     private Animator anim;
     private Player player;
     private Transform skillSpawnPoint;
+
+    public SkillData[] skills; // 保持 public 給 Player 用
+    public int SkillCount => skills.Length;
 
     private void Start()
     {
@@ -18,26 +20,46 @@ public class SkillManager : MonoBehaviour
     }
 
     private void Update()
-    { 
-        for (int i = 0; i < skills.Length; i++) 
-        { 
-            if (Input.GetKeyDown(skills[i].activationKey) && !isOnCooldown[i]) 
-            { 
-                if (CheckSkillCondition(skills[i])) StartCoroutine(ActivateSkill(skills[i], i)); 
-            } 
-        } 
+    {
+        for (int i = 0; i < skills.Length; i++)
+        {
+            if (Input.GetKeyDown(skills[i].activationKey) && !isOnCooldown[i])
+            {
+                if (CheckSkillCondition(skills[i]))
+                {
+                    player.stateMachine.ChangeState(player.skillStates[i]);
+                }
+            }
+        }
     }
 
     private bool CheckSkillCondition(SkillData skill)
     {
         if (skill.requiresAirborne && player.IsGroundDetected()) return false;
         if (skill.requiresGrounded && !player.IsGroundDetected()) return false;
-
-        // ? 確保玩家沒有被擊飛狀態
-        if (player.isKnocked) return false;
-
         if (player.rb == null || player.rb.bodyType == RigidbodyType2D.Static) return false;
+
         return true;
+    }
+
+    private IEnumerator UseFlyingSwordSkill(SkillData skill, int index)
+    {
+        isOnCooldown[index] = true;
+
+        if (!string.IsNullOrEmpty(skill.animationBoolName))
+            anim.SetBool(skill.animationBoolName, true);
+
+        yield return new WaitForSeconds(0.2f); // 播放攻擊前搖
+
+        GameObject sword = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
+        sword.transform.localScale = new Vector3(transform.localScale.x, 1, 1); // 翻轉
+        FlyingSwordController swordController = sword.GetComponent<FlyingSwordController>();
+        swordController.Setup(skill.damageAmount, transform.localScale.x);
+
+        anim.SetBool(skill.animationBoolName, false);
+
+        yield return new WaitForSeconds(skill.cooldown);
+        isOnCooldown[index] = false;
     }
 
     private void HandleSummonSkill(SkillData skill)
@@ -46,12 +68,12 @@ public class SkillManager : MonoBehaviour
         summonObj.GetComponent<SummonSpirit>().Setup(player.facingDir);
     }
 
-    private IEnumerator ActivateSkill(SkillData skill, int index)
+    public IEnumerator ActivateSkill(SkillData skill, int index)
     {
         isOnCooldown[index] = true;
 
-        if (!string.IsNullOrEmpty(skill.animationTriggerName))
-            anim.SetTrigger(skill.animationTriggerName);
+        if (!string.IsNullOrEmpty(skill.animationBoolName))
+            anim.SetBool(skill.animationBoolName, true);
 
         yield return new WaitForSeconds(0.3f);
 
@@ -72,6 +94,8 @@ public class SkillManager : MonoBehaviour
             yield return StartCoroutine(HandleNormalSkill(skill));
         }
 
+        anim.SetBool(skill.animationBoolName, false);
+        anim.SetBool("Idle", true);
         yield return new WaitForSeconds(skill.cooldown);
         isOnCooldown[index] = false;
     }
@@ -96,13 +120,14 @@ public class SkillManager : MonoBehaviour
             yield return null;
         }
 
-        anim.SetTrigger("SkillLandImpact");
+        anim.SetBool("SkillLandImpact", true);
         player.rb.gravityScale = 5f;
 
         yield return new WaitForSeconds(0.1f);
         GameObject shockwave = Instantiate(skill.skillPrefab, transform.position, Quaternion.identity);
         shockwave.GetComponent<SkillAttack>().Setup(skill.damageAmount);
         Destroy(shockwave, skill.skillDuration);
+        anim.SetBool("SkillLandImpact", false);
     }
 
     private void HandleProjectileSkill(SkillData skill)

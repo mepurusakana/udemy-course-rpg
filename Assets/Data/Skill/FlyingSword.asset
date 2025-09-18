@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f01ae8c1ec27474e956b69ed1a3bc22, type: 3}
-  m_Name: SkillSlash
+  m_Name: FlyingSword
   m_EditorClassIdentifier: 
   skillName: 
-  activationKey: 49
+  activationKey: 53
   cooldown: 2
-  skillPrefab: {fileID: 4586818966896363279, guid: 1997c7e1700603145bb9fc87f72ccef7, type: 3}
-  animationBoolName: SkillSlash
+  skillPrefab: {fileID: 1311407157767030158, guid: ead152c922d36bf4bb542b86a2bbef3d, type: 3}
+  animationBoolName: FlyingSword
   damageAmount: 20
   skillDuration: 1
   requiresAirborne: 0
-  requiresGrounded: 0
+  requiresGrounded: 1
   isProjectile: 0
   isSummon: 0
-  isFlyingSword: 0
+  isFlyingSword: 1

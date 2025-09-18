@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f01ae8c1ec27474e956b69ed1a3bc22, type: 3}
-  m_Name: SkillSlash
+  m_Name: ThrowBomb
   m_EditorClassIdentifier: 
   skillName: 
-  activationKey: 49
+  activationKey: 51
   cooldown: 2
-  skillPrefab: {fileID: 4586818966896363279, guid: 1997c7e1700603145bb9fc87f72ccef7, type: 3}
-  animationBoolName: SkillSlash
+  skillPrefab: {fileID: 2836814696883367278, guid: 2dfb200677a7c244ca08a14d4d6c167c, type: 3}
+  animationBoolName: ThrowBomb
   damageAmount: 20
   skillDuration: 1
   requiresAirborne: 0
-  requiresGrounded: 0
-  isProjectile: 0
+  requiresGrounded: 1
+  isProjectile: 1
   isSummon: 0
   isFlyingSword: 0
