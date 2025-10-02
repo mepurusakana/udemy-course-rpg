@@ -9,6 +9,7 @@ TagManager:
   - MovingPlatform
   - Enemy
   - OneWayPlatform
+  - Ground
   layers:
   - Default
   - TransparentFX

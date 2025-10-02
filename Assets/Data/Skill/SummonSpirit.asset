@@ -15,11 +15,14 @@ MonoBehaviour:
   skillName: Summon Spirit
   activationKey: 52
   cooldown: 2
-  skillPrefab: {fileID: 4385374656519173285, guid: 8865a08ce5184e5428e18fa1846ca167, type: 3}
-  animationTriggerName: 
+  skillPrefab: {fileID: 1701850246773537926, guid: 539d0ce0e89bf9a408710d3e69f1ea08, type: 3}
+  animationBoolName: Sommon
   damageAmount: 20
   skillDuration: 1
   requiresAirborne: 0
   requiresGrounded: 1
   isProjectile: 0
+  spawnPoint: {fileID: 0}
   isSummon: 1
+  isFlyingSword: 0
+  isDimensionGun: 0

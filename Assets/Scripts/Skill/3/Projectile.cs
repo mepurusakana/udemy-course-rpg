@@ -3,11 +3,11 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [Header("Projectile Settings")]
-    public float throwForceX = 8f;
-    public float throwForceY = 6f;
-    public float initialBounceForceY = 5f; // 第一次彈跳高度
-    public float bounceDecay = 0.7f;       // 每次反彈衰減比例 (0~1之間)
-    public int maxBounces = 0;
+    public float throwForceX;
+    public float throwForceY;
+    public float initialBounceForceY; // 第一次彈跳高度
+    public float bounceDecay;       // 每次反彈衰減比例 (0~1之間)
+    public int maxBounces;
     public GameObject explosionPrefab;
 
     private int bounces = 0;

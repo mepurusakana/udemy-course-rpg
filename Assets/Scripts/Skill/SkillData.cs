@@ -1,29 +1,31 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Skill", menuName = "Skills/Skill Data")]
+[CreateAssetMenu(fileName = "NewSkill", menuName = "Skills/Skill Data")]
 public class SkillData : ScriptableObject
 {
+    [Header("基本設定")]
     public string skillName;
-    public KeyCode activationKey = KeyCode.Alpha1;
+    public KeyCode activationKey;
     public float cooldown = 2f;
+
+    [Header("技能預製體")]
     public GameObject skillPrefab;
+
+    [Header("動畫設定")]
     public string animationBoolName;
-    public int damageAmount = 20;   // 斬擊固定傷害，可擴展倍率
-    public float skillDuration = 1f; // 斬擊持續時間
 
-    [Header("Usage Conditions")]
-    public bool requiresAirborne;
-    public bool requiresGrounded; // true = 必須在地面使用
-    public bool isProjectile;
+    [Header("技能屬性")]
+    public int damageAmount = 20;
+    public float skillDuration = 1f;
 
+    [Header("使用條件")]
+    public bool requiresAirborne = false;
+    public bool requiresGrounded = false;
+
+    [Header("技能類型")]
+    public bool isProjectile = false;
     public Transform spawnPoint;
-
-    [Header("Spirit Summon Settings")]
-    public bool isSummon;
-
-    [Header("Spirit Summon Settings")]
-    public bool isFlyingSword;
-
-    [Header("Special Skills")]
-    public bool isDimensionGun;
+    public bool isSummon = false;
+    public bool isFlyingSword = false;
+    public bool isDimensionGun = false;
 }

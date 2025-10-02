@@ -1,189 +1,314 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillManager : MonoBehaviour
 {
-    private bool[] isOnCooldown;
-    private Animator anim;
-    private Player player;
-    private Transform skillSpawnPoint;
+    [Header("技能列表")]
+    public List<SkillData> skills = new List<SkillData>(); // 改為 public，讓 Player 可以訪問
 
-    public SkillData[] skills; // 保持 public 給 Player 用
-    public int SkillCount => skills.Length;
+    private Dictionary<KeyCode, float> cooldownTimers = new Dictionary<KeyCode, float>();
+    private Player player;
+    private GameObject currentSpirit; // 當前召喚的精靈
+
+    // 添加屬性讓 Player 可以訪問技能數量
+    public int SkillCount => skills.Count;
 
     private void Start()
     {
-        anim = GetComponentInChildren<Animator>();
         player = GetComponent<Player>();
-        skillSpawnPoint = transform;
-        isOnCooldown = new bool[skills.Length];
-    }
 
-    private void Update()
-    {
-        for (int i = 0; i < skills.Length; i++)
+        // 初始化冷卻計時器
+        foreach (SkillData skill in skills)
         {
-            if (Input.GetKeyDown(skills[i].activationKey) && !isOnCooldown[i])
+            if (skill != null)
             {
-                if (CheckSkillCondition(skills[i]))
-                {
-                    player.stateMachine.ChangeState(player.skillStates[i]);
-                }
+                cooldownTimers[skill.activationKey] = 0f;
             }
         }
     }
 
-    private Vector3 GetSpawnPosition(SkillData skill)
+    private void Update()
     {
-        if (skill.spawnPoint != null)
-            return skill.spawnPoint.position;
+        // 更新所有冷卻計時器
+        List<KeyCode> keys = new List<KeyCode>(cooldownTimers.Keys);
+        foreach (KeyCode key in keys)
+        {
+            if (cooldownTimers[key] > 0)
+            {
+                cooldownTimers[key] -= Time.deltaTime;
+            }
+        }
 
-        // 如果沒設定 spawnPoint，預設從玩家本體生成
-        return transform.position;
+        // 檢查技能輸入
+        foreach (SkillData skill in skills)
+        {
+            if (skill != null && Input.GetKeyDown(skill.activationKey))
+            {
+                TryUseSkill(skill);
+            }
+        }
     }
 
-
-
-
-    private bool CheckSkillCondition(SkillData skill)
+    private void TryUseSkill(SkillData skill)
     {
-        if (skill.requiresAirborne && player.IsGroundDetected()) return false;
-        if (skill.requiresGrounded && !player.IsGroundDetected()) return false;
-        if (player.rb == null || player.rb.bodyType == RigidbodyType2D.Static) return false;
+        // 檢查冷卻時間
+        if (cooldownTimers.ContainsKey(skill.activationKey) && cooldownTimers[skill.activationKey] > 0)
+        {
+            Debug.Log($"{skill.skillName} 還在冷卻中！剩餘: {cooldownTimers[skill.activationKey]:F1}秒");
+            return;
+        }
 
-        return true;
+        // 檢查使用條件
+        if (skill.requiresGrounded && !player.IsGroundDetected())
+        {
+            Debug.Log($"{skill.skillName} 需要在地面上使用！");
+            return;
+        }
+
+        if (skill.requiresAirborne && player.IsGroundDetected())
+        {
+            Debug.Log($"{skill.skillName} 需要在空中使用！");
+            return;
+        }
+
+        // 檢查是否正在忙碌
+        if (player.isBusy)
+        {
+            Debug.Log("玩家正在執行其他動作！");
+            return;
+        }
+
+        // 使用技能
+        int skillIndex = skills.IndexOf(skill); // 找到 index
+        UseSkill(skill, skillIndex); // 傳遞 index
     }
 
-
-    private void HandleSummonSkill(SkillData skill)
+    public void UseSkill(SkillData skill, int skillIndex)
     {
-        GameObject summonObj = Instantiate(skill.skillPrefab, transform.position + Vector3.right * player.facingDir, Quaternion.identity);
-        summonObj.GetComponent<SummonSpirit>().Setup(player.facingDir);
-    }
+        if (skill == null)
+        {
+            Debug.LogWarning("技能數據為空！");
+            return;
+        }
 
-    public IEnumerator ActivateSkill(SkillData skill, int index)
-    {
-        isOnCooldown[index] = true;
+        Debug.Log($"使用技能: {skill.skillName}");
 
-        // 播放技能動畫（前搖）
-        if (!string.IsNullOrEmpty(skill.animationBoolName))
-            anim.SetBool(skill.animationBoolName, true);
-
-        yield return new WaitForSeconds(0.3f);
-
+        // 如果是召喚技能（精靈）
         if (skill.isSummon)
         {
-            HandleSummonSkill(skill);
+            UseSummonSkill(skill);
         }
+        // 如果是投射物技能
         else if (skill.isProjectile)
         {
-            HandleProjectileSkill(skill);
+            UseProjectileSkill(skill);
         }
-        else if (skill.requiresAirborne)
-        {
-            yield return StartCoroutine(HandleAirDropSkill(skill));
-        }
+        // 如果是飛劍技能
         else if (skill.isFlyingSword)
         {
-            yield return StartCoroutine(UseFlyingSwordSkill(skill));
+            UseFlyingSwordSkill(skill);
         }
-        else if (skill.isDimensionGun) //  新增這裡
+        // 如果是次元槍技能
+        else if (skill.isDimensionGun)
         {
-            yield return StartCoroutine(UseDimensionGunSkill(skill));
+            UseDimensionGunSkill(skill);
+        }
+        // 一般技能
+        else
+        {
+            UseNormalSkill(skill);
+        }
+
+
+        // 設置冷卻時間
+        if (cooldownTimers.ContainsKey(skill.activationKey))
+        {
+            cooldownTimers[skill.activationKey] = skill.cooldown;
         }
         else
         {
-            yield return StartCoroutine(HandleNormalSkill(skill));
+            cooldownTimers.Add(skill.activationKey, skill.cooldown);
         }
 
-        // 冷卻結束
-        yield return new WaitForSeconds(skill.cooldown);
-        isOnCooldown[index] = false;
-
-        if (!string.IsNullOrEmpty(skill.animationBoolName))
-            anim.SetBool(skill.animationBoolName, false);
-    }
-
-    private IEnumerator HandleNormalSkill(SkillData skill)
-    {
-        yield return new WaitForSeconds(0.01f);
-        GameObject skillObj = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
-        skillObj.transform.localScale = new Vector3(transform.localScale.x, 1, 1);
-        skillObj.GetComponent<SkillAttack>().Setup(skill.damageAmount);
-        Destroy(skillObj, skill.skillDuration);
-    }
-
-    private IEnumerator HandleAirDropSkill(SkillData skill)
-    {
-        player.rb.velocity = Vector2.zero;
-        yield return new WaitForSeconds(0.01f);
-        player.rb.gravityScale = 100f;
-
-        while (!player.IsGroundDetected())
+        if (player.skillStates != null && skillIndex >= 0 && skillIndex < player.skillStates.Length && !skill.isSummon) // 召喚技能可能不需切換狀態
         {
-            yield return null;
+            player.stateMachine.ChangeState(player.skillStates[skillIndex]);
+        }
+    }
+
+    private void UseSummonSkill(SkillData skill)
+    {
+        if (currentSpirit != null)
+        {
+            SpiritController spiritController = currentSpirit.GetComponent<SpiritController>();
+            if (spiritController != null)
+            {
+                spiritController.DismissSpirit();
+            }
+            currentSpirit = null;
+            Debug.Log("精靈已消失");
+            return;
         }
 
-        anim.SetBool("SkillLandImpact", true);
-        player.rb.gravityScale = 5f;
+        // *** 移除 SetTrigger，讓 PlayerSkillState 處理（或如果召喚需播放動畫，在這裡啟動 Coroutine 播放 Trigger）***
+        // 如果召喚需播放玩家動畫，可在這裡：player.anim.SetTrigger(skill.animationBoolName);
+        // 但為了統一，建議添加一個 SummonState 繼承 PlayerSkillState，並在 Animator 用 Trigger。
 
-        yield return new WaitForSeconds(0.1f);
-        GameObject shockwave = Instantiate(skill.skillPrefab, transform.position, Quaternion.identity);
-        shockwave.GetComponent<SkillAttack>().Setup(skill.damageAmount);
-        Destroy(shockwave, skill.skillDuration);
-        anim.SetBool("SkillLandImpact", false);
+        // 延遲一點召喚，讓玩家動畫能跑起來
+        StartCoroutine(SummonSpiritDelayed(skill, 0.5f));
     }
 
-    private void HandleProjectileSkill(SkillData skill)
+    private IEnumerator SummonSpiritDelayed(SkillData skill, float delay)
     {
-        GameObject projectile = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
+        yield return new WaitForSeconds(delay);
 
-        // 根據玩家朝向調整方向
-        float direction = player.facingDir; // facingDir = 1 (右) 或 -1 (左)
-
-        // 翻轉投射物外觀
-        projectile.transform.localScale = new Vector3(direction, 1, 1);
-
-        // 傳方向給投射物腳本
-        Projectile proj = projectile.GetComponent<Projectile>();
-        proj.Setup(skill.damageAmount, direction);
-    }
-    private IEnumerator UseFlyingSwordSkill(SkillData skill)
-    {
-        if (!string.IsNullOrEmpty(skill.animationBoolName))
-            anim.SetBool(skill.animationBoolName, true);
-
-        yield return new WaitForSeconds(0.1f); // 播放攻擊前搖
-
-        GameObject sword = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
-
-        float direction = player.facingDir;
-
-        // 翻轉劍的外觀
-        sword.transform.localScale = new Vector3(direction, 1, 1);
-
-        // 傳方向給飛劍腳本
-        FlyingSwordController swordController = sword.GetComponent<FlyingSwordController>();
-        swordController.Setup(skill.damageAmount, direction);
+        if (skill.skillPrefab != null)
+        {
+            Vector3 spawnPosition = player.transform.position + new Vector3(player.facingDir * 2f, 0.5f, 0);
+            currentSpirit = Instantiate(skill.skillPrefab, spawnPosition, Quaternion.identity);
+            Debug.Log("精靈已召喚");
+        }
     }
 
-    private IEnumerator UseDimensionGunSkill(SkillData skill)
+    private void UseProjectileSkill(SkillData skill)
     {
-        // 生成次元槍，初始是進場狀態
-        GameObject gunObj = Instantiate(skill.skillPrefab, GetSpawnPosition(skill), Quaternion.identity);
+        //    // 播放投擲動畫
+        //    if (!string.IsNullOrEmpty(skill.animationBoolName))
+        //    {
+        //        player.anim.SetBool(skill.animationBoolName, true);
+        //    }
 
-        float direction = player.facingDir;
         
+        // 生成投射物
+        if (skill.skillPrefab != null)
+        {
+            Vector3 spawnPos = skill.spawnPoint != null ? skill.spawnPoint.position : player.transform.position;
+            GameObject projectile = Instantiate(skill.skillPrefab, spawnPos, Quaternion.identity);
 
-        SpearController gunController = gunObj.GetComponent<SpearController>();
-        gunController.Setup(skill.damageAmount, direction);
+            // 設置投射物方向
+            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.velocity = new Vector2(player.facingDir * 10f, 10f);
+            }
 
-        // 等待進場動畫結束再開火
-        yield return new WaitUntil(() => gunController.HasFinishedIntro);
+            // 設置投射物的傷害
+            SkillController controller = projectile.GetComponent<SkillController>();
+            if (controller != null)
+            {
+                controller.Setup(skill.damageAmount);
+            }
+        }
 
-        gunController.Fire();
+        // 設置忙碌狀態
+        player.StartCoroutine("BusyFor", 0.3f);
+    }
 
-        // 等待結束動畫播放完
-        yield return new WaitUntil(() => gunController.HasFinishedOutro);
+    private void UseFlyingSwordSkill(SkillData skill)
+    {
+        // 播放飛劍動畫
+        //if (!string.IsNullOrEmpty(skill.animationBoolName))
+        //{
+        //    player.anim.SetBool(skill.animationBoolName, true);
+        //}
+
+        // 生成飛劍
+        if (skill.skillPrefab != null)
+        {
+            Vector3 spawnPos = player.transform.position + new Vector3(player.facingDir * 1f, 1f, 0);
+            GameObject sword = Instantiate(skill.skillPrefab, spawnPos, Quaternion.identity);
+
+            // 設置飛劍的傷害
+            SkillController controller = sword.GetComponent<SkillController>();
+            if (controller != null)
+            {
+                controller.Setup(skill.damageAmount);
+            }
+        }
+
+        player.StartCoroutine("BusyFor", 0.5f);
+    }
+
+    private void UseDimensionGunSkill(SkillData skill)
+    {
+        // 播放次元槍動畫
+        //if (!string.IsNullOrEmpty(skill.animationBoolName))
+        //{
+        //    player.anim.SetBool(skill.animationBoolName, true);
+        //}
+
+        // 生成次元槍效果
+        if (skill.skillPrefab != null)
+        {
+            Vector3 spawnPos = player.transform.position + new Vector3(player.facingDir * 2f, 0, 0);
+            GameObject effect = Instantiate(skill.skillPrefab, spawnPos, Quaternion.identity);
+
+            // 設置傷害
+            SkillController controller = effect.GetComponent<SkillController>();
+            if (controller != null)
+            {
+                controller.Setup(skill.damageAmount);
+            }
+        }
+
+        player.StartCoroutine("BusyFor", 0.4f);
+    }
+
+    private void UseNormalSkill(SkillData skill)
+    {
+        // 播放技能動畫
+        //if (!string.IsNullOrEmpty(skill.animationBoolName))
+        //{
+        //    player.anim.SetBool(skill.animationBoolName, true);
+        //}
+
+        // 生成技能效果
+        if (skill.skillPrefab != null)
+        {
+            Vector3 spawnPos = player.transform.position;
+            GameObject effect = Instantiate(skill.skillPrefab, spawnPos, Quaternion.identity);
+
+            // 設置傷害
+            SkillController controller = effect.GetComponent<SkillController>();
+            if (controller != null)
+            {
+                controller.Setup(skill.damageAmount);
+            }
+        }
+
+        player.StartCoroutine("BusyFor", skill.skillDuration);
+    }
+
+    // 獲取技能冷卻剩餘時間（用於UI顯示）
+    public float GetCooldownRemaining(KeyCode key)
+    {
+        if (cooldownTimers.ContainsKey(key))
+        {
+            return Mathf.Max(0, cooldownTimers[key]);
+        }
+        return 0f;
+    }
+
+    // 檢查技能是否可用
+    public bool IsSkillReady(KeyCode key)
+    {
+        if (cooldownTimers.ContainsKey(key))
+        {
+            return cooldownTimers[key] <= 0;
+        }
+        return false;
+    }
+
+    // 清除當前精靈的引用（當精靈被其他方式銷毀時）
+    public void ClearSpiritReference()
+    {
+        currentSpirit = null;
+    }
+
+    // 檢查是否有精靈存在
+    public bool HasActiveSpirit()
+    {
+        return currentSpirit != null;
     }
 }
