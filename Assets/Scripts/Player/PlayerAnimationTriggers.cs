@@ -6,8 +6,9 @@ public class PlayerAnimationTriggers : MonoBehaviour
 {
     private Player player => GetComponentInParent<Player>();
 
-    private void AnimationTrigger()
+    public void AnimationTrigger()
     {
+        Debug.Log("AnimationTrigger called. CurrentState: " + player.stateMachine.currentState);
         player.AnimationTrigger();
     }
 

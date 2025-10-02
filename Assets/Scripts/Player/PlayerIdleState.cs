@@ -12,7 +12,8 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.Enter();
         player.SetZeroVelocity();
-        player.isBusy = false;
+
+        Debug.Log("IdleState Enter");
 
     }
 

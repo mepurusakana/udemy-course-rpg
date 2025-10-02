@@ -12,7 +12,7 @@ public class PlayerMoveState : PlayerGroundedState
     {
         base.Enter();
 
-        AudioManager.instance.PlaySFX(8,null);
+        AudioManager.instance.PlaySFX(8, null);
     }
 
     public override void Exit()
@@ -20,6 +20,9 @@ public class PlayerMoveState : PlayerGroundedState
         base.Exit();
 
         AudioManager.instance.StopSFX(8);
+
+        // Â÷¶}²¾°Êª¬ºA ¡÷ °±¤î·ÏÃú
+        player.StopMoveDust();
     }
 
     public override void Update()
@@ -27,6 +30,9 @@ public class PlayerMoveState : PlayerGroundedState
         base.Update();
 
         player.SetVelocity(xInput * player.moveSpeed, rb.velocity.y);
+
+        // ¶i¤J²¾°Êª¬ºA ¡÷ ¼½©ñ·ÏÃú
+        player.PlayMoveDust();
 
 
         if (xInput == 0 || player.IsWallDetected())

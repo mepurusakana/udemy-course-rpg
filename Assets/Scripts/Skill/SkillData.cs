@@ -16,9 +16,14 @@ public class SkillData : ScriptableObject
     public bool requiresGrounded; // true = 必須在地面使用
     public bool isProjectile;
 
+    public Transform spawnPoint;
+
     [Header("Spirit Summon Settings")]
     public bool isSummon;
 
     [Header("Spirit Summon Settings")]
     public bool isFlyingSword;
+
+    [Header("Special Skills")]
+    public bool isDimensionGun;
 }

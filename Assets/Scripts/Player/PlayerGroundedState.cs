@@ -23,24 +23,6 @@ public class PlayerGroundedState : PlayerState
     {
         base.Update();
 
-        //if (Input.GetKeyDown(KeyCode.R) && player.skill.blackhole.blackholeUnlocked)
-        //{
-        //    if (player.skill.blackhole.cooldownTimer > 0)
-        //    {
-        //        player.fx.CreatePopUpText("Cooldown!");
-        //        return;
-        //    }
-
-
-        //    stateMachine.ChangeState(player.blackHole);
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.Mouse1) && HasNoSword() && player.skill.sword.swordUnlocked)
-        //    stateMachine.ChangeState(player.aimSowrd);
-
-        //if (Input.GetKeyDown(KeyCode.Q) && player.skill.parry.parryUnlocked)
-        //    stateMachine.ChangeState(player.counterAttack);
-
         if (Input.GetKeyDown(KeyCode.Mouse0))
             stateMachine.ChangeState(player.primaryAttack);
 
@@ -55,10 +37,20 @@ public class PlayerGroundedState : PlayerState
 
         if (Input.GetKeyDown(KeyCode.Q) && player.chantCharges > 0)
             stateMachine.ChangeState(player.healingState);
-        //if (Input.GetKeyDown(KeyCode.A))
-        //{
-        //    stateMachine.ChangeState(player.healingState);
-        //}
+
+        if (Input.GetKey(KeyCode.S) /*&& Input.GetKeyDown(KeyCode.Space)*/) // ↓ + 空白
+        {
+            // 檢查是不是在木板上
+            Collider2D hit = Physics2D.OverlapCircle(player.groundCheck.position, 0.1f, player.whatIsGround);
+            if (hit != null)
+            {
+                DropThroughPlatform platform = hit.GetComponent<DropThroughPlatform>();
+                if (platform != null)
+                {
+                    platform.DisableCollisionTemporarily(player.cd); // player.cd 是 CapsuleCollider2D
+                }
+            }
+        }
 
 
 

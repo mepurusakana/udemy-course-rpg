@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SkillSlash
   m_EditorClassIdentifier: 
   skillName: 
-  activationKey: 49
+  activationKey: 54
   cooldown: 2
   skillPrefab: {fileID: 4586818966896363279, guid: 1997c7e1700603145bb9fc87f72ccef7, type: 3}
   animationBoolName: SkillSlash
@@ -22,5 +22,7 @@ MonoBehaviour:
   requiresAirborne: 0
   requiresGrounded: 0
   isProjectile: 0
+  spawnPoint: {fileID: 0}
   isSummon: 0
   isFlyingSword: 0
+  isDimensionGun: 0

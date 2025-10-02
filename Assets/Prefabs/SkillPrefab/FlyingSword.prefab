@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8235668164055262461}
   - component: {fileID: 1999659596917156661}
   - component: {fileID: 3231794545473493870}
-  - component: {fileID: 1117720831245543989}
+  - component: {fileID: 4212620894243333239}
   m_Layer: 0
   m_Name: FlyingSword
   m_TagString: Untagged
@@ -124,7 +124,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 1032
---- !u!114 &1117720831245543989
+--- !u!114 &4212620894243333239
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

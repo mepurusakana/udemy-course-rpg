@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UIElements;
 
 public class Player : Entity, ISaveable
 {
@@ -44,7 +45,11 @@ public class Player : Entity, ISaveable
     public Light2D attackLight;
     private Coroutine fadeOutCoroutine; // 紀錄目前的淡出 Coroutine
 
+    [Header("Movement Particles")]
+    public ParticleSystem moveDustEffect;
     //public float platformCatcher;
+
+    [SerializeField] public LayerMask whatIsOneWayPlatform;
 
 
 
@@ -130,6 +135,8 @@ public class Player : Entity, ISaveable
                 skillStates[i].SetSkill(skillManager.skills[i], i);
             }
         }
+
+        StopMoveDust();
     }
 
     protected override void Start()
@@ -172,12 +179,6 @@ public class Player : Entity, ISaveable
         stateMachine.currentState.Update();
 
         CheckForDashInput();
-
-        if (Time.timeScale == 0) return;
-        base.Update();
-        stateMachine.currentState.Update();
-
-        
     }
 
     public override void SlowEntityBy(float _slowPercentage, float _slowDuration)
@@ -312,4 +313,52 @@ public class Player : Entity, ISaveable
     {
         data.savedCheckpoint = transform.position;
     }
+
+    public override bool IsWallDetected()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+        if (hit && hit.collider.CompareTag("OneWayPlatform"))
+            return false;
+
+        return hit;
+    }
+
+    public override bool IsGroundDetected()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(
+            groundCheck.position,
+            Vector2.down,
+            groundCheckDistance,
+            whatIsGround
+        );
+
+        if (hit)
+        {
+            if (hit.collider.CompareTag("OneWayPlatform"))
+            {
+                //只在往下掉落時才算 Ground
+                if (rb.velocity.y <= 0f)
+                    return true;
+                else
+                    return false;
+            }  // 從下方打到 OneWayPlatform，不算地面
+
+            return true;        // 打到其他地面，算地面
+        }
+
+        return false;           // 沒打到，當然不是地面
+    }
+
+    public void PlayMoveDust()
+    {
+        if (moveDustEffect != null)
+            moveDustEffect.Play();
+    }
+
+    public void StopMoveDust()
+    {
+        if (moveDustEffect != null)
+            moveDustEffect.Stop();
+    }
+
 }

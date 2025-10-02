@@ -28,6 +28,7 @@ public class Entity : MonoBehaviour
     [SerializeField] protected Transform wallCheck;
     [SerializeField] protected float wallCheckDistance = .8f;
     [SerializeField] public LayerMask whatIsGround;
+    
 
     public int knockbackDir { get; private set; }
     public int facingDir { get; private set; } = 1;

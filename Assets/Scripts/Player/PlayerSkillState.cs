@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSkillState : PlayerState
@@ -23,27 +22,30 @@ public class PlayerSkillState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        // base.Enter() already sets the animator bool for this state's animBoolName
 
-        // 播放動畫
-        player.anim.SetBool(skill.animationBoolName, true);
-
-        // 啟動協程 → 動畫播完後回 Idle
-        player.StartCoroutine(SkillRoutine());
+        // 啟動技能效果 (SkillManager 負責生成 prefab / cooldown / effect)
+        if (skillManager != null)
+            player.StartCoroutine(skillManager.ActivateSkill(skill, skillIndex));
     }
 
-    private IEnumerator SkillRoutine()
+    public override void Update()
     {
-        // 啟動技能效果
-        yield return player.StartCoroutine(skillManager.ActivateSkill(skill, skillIndex));
+        base.Update();
 
-        // 技能播完 → 切回 Idle，由狀態機控制
-        stateMachine.ChangeState(player.idleState);
+        // 可視需要讓角色在技能期間不能移動（確保不會被外部移動）
+        player.SetZeroVelocity();
+
+        // 等待動畫事件把 triggerCalled 設成 true（由 AnimationTrigger() 觸發）
+        if (triggerCalled)
+        {
+            stateMachine.ChangeState(player.idleState);
+        }
     }
 
     public override void Exit()
     {
-        // 不要在 Exit 裡切換狀態
         base.Exit();
-        player.anim.SetBool(skill.animationBoolName, false);
+        // base.Exit() 會把該狀態綁定的 animator bool 設為 false
     }
 }

@@ -8,6 +8,7 @@ TagManager:
   - StatName
   - MovingPlatform
   - Enemy
+  - OneWayPlatform
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Sword
   - Item
   - MovindGround
-  - 
+  - OneWayPlatform
   - 
   - 
   - 

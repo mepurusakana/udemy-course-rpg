@@ -33,6 +33,18 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    private Vector3 GetSpawnPosition(SkillData skill)
+    {
+        if (skill.spawnPoint != null)
+            return skill.spawnPoint.position;
+
+        // 如果沒設定 spawnPoint，預設從玩家本體生成
+        return transform.position;
+    }
+
+
+
+
     private bool CheckSkillCondition(SkillData skill)
     {
         if (skill.requiresAirborne && player.IsGroundDetected()) return false;
@@ -42,25 +54,6 @@ public class SkillManager : MonoBehaviour
         return true;
     }
 
-    private IEnumerator UseFlyingSwordSkill(SkillData skill, int index)
-    {
-        isOnCooldown[index] = true;
-
-        if (!string.IsNullOrEmpty(skill.animationBoolName))
-            anim.SetBool(skill.animationBoolName, true);
-
-        yield return new WaitForSeconds(0.2f); // 播放攻擊前搖
-
-        GameObject sword = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
-        sword.transform.localScale = new Vector3(transform.localScale.x, 1, 1); // 翻轉
-        FlyingSwordController swordController = sword.GetComponent<FlyingSwordController>();
-        swordController.Setup(skill.damageAmount, transform.localScale.x);
-
-        anim.SetBool(skill.animationBoolName, false);
-
-        yield return new WaitForSeconds(skill.cooldown);
-        isOnCooldown[index] = false;
-    }
 
     private void HandleSummonSkill(SkillData skill)
     {
@@ -72,6 +65,7 @@ public class SkillManager : MonoBehaviour
     {
         isOnCooldown[index] = true;
 
+        // 播放技能動畫（前搖）
         if (!string.IsNullOrEmpty(skill.animationBoolName))
             anim.SetBool(skill.animationBoolName, true);
 
@@ -89,15 +83,25 @@ public class SkillManager : MonoBehaviour
         {
             yield return StartCoroutine(HandleAirDropSkill(skill));
         }
+        else if (skill.isFlyingSword)
+        {
+            yield return StartCoroutine(UseFlyingSwordSkill(skill));
+        }
+        else if (skill.isDimensionGun) //  新增這裡
+        {
+            yield return StartCoroutine(UseDimensionGunSkill(skill));
+        }
         else
         {
             yield return StartCoroutine(HandleNormalSkill(skill));
         }
 
-        anim.SetBool(skill.animationBoolName, false);
-        anim.SetBool("Idle", true);
+        // 冷卻結束
         yield return new WaitForSeconds(skill.cooldown);
         isOnCooldown[index] = false;
+
+        if (!string.IsNullOrEmpty(skill.animationBoolName))
+            anim.SetBool(skill.animationBoolName, false);
     }
 
     private IEnumerator HandleNormalSkill(SkillData skill)
@@ -133,7 +137,53 @@ public class SkillManager : MonoBehaviour
     private void HandleProjectileSkill(SkillData skill)
     {
         GameObject projectile = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
+
+        // 根據玩家朝向調整方向
+        float direction = player.facingDir; // facingDir = 1 (右) 或 -1 (左)
+
+        // 翻轉投射物外觀
+        projectile.transform.localScale = new Vector3(direction, 1, 1);
+
+        // 傳方向給投射物腳本
         Projectile proj = projectile.GetComponent<Projectile>();
-        proj.Setup(skill.damageAmount, transform.localScale.x);
+        proj.Setup(skill.damageAmount, direction);
+    }
+    private IEnumerator UseFlyingSwordSkill(SkillData skill)
+    {
+        if (!string.IsNullOrEmpty(skill.animationBoolName))
+            anim.SetBool(skill.animationBoolName, true);
+
+        yield return new WaitForSeconds(0.1f); // 播放攻擊前搖
+
+        GameObject sword = Instantiate(skill.skillPrefab, skillSpawnPoint.position, Quaternion.identity);
+
+        float direction = player.facingDir;
+
+        // 翻轉劍的外觀
+        sword.transform.localScale = new Vector3(direction, 1, 1);
+
+        // 傳方向給飛劍腳本
+        FlyingSwordController swordController = sword.GetComponent<FlyingSwordController>();
+        swordController.Setup(skill.damageAmount, direction);
+    }
+
+    private IEnumerator UseDimensionGunSkill(SkillData skill)
+    {
+        // 生成次元槍，初始是進場狀態
+        GameObject gunObj = Instantiate(skill.skillPrefab, GetSpawnPosition(skill), Quaternion.identity);
+
+        float direction = player.facingDir;
+        
+
+        SpearController gunController = gunObj.GetComponent<SpearController>();
+        gunController.Setup(skill.damageAmount, direction);
+
+        // 等待進場動畫結束再開火
+        yield return new WaitUntil(() => gunController.HasFinishedIntro);
+
+        gunController.Fire();
+
+        // 等待結束動畫播放完
+        yield return new WaitUntil(() => gunController.HasFinishedOutro);
     }
 }

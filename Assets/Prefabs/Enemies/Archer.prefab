@@ -64,7 +64,7 @@ RectTransform:
   m_Father: {fileID: 6998171388756923191}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -0.000030517578, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 1894090683098891950}
   m_Layer: 7
   m_Name: Archer
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -223,12 +223,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage:
-    baseValue: 0
+    baseValue: 25
     modifiers: 
   maxHealth:
-    baseValue: 0
+    baseValue: 50
     modifiers: 
-  currentHealth: 0
+  currentHealth: 50
   soulsDropAmount:
     baseValue: 0
     modifiers: 
@@ -248,12 +248,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popUpTextPrefab: {fileID: 2894285104381243520, guid: 4b0d5792d42704c4bb5071d4a04d11b2, type: 3}
   flashDuration: 0
-  hitMat: {fileID: 0}
+  hitMat: {fileID: 2100000, guid: 78758ed07969e5449922bd9487087aa7, type: 2}
   igniteColor: []
   chillColor: []
   shockColor: []
-  hitFx: {fileID: 0}
-  criticalHitFx: {fileID: 0}
+  hitFx: {fileID: 4431538376159538090, guid: 2f387d67210ae6246b602d015d7b9968, type: 3}
+  criticalHitFx: {fileID: 3347290265377545998, guid: b74d5da7ef04de04099c0144d41367ce, type: 3}
 --- !u!114 &1894090683098891950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,9 +266,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d79b0709e1d17d459a83163304c7a9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  knockbackPower: {x: 7, y: 12}
+  knockbackPower: {x: 7, y: 3}
   knockbackOffset: {x: 0.5, y: 2}
   knockbackDuration: 0.07
+  isKnocked: 0
   attackCheck: {fileID: 1016868034095411279}
   attackCheckRadius: 1.2
   groundCheck: {fileID: 6890656333264584353}
@@ -277,7 +278,7 @@ MonoBehaviour:
   wallCheckDistance: 0.8
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 1032
+    m_Bits: 3080
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 64
@@ -435,7 +436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &227845609784965486
 RectTransform:
   m_ObjectHideFlags: 0
@@ -453,7 +454,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -16.848001, y: 8.426}
+  m_AnchoredPosition: {x: 0, y: 2.39}
   m_SizeDelta: {x: 809, y: 455}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4463709708470221709
@@ -587,7 +588,7 @@ Transform:
   m_GameObject: {fileID: 6903732164293870267}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.39, y: -1.47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

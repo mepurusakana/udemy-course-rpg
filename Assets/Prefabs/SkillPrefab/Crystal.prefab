@@ -50,7 +50,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 8
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -109,9 +109,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78785f0f8da657a4ea39e0b8023ce604, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwForceX: 8
-  throwForceY: 6
-  maxBounces: 2
+  throwForceX: 16
+  throwForceY: 20
+  initialBounceForceY: 12
+  bounceDecay: 0.7
+  maxBounces: 0
   explosionPrefab: {fileID: 3827153382828336076, guid: e23208338af475f448e13c2c5dcc8440, type: 3}
 --- !u!1 &7482405039111398947
 GameObject:
