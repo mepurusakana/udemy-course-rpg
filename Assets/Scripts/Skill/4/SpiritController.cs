@@ -15,23 +15,42 @@ public class SpiritController : MonoBehaviour
     [SerializeField] private Transform firePoint; // 發射點
     [SerializeField] private int missileDamage = 15; // 飛彈傷害
 
+    [Header("跟隨設定")]
+    [SerializeField] private float followSpeed = 5f; // 跟隨速度
+    [SerializeField] private float maxFollowDistance = 8f; // 最大跟隨距離（超過此距離會移動）
+    [SerializeField] private float attackRangeFromPlayer = 6f; // 離玩家多近才能攻擊
+    [SerializeField] private float followOffsetX = 2f; // 跟隨時的X軸偏移
+    [SerializeField] private float followOffsetY = 0.5f; // 跟隨時的Y軸偏移
+    [SerializeField] private float smoothTime = 0.3f; // 平滑跟隨時間
+
     [Header("組件引用")]
     private Animator anim;
     private Player player; // 召喚者
+    private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
     private float attackTimer;
     private float lifeTimer;
     private bool isActive = false;
+    private bool isFollowing = false;
+    private Vector2 velocity = Vector2.zero; // 用於平滑移動
 
     private void Start()
     {
         anim = GetComponentInChildren<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         player = FindObjectOfType<Player>();
 
         lifeTimer = lifeTime;
         attackTimer = attackInterval;
 
-        // 播放召喚動畫
-        //anim.SetTrigger("Summon");
+        // 設置 Rigidbody2D
+        if (rb != null)
+        {
+            rb.gravityScale = 0; // 精靈漂浮，不受重力影響
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation; // 防止旋轉
+        }
+
         StartCoroutine(ActivateAfterSummon());
     }
 
@@ -61,12 +80,137 @@ public class SpiritController : MonoBehaviour
             return;
         }
 
-        // 攻擊計時器
-        attackTimer -= Time.deltaTime;
-        if (attackTimer <= 0)
+        // 檢查與玩家的距離
+        float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
+
+        // 如果離玩家太遠，先跟隨玩家
+        if (distanceToPlayer > maxFollowDistance)
         {
-            TryAttackEnemy();
-            attackTimer = attackInterval;
+            FollowPlayer();
+            isFollowing = true;
+        }
+        // 如果在合適距離內，停止跟隨並嘗試攻擊
+        else
+        {
+            if (isFollowing)
+            {
+                StopFollowing();
+                isFollowing = false;
+            }
+
+            // 只有在離玩家足夠近時才攻擊
+            if (distanceToPlayer <= attackRangeFromPlayer)
+            {
+                // 攻擊計時器
+                attackTimer -= Time.deltaTime;
+                if (attackTimer <= 0)
+                {
+                    TryAttackEnemy();
+                    attackTimer = attackInterval;
+                }
+            }
+            else
+            {
+                // 不在攻擊範圍內，慢慢移動到合適位置
+                MoveToIdealPosition();
+            }
+        }
+
+        // 根據移動方向翻轉精靈
+        FlipSprite();
+    }
+
+    private void FollowPlayer()
+    {
+        if (player == null) return;
+
+        // 計算目標位置（玩家位置加上偏移）
+        Vector2 targetPosition = new Vector2(
+            player.transform.position.x + (player.facingDir * followOffsetX),
+            player.transform.position.y + followOffsetY
+        );
+
+        // 平滑移動到目標位置
+        Vector2 newPosition = Vector2.SmoothDamp(
+            transform.position,
+            targetPosition,
+            ref velocity,
+            smoothTime
+        );
+
+        // 應用移動
+        if (rb != null)
+        {
+            rb.MovePosition(newPosition);
+        }
+        else
+        {
+            transform.position = newPosition;
+        }
+
+        // 設置移動動畫（如果有）
+        if (anim != null)
+        {
+            anim.SetBool("Idle", true);
+            // 如果你有 Move 動畫，可以這樣切換：
+            // anim.SetBool("Move", true);
+        }
+    }
+
+    private void MoveToIdealPosition()
+    {
+        if (player == null) return;
+
+        // 計算理想位置（比 maxFollowDistance 稍微近一點）
+        float idealDistance = attackRangeFromPlayer * 0.8f;
+        Vector2 direction = ((Vector2)transform.position - (Vector2)player.transform.position).normalized;
+        Vector2 idealPosition = (Vector2)player.transform.position + direction * idealDistance;
+
+        // 慢慢移動到理想位置
+        Vector2 newPosition = Vector2.MoveTowards(
+            transform.position,
+            idealPosition,
+            followSpeed * 0.5f * Time.deltaTime
+        );
+
+        if (rb != null)
+        {
+            rb.MovePosition(newPosition);
+        }
+        else
+        {
+            transform.position = newPosition;
+        }
+    }
+
+    private void StopFollowing()
+    {
+        // 停止移動，進入待機狀態
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+        }
+        velocity = Vector2.zero;
+
+        if (anim != null)
+        {
+            anim.SetBool("Idle", true);
+            // 如果你有 Move 動畫：
+            // anim.SetBool("Move", false);
+        }
+    }
+
+    private void FlipSprite()
+    {
+        if (spriteRenderer == null || player == null) return;
+
+        // 計算精靈到玩家的方向
+        float directionToPlayer = player.transform.position.x - transform.position.x;
+
+        // 根據方向翻轉精靈
+        if (Mathf.Abs(directionToPlayer) > 0.1f)
+        {
+            spriteRenderer.flipX = directionToPlayer < 0;
         }
     }
 
@@ -105,6 +249,10 @@ public class SpiritController : MonoBehaviour
 
         foreach (Collider2D enemy in enemies)
         {
+            // 確保敵人還活著
+            if (enemy == null || !enemy.gameObject.activeInHierarchy)
+                continue;
+
             float distance = Vector2.Distance(transform.position, enemy.transform.position);
             if (distance < minDistance)
             {
@@ -173,10 +321,26 @@ public class SpiritController : MonoBehaviour
         }
     }
 
-    // 在Scene視圖中顯示偵測範圍
+    // 在Scene視圖中顯示偵測範圍和跟隨範圍
     private void OnDrawGizmosSelected()
     {
+        // 攻擊偵測範圍（黃色）
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
+
+        // 最大跟隨距離（紅色）
+        if (player != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(player.transform.position, maxFollowDistance);
+
+            // 攻擊範圍（綠色）
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(player.transform.position, attackRangeFromPlayer);
+
+            // 連線顯示精靈到玩家的距離
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(transform.position, player.transform.position);
+        }
     }
 }

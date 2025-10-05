@@ -23,7 +23,7 @@ TagManager:
   - Item
   - MovindGround
   - OneWayPlatform
-  - 
+  - Projectile
   - 
   - 
   - 
@@ -64,6 +64,9 @@ TagManager:
     locked: 0
   - name: Enemy
     uniqueID: 2526798035
+    locked: 0
+  - name: Projectile
+    uniqueID: 516246769
     locked: 0
   - name: Player
     uniqueID: 4033654217

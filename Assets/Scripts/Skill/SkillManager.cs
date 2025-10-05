@@ -216,14 +216,14 @@ public class SkillManager : MonoBehaviour
         // 生成飛劍
         if (skill.skillPrefab != null)
         {
-            Vector3 spawnPos = player.transform.position + new Vector3(player.facingDir * 1f, 1f, 0);
+            Vector3 spawnPos = player.transform.position + new Vector3(player.facingDir * 1f, 0);
             GameObject sword = Instantiate(skill.skillPrefab, spawnPos, Quaternion.identity);
 
             // 設置飛劍的傷害
-            SkillController controller = sword.GetComponent<SkillController>();
+            FlyingSwordController controller = sword.GetComponent<FlyingSwordController>();
             if (controller != null)
             {
-                controller.Setup(skill.damageAmount);
+                controller.Setup(skill.damageAmount, player.facingDir);
             }
         }
 
@@ -245,10 +245,10 @@ public class SkillManager : MonoBehaviour
             GameObject effect = Instantiate(skill.skillPrefab, spawnPos, Quaternion.identity);
 
             // 設置傷害
-            SkillController controller = effect.GetComponent<SkillController>();
+            SpearController controller = effect.GetComponent<SpearController>();
             if (controller != null)
             {
-                controller.Setup(skill.damageAmount);
+                controller.Setup(new Vector2(player.facingDir, 0), skill.damageAmount);
             }
         }
 
