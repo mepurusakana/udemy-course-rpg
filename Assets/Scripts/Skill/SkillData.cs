@@ -25,6 +25,7 @@ public class SkillData : ScriptableObject
     [Header("技能類型")]
     public bool isProjectile = false;
     public Transform spawnPoint;
+    public bool isClone = false;
     public bool isSummon = false;
     public bool isFlyingSword = false;
     public bool isDimensionGun = false;

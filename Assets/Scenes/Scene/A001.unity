@@ -917,7 +917,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 8
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_Sprite: {fileID: -1074965589, guid: 3016df3a1185b0c4eb1e33acd9e9ca09, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1675,7 +1675,7 @@ MonoBehaviour:
   m_Intensity: 0.8
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000bd46aad7753b6e3989997cf4d1347e40c111c814d3e09b96c9ad6cf0c5c0fda257075a5af14cc51e
+  m_ApplyToSortingLayers: 00000000bd46aad7753b6e3989997cf4d1347e40c111c814d3e09b96c9ad6cf0c5c0fda257075a5af14cc51eaf9f14ad87eb66b391ec0f7b
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -3594,7 +3594,7 @@ MonoBehaviour:
   pauseDuration: 0.3
   hurtStateDuration: 0.4
   invincibilityAfterRespawn: 2
-  canTriggerDuringInvincibility: 1
+  canTriggerDuringInvincibility: 0
 --- !u!61 &623925708
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3700,7 +3700,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 623925706}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 134.8054, y: -2.92, z: 0}
   m_LocalScale: {x: 3.0107, y: 2.8363, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5298,7 +5298,7 @@ MonoBehaviour:
   m_Intensity: 0.32
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 753b6e39d1347e40d3e09b96c5c0fda2c9ad6cf089997cf4bd46aad7
+  m_ApplyToSortingLayers: 753b6e39d1347e40d3e09b96c5c0fda2c9ad6cf089997cf4bd46aad787eb66b391ec0f7b
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -6718,7 +6718,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 8
+  m_SortingLayer: 10
   m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -12061,7 +12061,7 @@ MonoBehaviour:
   m_Intensity: 0.32
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 89997cf4753b6e39d1347e40d3e09b96c5c0fda2
+  m_ApplyToSortingLayers: 89997cf4753b6e39d1347e40d3e09b96c5c0fda287eb66b391ec0f7b
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -30101,7 +30101,7 @@ MonoBehaviour:
   pauseDuration: 0.3
   hurtStateDuration: 0.4
   invincibilityAfterRespawn: 2
-  canTriggerDuringInvincibility: 1
+  canTriggerDuringInvincibility: 0
 --- !u!61 &1937921852
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -30155,7 +30155,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1937921850}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 112.77173, y: -15.1, z: -0.18123578}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -30892,6 +30892,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 77632864dfea30a409c9834c0f7bbc31, type: 2}
   - {fileID: 11400000, guid: 97c6c38f7fe4f1742842d20e7a0161e4, type: 2}
   - {fileID: 11400000, guid: e4ed5c1222d3cd946953e4b7e79a91ff, type: 2}
+  - {fileID: 11400000, guid: 2c38dc69f6caeda4f8d5e407a160d34f, type: 2}
 --- !u!114 &2097175302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31279,7 +31280,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: bd46aad7753b6e3989997cf4d3e09b96d1347e40c9ad6cf0c5c0fda2
+  m_ApplyToSortingLayers: bd46aad7753b6e3989997cf4d3e09b96d1347e40c9ad6cf0c5c0fda287eb66b391ec0f7b
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -31580,7 +31581,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: bd46aad7753b6e3989997cf4d3e09b96d1347e40c9ad6cf0c5c0fda2
+  m_ApplyToSortingLayers: bd46aad7753b6e3989997cf4d3e09b96d1347e40c9ad6cf0c5c0fda287eb66b391ec0f7b
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -31771,6 +31772,8 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1267081222}
+  - {fileID: 623925710}
+  - {fileID: 1937921853}
   - {fileID: 1532304795}
   - {fileID: 41161559}
   - {fileID: 951574681}
@@ -31785,5 +31788,3 @@ SceneRoots:
   - {fileID: 1592296788947914438}
   - {fileID: 1299185740}
   - {fileID: 2097175307}
-  - {fileID: 623925710}
-  - {fileID: 1937921853}

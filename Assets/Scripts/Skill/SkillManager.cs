@@ -10,6 +10,7 @@ public class SkillManager : MonoBehaviour
     private Dictionary<KeyCode, float> cooldownTimers = new Dictionary<KeyCode, float>();
     private Player player;
     private GameObject currentSpirit; // 當前召喚的精靈
+    private GameObject currentClone; //當前召喚的分身
 
     // 添加屬性讓 Player 可以訪問技能數量
     public int SkillCount => skills.Count;
@@ -94,6 +95,11 @@ public class SkillManager : MonoBehaviour
 
         Debug.Log($"使用技能: {skill.skillName}");
 
+        // 如果是召喚分身技能
+        if (skill.isClone)
+        {
+            UseCloneSkill(skill);
+        }
         // 如果是召喚技能（精靈）
         if (skill.isSummon)
         {
@@ -136,6 +142,46 @@ public class SkillManager : MonoBehaviour
             player.stateMachine.ChangeState(player.skillStates[skillIndex]);
         }
     }
+
+    private void UseCloneSkill(SkillData skill)
+    {
+        if (currentClone != null)
+        {
+            // 如果已經有分身存在，則消除分身
+            CloneController cloneController = currentClone.GetComponent<CloneController>();
+            if (cloneController != null)
+            {
+                cloneController.DestroyClone();
+            }
+            currentClone = null;
+        }
+        else
+        {
+            // 召喚新的分身
+            SummonCloneDelayed(skill, 0);
+        }
+    }
+
+    private IEnumerator SummonCloneDelayed(SkillData skill, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (skill.skillPrefab != null)
+        {
+            Vector3 spawnPosition = player.transform.position + new Vector3(player.facingDir, 0, 0);
+
+            // 生成分身
+            currentClone = Instantiate(skill.skillPrefab, spawnPosition, Quaternion.identity);
+
+            // 設置分身朝向與玩家相同
+            if (player.facingDir == -1)
+            {
+                currentClone.transform.Rotate(0, 180, 0);
+            }
+            Debug.Log("分身已召喚");
+        }
+    }
+
 
     private void UseSummonSkill(SkillData skill)
     {

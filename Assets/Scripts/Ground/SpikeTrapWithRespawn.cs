@@ -44,10 +44,10 @@ public class SpikeTrapWithRespawn : MonoBehaviour
             if (playerStats != null)
             {
                 // 檢查是否允許在無敵時觸發
-                if (!canTriggerDuringInvincibility && playerStats.isInvincible)
-                {
-                    return;
-                }
+                //if (!canTriggerDuringInvincibility && playerStats.isInvincible)
+                //{
+                //    return;
+                //}
 
                 isTriggering = true;
                 StartCoroutine(HandleSpikeTrapSequence(player, playerStats));
@@ -59,11 +59,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
     {
         // === 階段 1：造成傷害和進入受擊狀態 === //
 
-        // 只有不在無敵狀態才扣血
-        if (!playerStats.isInvincible)
-        {
             playerStats.TakeDamage(damage);
-        }
 
         // 設置擊退力道並進入受擊狀態
         // HurtState 會自動處理：回彈、僵直、禁止操作
