@@ -34,7 +34,7 @@ public class Player : Entity, ISaveable
     //public Transform slashSpawnPoint;
 
     [Header("Healing Info")]
-    public int maxChantCharges = 4;
+    public int maxChantCharges = 3;
     public int chantCharges;
     public List<GameObject> chantIcons; // ¹Ï¥Ü¦Cªí
     public float holdTime;

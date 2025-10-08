@@ -33,6 +33,7 @@ public class SpiritController : MonoBehaviour
     private bool isActive = false;
     private bool isFollowing = false;
     private Vector2 velocity = Vector2.zero; // 用於平滑移動
+    private Transform currentTarget; // 當前攻擊目標（用於動畫事件）
 
     private void Start()
     {
@@ -224,15 +225,28 @@ public class SpiritController : MonoBehaviour
 
             if (closestEnemy != null)
             {
-                // 切換成攻擊動畫
-                anim.SetTrigger("Attack");
+                // 儲存當前目標
+                currentTarget = closestEnemy;
 
-                // 發射飛彈
-                FireMissile(closestEnemy);
+                // 切換成攻擊動畫（飛彈會在動畫事件中發射）
+                anim.SetTrigger("Attack");
 
                 // 回到 Idle 狀態
                 StartCoroutine(ReturnToIdle());
             }
+        }
+    }
+
+    // 這個方法會被動畫事件調用
+    public void FireMissileEvent()
+    {
+        if (currentTarget != null)
+        {
+            FireMissile(currentTarget);
+        }
+        else
+        {
+            Debug.LogWarning("精靈攻擊動畫觸發，但沒有目標！");
         }
     }
 

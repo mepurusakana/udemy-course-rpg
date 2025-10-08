@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9008496971310366237}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 134.8054, y: -2.92, z: 0}
   m_LocalScale: {x: 3.0107, y: 2.8363, z: 1}
   m_ConstrainProportionsScale: 0
@@ -150,4 +150,4 @@ MonoBehaviour:
   pauseDuration: 0.3
   hurtStateDuration: 0.4
   invincibilityAfterRespawn: 2
-  canTriggerDuringInvincibility: 0
+  canTriggerDuringInvincibility: 1
