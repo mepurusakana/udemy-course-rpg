@@ -6,19 +6,24 @@ public class SpikeTrapWithRespawn : MonoBehaviour
     [Header("傷害設定")]
     [SerializeField] private int damage = 10;
 
+    [Header("回彈力道設定")]
+    [SerializeField] private Vector2 bounceForce = new Vector2(8f, 12f);
+
     [Header("畫面淡出設定")]
     [SerializeField] private float fadeOutDuration = 0.5f;
     [SerializeField] private float fadeInDuration = 0.5f;
-    [SerializeField] private float pauseDuration = 0.3f; // 黑屏停留時間
+    [SerializeField] private float pauseDuration = 0.3f;
+    [SerializeField] private float hurtStateDuration = 0.4f; // 受擊狀態持續時間
 
-    [Header("受擊僵直時間")]
-    [SerializeField] private float stunDuration = 0.3f;
+    [Header("無敵時間設定")]
+    [SerializeField] private float invincibilityAfterRespawn = 2f;
+    [SerializeField] private bool canTriggerDuringInvincibility = true;
 
     private UI_FadeScreen fadeScreen;
+    private bool isTriggering = false;
 
     private void Start()
     {
-        // 尋找場景中的淡入淡出UI
         fadeScreen = FindObjectOfType<UI_FadeScreen>();
 
         if (fadeScreen == null)
@@ -29,14 +34,22 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (isTriggering) return;
+
         Player player = collision.GetComponent<Player>();
         if (player != null)
         {
             PlayerStats playerStats = player.GetComponent<PlayerStats>();
 
-            // 確保不會重複觸發
-            if (playerStats != null && !playerStats.isInvincible)
+            if (playerStats != null)
             {
+                // 檢查是否允許在無敵時觸發
+                if (!canTriggerDuringInvincibility && playerStats.isInvincible)
+                {
+                    return;
+                }
+
+                isTriggering = true;
                 StartCoroutine(HandleSpikeTrapSequence(player, playerStats));
             }
         }
@@ -44,56 +57,138 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
     private IEnumerator HandleSpikeTrapSequence(Player player, PlayerStats playerStats)
     {
-        // 給予無敵避免重複觸發
-        playerStats.MakeInvincible(true);
+        // === 階段 1：造成傷害和進入受擊狀態 === //
 
-        // 1. 造成傷害
-        playerStats.TakeDamage(damage);
+        // 只有不在無敵狀態才扣血
+        if (!playerStats.isInvincible)
+        {
+            playerStats.TakeDamage(damage);
+        }
 
-        // 2. 播放受擊動畫並僵直玩家
-        player.isBusy = true; // 防止玩家操作
-        player.SetZeroVelocity(); // 停止移動
+        // 設置擊退力道並進入受擊狀態
+        // HurtState 會自動處理：回彈、僵直、禁止操作
+        player.TakeDamageAndEnterHurtState(transform, bounceForce);
 
-        // 等待僵直時間
-        yield return new WaitForSeconds(stunDuration);
+        // 等待受擊狀態完成（玩家回彈和僵直）
+        yield return new WaitForSeconds(hurtStateDuration);
 
-        // 3. 畫面淡出
+        // === 階段 2：畫面淡出 === //
+
+        // 停止所有移動並凍結玩家
+        player.SetZeroVelocity();
+        player.rb.gravityScale = 0;
+        player.isBusy = true;
+
         if (fadeScreen != null)
         {
             fadeScreen.FadeOut();
         }
         yield return new WaitForSeconds(fadeOutDuration);
 
-        // 4. 黑屏期間回溯玩家位置
+        // === 階段 3：回溯位置（黑屏期間） === //
+
         Vector3 lastSafePosition = PlayerRespawnManager.instance.GetLastSafePosition();
         player.transform.position = lastSafePosition;
 
-        // 重置玩家狀態機到Idle
+        // 重置玩家狀態
         player.stateMachine.ChangeState(player.idleState);
         player.SetZeroVelocity();
+        player.rb.gravityScale = 20;
 
         // 黑屏停留
         yield return new WaitForSeconds(pauseDuration);
 
-        // 5. 畫面淡入
+        // === 階段 4：無敵保護和特效 === //
+
+        // 給予無敵狀態
+        playerStats.MakeInvincible(true);
+
+        // 啟動無敵特效
+        PlayerFX playerFX = player.fx as PlayerFX;
+        if (playerFX != null)
+        {
+            playerFX.StartPlayerInvincibilityEffect();
+        }
+        else
+        {
+            player.fx.StartInvincibilityEffect();
+        }
+
+        // === 階段 5：畫面淡入 === //
+
         if (fadeScreen != null)
         {
             fadeScreen.FadeIn();
         }
         yield return new WaitForSeconds(fadeInDuration);
 
-        // 6. 恢復玩家控制
+        // 恢復玩家控制
         player.isBusy = false;
+
+        // === 階段 6：無敵時間倒數 === //
+
+        // 計算無敵剩餘時間
+        float warningTime = 0.5f;
+        float remainingTime = invincibilityAfterRespawn - fadeInDuration - warningTime;
+
+        if (remainingTime > 0)
+        {
+            yield return new WaitForSeconds(remainingTime);
+
+            // 播放警告特效（無敵即將結束）
+            if (playerFX != null)
+            {
+                playerFX.PlayInvincibilityEndWarning();
+            }
+
+            yield return new WaitForSeconds(warningTime);
+        }
+        else
+        {
+            yield return new WaitForSeconds(invincibilityAfterRespawn - fadeInDuration);
+        }
+
+        // === 階段 7：結束無敵 === //
+
         playerStats.MakeInvincible(false);
+
+        if (playerFX != null)
+        {
+            playerFX.StopPlayerInvincibilityEffect();
+        }
+        else
+        {
+            player.fx.StopInvincibilityEffect();
+        }
+
+        // 重置觸發狀態
+        isTriggering = false;
+
+        Debug.Log("尖刺陷阱序列完成");
     }
 
     private void OnDrawGizmos()
     {
+        // 繪製尖刺危險區域
         Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
         BoxCollider2D boxCollider = GetComponent<BoxCollider2D>();
         if (boxCollider != null)
         {
             Gizmos.DrawCube(transform.position + (Vector3)boxCollider.offset, boxCollider.size);
         }
+
+        // 繪製回彈方向參考線
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(bounceForce.x, bounceForce.y, 0) * 0.1f);
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(-bounceForce.x, bounceForce.y, 0) * 0.1f);
+
+        // 繪製尖刺圖示
+#if UNITY_EDITOR
+        UnityEditor.Handles.Label(
+            transform.position + Vector3.up * 2f,
+            "尖刺陷阱",
+            new GUIStyle() { normal = new GUIStyleState() { textColor = Color.red } }
+        );
+#endif
     }
 }

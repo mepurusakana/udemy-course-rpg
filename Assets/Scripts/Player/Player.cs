@@ -64,7 +64,7 @@ public class Player : Entity, ISaveable
     public PlayerAimSwordState aimSword { get; private set; }
     public PlayerCatchSwordState catchSword { get; private set; }
 
-
+    
 
 
 
@@ -88,6 +88,7 @@ public class Player : Entity, ISaveable
     public PlayerBlackholeState blackHole { get; private set; }
     public PlayerDeadState deadState { get; private set; }
     public PlayerHealingState healingState { get; private set; }
+    public PlayerHurtState hurtState { get; private set; }
     public PlayerSkillState[] skillStates { get; private set; }
     #endregion
 
@@ -117,6 +118,7 @@ public class Player : Entity, ISaveable
 
         deadState = new PlayerDeadState(this, stateMachine, "Die");
         healingState = new PlayerHealingState(this, stateMachine, "Healing");
+        hurtState = new PlayerHurtState(this, stateMachine, "Hurt");
 
         // 初始化技能狀態池
         SkillManager skillManager = GetComponent<SkillManager>();
@@ -166,6 +168,38 @@ public class Player : Entity, ISaveable
         }
     }
 
+    // ========== 新增：受擊相關方法 ========== //
+
+    /// <summary>
+    /// 受到傷害並進入受擊狀態（整合所有受擊邏輯）
+    /// </summary>
+    /// <param name="damageDirection">傷害來源的 Transform</param>
+    /// <param name="knockbackForce">自訂擊退力道（可選）</param>
+    public void TakeDamageAndEnterHurtState(Transform damageDirection, Vector2? knockbackForce = null)
+    {
+        // 1. 設置擊退方向（根據傷害來源）
+        SetupKnockbackDir(damageDirection);
+
+        // 2. 設置擊退力道（如果有自訂）
+        if (knockbackForce.HasValue)
+        {
+            SetupKnockbackPower(knockbackForce.Value);
+        }
+
+        // 3. 切換到受擊狀態（狀態內會自動處理回彈和僵直）
+        stateMachine.ChangeState(hurtState);
+    }
+
+    /// <summary>
+    /// 獲取當前設定的擊退力道
+    /// </summary>
+    public Vector2 GetKnockbackPower()
+    {
+        // 從 Entity 繼承來的 knockbackPower
+        return knockbackPower;
+    }
+
+
     public void TeleportPlayer(Vector3 position) => transform.position = position;
 
     protected override void Update()
@@ -180,6 +214,7 @@ public class Player : Entity, ISaveable
 
         CheckForDashInput();
     }
+
 
     public override void SlowEntityBy(float _slowPercentage, float _slowDuration)
     {

@@ -17,7 +17,7 @@ public class Entity : MonoBehaviour
     [Header("Knockback info")]
     [SerializeField] protected Vector2 knockbackPower = new Vector2(7,12);
     [SerializeField] protected Vector2 knockbackOffset = new Vector2(.5f,2);
-    [SerializeField] protected float knockbackDuration = .07f;
+    [SerializeField] public float knockbackDuration = .07f;
     public bool isKnocked;
 
     [Header("Collision info")]
@@ -67,18 +67,22 @@ public class Entity : MonoBehaviour
     }
 
     public virtual void DamageImpact() => StartCoroutine("HitKnockback");
- 
+
     public virtual void SetupKnockbackDir(Transform _damageDirection)
     {
         if (_damageDirection.position.x > transform.position.x)
             knockbackDir = -1;
         else if (_damageDirection.position.x < transform.position.x)
             knockbackDir = 1;
-
-       
     }
 
-    public void SetupKnockbackPower(Vector2 _knockbackpower) => knockbackPower = _knockbackpower;
+    // 確保這個方法存在且是 public
+    public void SetupKnockbackPower(Vector2 _knockbackpower)
+    {
+        knockbackPower = _knockbackpower;
+    }
+
+
     protected virtual IEnumerator HitKnockback()
     {
         isKnocked = true;
