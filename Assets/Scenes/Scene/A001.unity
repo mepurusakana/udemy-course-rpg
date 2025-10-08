@@ -30942,7 +30942,7 @@ MonoBehaviour:
   - {x: 4, y: 1.5}
   counterAttackDuration: 0.2
   jumpTimer: 0.5
-  moveSpeed: 30
+  moveSpeed: 15
   jumpForce: 30
   swordReturnImpact: 10
   dashSpeed: 25

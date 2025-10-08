@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cf161c45890f4b4faf571297010bd2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
+  speed: 20
   maxLifeTime: 5
   hasIntroAnimation: 1
   introAnimationDuration: 0.3

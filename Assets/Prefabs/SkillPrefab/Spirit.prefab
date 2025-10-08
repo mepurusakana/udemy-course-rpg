@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d007a5d6f7e591439d591238f6f4d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 10
+  detectionRadius: 20
   attackInterval: 1.5
   lifeTime: 60
   enemyLayer:
@@ -58,7 +58,7 @@ MonoBehaviour:
   firePoint: {fileID: 7724082993524839662}
   missileDamage: 15
   followSpeed: 8
-  maxFollowDistance: 8
+  maxFollowDistance: 4
   attackRangeFromPlayer: 12
   followOffsetX: 2
   followOffsetY: 0.5
