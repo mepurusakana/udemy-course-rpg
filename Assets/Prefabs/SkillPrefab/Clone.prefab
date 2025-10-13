@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayer: 8
   m_SortingOrder: 0
   m_Sprite: {fileID: -1074965589, guid: 3016df3a1185b0c4eb1e33acd9e9ca09, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2793699, g: 0.3200221, b: 0.8113208, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -308,6 +308,7 @@ MonoBehaviour:
   wallCheckDistance: 0.5
   attackCheck: {fileID: 8602840986370398049}
   attackCooldown: 1
+  isAttacking: 0
 --- !u!1 &7712730053733532696
 GameObject:
   m_ObjectHideFlags: 0

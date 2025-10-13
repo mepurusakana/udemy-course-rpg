@@ -15,6 +15,7 @@ public class UI : MonoBehaviour, ISaveable
     //[SerializeField] private GameObject craftUI;
     //[SerializeField] private GameObject optionsUI;
     [SerializeField] private GameObject inGameUI;
+    public UI_Dialogue dialogueUI { get; private set; }
 
 
 
@@ -30,6 +31,8 @@ public class UI : MonoBehaviour, ISaveable
 
         //SwitchTo(skillTreeUI); // we need this to assign events on skill tree slots before we asssign events on skill scripts
         fadeScreen.gameObject.SetActive(true);
+
+        dialogueUI = GetComponentInChildren<UI_Dialogue>(true);
     }
 
     void Start()
@@ -148,5 +151,12 @@ public class UI : MonoBehaviour, ISaveable
         //{
         //    _data.volumeSettings.Add(item.parametr, item.slider.value);
         //}
+    }
+    public void OpenDialogueUI(DialogueLineSO firstLine)
+    {
+        //stopPlayerControls(true);
+        //HideALLTooltips();
+        dialogueUI.gameObject.SetActive(true);
+        //dialogueUI.PlayDialogueLine(firstLine);
     }
 }

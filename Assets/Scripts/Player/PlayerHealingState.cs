@@ -42,7 +42,7 @@ public class PlayerHealingState : PlayerGroundedState
 
             if (player.holdTime >= player.healHoldTime)
             {
-                player.Heal(10);            // 回血量
+                player.Heal(100);            // 回血量
                 player.UseChantCharge();    // 扣掉一格血藥
                 stateMachine.ChangeState(player.idleState);
             }

@@ -30,7 +30,7 @@ public class CloneController : MonoBehaviour
     // 狀態變數
     private float lifeTimer;
     private float attackTimer;
-    private Transform currentTarget;
+    private Transform enemy;
     private int facingDir = 1; // 1 = 右, -1 = 左
     private bool canAttack = true;
     private bool isActive = false;
@@ -82,7 +82,7 @@ public class CloneController : MonoBehaviour
         FindClosestEnemy();
 
         // 根據狀態執行行為
-        if (currentTarget != null)
+        if (enemy != null)
         {
             HandleCombat();
         }
@@ -132,15 +132,15 @@ public class CloneController : MonoBehaviour
             }
         }
 
-        currentTarget = closestEnemy;
+        enemy = closestEnemy;
     }
 
     private void HandleCombat()
     {
-        if (currentTarget == null)
+        if (enemy == null)
             return;
 
-        float distanceToTarget = Vector2.Distance(transform.position, currentTarget.position);
+        float distanceToTarget = Vector2.Distance(transform.position, enemy.position);
 
         // 在攻擊範圍內
         if (distanceToTarget <= attackRange)
@@ -150,14 +150,15 @@ public class CloneController : MonoBehaviour
             anim.SetBool("isMoving", false);
 
             // 面向敵人
-            if (currentTarget.position.x > transform.position.x && facingDir == -1)
+            if (enemy.position.x > transform.position.x && facingDir == -1)
                 Flip();
-            else if (currentTarget.position.x < transform.position.x && facingDir == 1)
+            else if (enemy.position.x < transform.position.x && facingDir == 1)
                 Flip();
 
             // 攻擊
             if (canAttack)
             {
+                rb.velocity = new Vector2(0, rb.velocity.y);
                 Attack();
                 isAttacking = true;
             }
@@ -166,7 +167,7 @@ public class CloneController : MonoBehaviour
         {
             if(!isAttacking)
             // 移動向敵人
-            MoveTowardsTarget(currentTarget.position);
+            MoveTowardsTarget(enemy.position);
         }
     }
 
@@ -202,6 +203,7 @@ public class CloneController : MonoBehaviour
 
     private void Attack()
     {
+        rb.velocity = new Vector2(0, rb.velocity.y);
         canAttack = false;
         attackTimer = 0;
 
