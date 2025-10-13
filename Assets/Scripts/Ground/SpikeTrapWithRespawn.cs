@@ -20,7 +20,6 @@ public class SpikeTrapWithRespawn : MonoBehaviour
     [SerializeField] private bool canTriggerDuringInvincibility = true;
 
     private UI_FadeScreen fadeScreen;
-    private bool isTriggering = false;
 
     private void Start()
     {
@@ -34,13 +33,12 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isTriggering) return;
 
         Player player = collision.GetComponent<Player>();
+        player.stats.MakeInvincible(false);
         if (player != null)
         {
             PlayerStats playerStats = player.GetComponent<PlayerStats>();
-
             if (playerStats != null)
             {
                 // 檢查是否允許在無敵時觸發
@@ -48,8 +46,6 @@ public class SpikeTrapWithRespawn : MonoBehaviour
                 //{
                 //    return;
                 //}
-
-                isTriggering = true;
                 StartCoroutine(HandleSpikeTrapSequence(player, playerStats));
             }
         }
@@ -58,8 +54,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
     private IEnumerator HandleSpikeTrapSequence(Player player, PlayerStats playerStats)
     {
         // === 階段 1：造成傷害和進入受擊狀態 === //
-
-            playerStats.TakeDamage(damage);
+        playerStats.TakeDamage(damage);
 
         // 設置擊退力道並進入受擊狀態
         // HurtState 會自動處理：回彈、僵直、禁止操作
@@ -157,8 +152,6 @@ public class SpikeTrapWithRespawn : MonoBehaviour
             player.fx.StopInvincibilityEffect();
         }
 
-        // 重置觸發狀態
-        isTriggering = false;
 
         Debug.Log("尖刺陷阱序列完成");
     }

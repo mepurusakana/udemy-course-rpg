@@ -8,7 +8,7 @@ public class CloneController : MonoBehaviour
     [SerializeField] private float fadeInDuration = 1f; // 顯形時間
     [SerializeField] private float moveSpeed = 3f; // 移動速度
     [SerializeField] private float detectionRange = 8f; // 偵測敵人範圍
-    [SerializeField] private float attackRange = 3f; // 攻擊範圍
+    [SerializeField] public float attackRange = 3f; // 攻擊範圍
     [SerializeField] private int damage = 15; // 攻擊傷害
 
     [Header("Ground & Wall Detection")]
@@ -19,7 +19,7 @@ public class CloneController : MonoBehaviour
     [SerializeField] private float wallCheckDistance = 0.5f;
 
     [Header("Attack Settings")]
-    [SerializeField] private Transform attackCheck; // 攻擊檢測點
+    [SerializeField] public Transform attackCheck; // 攻擊檢測點
     [SerializeField] private float attackCooldown = 1f; // 攻擊冷卻
 
     // 組件引用
@@ -34,6 +34,7 @@ public class CloneController : MonoBehaviour
     private int facingDir = 1; // 1 = 右, -1 = 左
     private bool canAttack = true;
     private bool isActive = false;
+    public bool isAttacking = false;
 
     private void Awake()
     {
@@ -158,10 +159,12 @@ public class CloneController : MonoBehaviour
             if (canAttack)
             {
                 Attack();
+                isAttacking = true;
             }
         }
         else
         {
+            if(!isAttacking)
             // 移動向敵人
             MoveTowardsTarget(currentTarget.position);
         }
@@ -169,6 +172,7 @@ public class CloneController : MonoBehaviour
 
     private void HandlePatrol()
     {
+        
         // 檢查前方是否有牆或沒有地面
         bool isWall = Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         bool isGroundAhead = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);

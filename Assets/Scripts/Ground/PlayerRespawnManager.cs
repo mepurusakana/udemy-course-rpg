@@ -6,15 +6,18 @@ public class PlayerRespawnManager : MonoBehaviour
 
     [Header("安全位置設定")]
     [SerializeField] private Vector3 lastSafePosition;
-    [SerializeField] private float groundCheckInterval = 0.1f;
-    [SerializeField] private float minimumSafeHeight = 0.5f; // 最小安全高度，避免記錄在尖刺上
+    [SerializeField] private float groundCheckInterval = 0.2f; // 增加檢查間隔，避免過於頻繁
+    [SerializeField] private float minimumSafeHeight = -10f; // 降低限制，避免過於嚴格
+    [SerializeField] private float minimumMoveDistance = 0.5f; // 最小移動距離才記錄
 
     [Header("除錯顯示")]
     [SerializeField] private bool showDebugInfo = true;
+    [SerializeField] private bool showDebugGizmos = true;
 
     private Player player;
     private float checkTimer;
     private Vector3 previousPosition;
+    private int safePositionUpdateCount = 0; // 記錄更新次數
 
     private void Awake()
     {
@@ -22,6 +25,7 @@ public class PlayerRespawnManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject); // 跨場景保留
         }
         else
         {
@@ -32,6 +36,12 @@ public class PlayerRespawnManager : MonoBehaviour
 
     private void Start()
     {
+        // 延遲尋找 Player，確保場景已完全載入
+        Invoke(nameof(FindPlayer), 1f);
+    }
+
+    private void FindPlayer()
+    {
         player = FindObjectOfType<Player>();
 
         if (player != null)
@@ -40,17 +50,29 @@ public class PlayerRespawnManager : MonoBehaviour
             lastSafePosition = player.transform.position;
             previousPosition = player.transform.position;
 
-            Debug.Log($"PlayerRespawnManager 初始化完成，初始安全位置：{lastSafePosition}");
+            if (showDebugInfo)
+            {
+                Debug.Log($"<color=green>[PlayerRespawnManager] 初始化完成</color>");
+                Debug.Log($"初始安全位置：{lastSafePosition}");
+            }
         }
         else
         {
-            Debug.LogError("找不到Player物件！");
+            Debug.LogError("<color=red>[PlayerRespawnManager] 找不到Player物件！</color>");
         }
     }
 
     private void Update()
     {
-        if (player == null) return;
+        if (player == null)
+        {
+            // 嘗試重新尋找 Player
+            if (Time.frameCount % 60 == 0) // 每60幀嘗試一次
+            {
+                FindPlayer();
+            }
+            return;
+        }
 
         // 定時檢查玩家是否在地面
         checkTimer -= Time.deltaTime;
@@ -58,29 +80,42 @@ public class PlayerRespawnManager : MonoBehaviour
         if (checkTimer <= 0)
         {
             checkTimer = groundCheckInterval;
+            CheckAndUpdateSafePosition();
+        }
+    }
 
-            // 檢查條件：
-            // 1. 玩家在地面上
-            // 2. 玩家不在busy狀態（沒有被控制）
-            // 3. 玩家的Y軸位置足夠高（不在深坑底部）
-            // 4. 玩家不在被擊退狀態
-            if (player.IsGroundDetected() &&
-                !player.isBusy &&
-                !player.isKnocked &&
-                player.transform.position.y > minimumSafeHeight)
+    private void CheckAndUpdateSafePosition()
+    {
+        // 檢查條件（簡化版，更寬鬆）
+        bool isGrounded = player.IsGroundDetected();
+        bool isNotBusy = !player.isBusy;
+        bool isNotKnocked = !player.isKnocked;
+        bool isAboveMinHeight = player.transform.position.y > minimumSafeHeight;
+
+        // 只要在地面上且高度足夠就記錄（移除 isBusy 和 isKnocked 的限制）
+        if (isGrounded && isAboveMinHeight)
+        {
+            // 計算移動距離
+            float movedDistance = Vector3.Distance(player.transform.position, previousPosition);
+
+            // 如果移動距離足夠或這是首次更新，則記錄
+            if (movedDistance >= minimumMoveDistance || safePositionUpdateCount == 0)
             {
-                // 確保位置有變化才記錄（避免在原地不動時重複記錄）
-                if (Vector3.Distance(player.transform.position, previousPosition) > 0.1f)
-                {
-                    lastSafePosition = player.transform.position;
-                    previousPosition = player.transform.position;
+                lastSafePosition = player.transform.position;
+                previousPosition = player.transform.position;
+                safePositionUpdateCount++;
 
-                    if (showDebugInfo)
-                    {
-                        Debug.Log($"更新安全位置：{lastSafePosition}");
-                    }
+                if (showDebugInfo)
+                {
+                    //Debug.Log($"<color=cyan>[更新 #{safePositionUpdateCount}]</color> 安全位置：{lastSafePosition:F2}");
                 }
             }
+        }
+
+        // 除錯資訊（可選）
+        if (showDebugInfo && Time.frameCount % 120 == 0) // 每2秒顯示一次狀態
+        {
+            Debug.Log($"<color=yellow>[狀態檢查]</color> 著地:{isGrounded} | 忙碌:{!isNotBusy} | 擊退:{!isNotKnocked} | 高度OK:{isAboveMinHeight}");
         }
     }
 
@@ -89,6 +124,10 @@ public class PlayerRespawnManager : MonoBehaviour
     /// </summary>
     public Vector3 GetLastSafePosition()
     {
+        if (showDebugInfo)
+        {
+            Debug.Log($"<color=magenta>[讀取]</color> 返回安全位置：{lastSafePosition}");
+        }
         return lastSafePosition;
     }
 
@@ -99,10 +138,11 @@ public class PlayerRespawnManager : MonoBehaviour
     {
         lastSafePosition = position;
         previousPosition = position;
+        safePositionUpdateCount++;
 
         if (showDebugInfo)
         {
-            Debug.Log($"手動設置安全位置：{lastSafePosition}");
+            Debug.Log($"<color=green>[手動設置]</color> 安全位置：{lastSafePosition}");
         }
     }
 
@@ -115,10 +155,11 @@ public class PlayerRespawnManager : MonoBehaviour
         {
             lastSafePosition = player.transform.position;
             previousPosition = player.transform.position;
+            safePositionUpdateCount++;
 
             if (showDebugInfo)
             {
-                Debug.Log($"強制更新安全位置：{lastSafePosition}");
+                Debug.Log($"<color=orange>[強制更新]</color> 安全位置：{lastSafePosition}");
             }
         }
     }
@@ -135,9 +176,19 @@ public class PlayerRespawnManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 獲取更新次數（用於除錯）
+    /// </summary>
+    public int GetUpdateCount()
+    {
+        return safePositionUpdateCount;
+    }
+
     // 在Scene視圖顯示最後安全位置
     private void OnDrawGizmos()
     {
+        if (!showDebugGizmos) return;
+
         // 繪製安全位置標記
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(lastSafePosition, 1f);
@@ -150,12 +201,40 @@ public class PlayerRespawnManager : MonoBehaviour
             new Vector3(100, minimumSafeHeight, 0)
         );
 
+        // 繪製當前玩家位置到安全位置的連線
+        if (player != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(player.transform.position, lastSafePosition);
+            Gizmos.DrawWireSphere(player.transform.position, 0.5f);
+        }
+
         // 在編輯器中顯示文字標籤
 #if UNITY_EDITOR
         UnityEditor.Handles.Label(
             lastSafePosition + Vector3.up * 2.5f,
-            "安全重生點"
+            $"安全重生點 (更新:{safePositionUpdateCount}次)",
+            new GUIStyle()
+            {
+                normal = new GUIStyleState() { textColor = Color.green },
+                fontSize = 12,
+                fontStyle = FontStyle.Bold
+            }
         );
+
+        if (player != null)
+        {
+            float distance = Vector3.Distance(player.transform.position, lastSafePosition);
+            UnityEditor.Handles.Label(
+                player.transform.position + Vector3.up * 1.5f,
+                $"距離安全點: {distance:F2}m",
+                new GUIStyle()
+                {
+                    normal = new GUIStyleState() { textColor = Color.yellow },
+                    fontSize = 10
+                }
+            );
+        }
 #endif
     }
 }

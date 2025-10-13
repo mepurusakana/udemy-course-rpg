@@ -24,6 +24,8 @@ public class CharacterStats : MonoBehaviour
     public bool isDead { get; private set; }
     public bool isInvincible { get; private set; }
 
+    private SpikeTrapWithRespawn trap;
+
     protected virtual void Start()
     {
         currentHealth = GetMaxHealthValue();
