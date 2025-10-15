@@ -190,9 +190,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1664176602868923008}
+  - component: {fileID: 5090625560855368219}
   - component: {fileID: 109155935360065574}
   - component: {fileID: 7327549954658687312}
-  - component: {fileID: 5090625560855368219}
   m_Layer: 6
   m_Name: Clone
   m_TagString: Untagged
@@ -219,6 +219,34 @@ Transform:
   - {fileID: 8602840986370398049}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5090625560855368219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6505549667648419125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8fb5b90e7c16854d8e903d6d3fa6e5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxLifeTime: 60
+  fadeInDuration: 1
+  moveSpeed: 3
+  detectionRange: 8
+  attackRange: 2.2
+  damage: 15
+  groundCheck: {fileID: 5935122023896525384}
+  wallCheck: {fileID: 105223481363337022}
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 3080
+  groundCheckDistance: 0.5
+  wallCheckDistance: 0.5
+  attackCheck: {fileID: 8602840986370398049}
+  attackCooldown: 1
+  isAttacking: 0
 --- !u!50 &109155935360065574
 Rigidbody2D:
   serializedVersion: 4
@@ -281,34 +309,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.86000824, y: -0.45480943}
   m_Size: {x: 1.3269348, y: 2.9642453}
   m_Direction: 0
---- !u!114 &5090625560855368219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6505549667648419125}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8fb5b90e7c16854d8e903d6d3fa6e5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxLifeTime: 60
-  fadeInDuration: 1
-  moveSpeed: 3
-  detectionRange: 8
-  attackRange: 2.2
-  damage: 15
-  groundCheck: {fileID: 5935122023896525384}
-  wallCheck: {fileID: 105223481363337022}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 3080
-  groundCheckDistance: 0.5
-  wallCheckDistance: 0.5
-  attackCheck: {fileID: 8602840986370398049}
-  attackCooldown: 1
-  isAttacking: 0
 --- !u!1 &7712730053733532696
 GameObject:
   m_ObjectHideFlags: 0

@@ -52,8 +52,7 @@ public class PlayerRespawnManager : MonoBehaviour
 
             if (showDebugInfo)
             {
-                Debug.Log($"<color=green>[PlayerRespawnManager] 初始化完成</color>");
-                Debug.Log($"初始安全位置：{lastSafePosition}");
+
             }
         }
         else

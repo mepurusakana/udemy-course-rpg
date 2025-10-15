@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f01ae8c1ec27474e956b69ed1a3bc22, type: 3}
   m_Name: SkillClone
   m_EditorClassIdentifier: 
-  skillName: 
+  skillName: Summon Clone
   activationKey: 54
   cooldown: 2
+  spawnPoint: {fileID: 0}
   skillPrefab: {fileID: 6505549667648419125, guid: d20132d0ed8ca754e8d015c65eed52c4, type: 3}
   animationBoolName: SkillClone
   damageAmount: 20
   skillDuration: 1
   requiresAirborne: 0
-  requiresGrounded: 0
+  requiresGrounded: 1
   isProjectile: 0
-  spawnPoint: {fileID: 0}
   isClone: 1
   isSummon: 0
   isFlyingSword: 0

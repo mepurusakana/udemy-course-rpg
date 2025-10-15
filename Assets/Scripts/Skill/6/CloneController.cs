@@ -23,6 +23,7 @@ public class CloneController : MonoBehaviour
     [SerializeField] private float attackCooldown = 1f; // 攻擊冷卻
 
     // 組件引用
+    private Player player;
     private Rigidbody2D rb;
     private Animator anim;
     private SpriteRenderer spriteRenderer;
@@ -38,6 +39,7 @@ public class CloneController : MonoBehaviour
 
     private void Awake()
     {
+        player = FindObjectOfType<Player>();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -45,11 +47,12 @@ public class CloneController : MonoBehaviour
 
     private void Start()
     {
-        // 初始化為完全透明
+
+            // 初始化為完全透明
         Color color = spriteRenderer.color;
         color.a = 0;
         spriteRenderer.color = color;
-
+        
         // 開始顯形
         StartCoroutine(FadeIn());
     }
@@ -63,7 +66,7 @@ public class CloneController : MonoBehaviour
         lifeTimer += Time.deltaTime;
         if (lifeTimer >= maxLifeTime)
         {
-            DestroyClone();
+            DismissClone();
             return;
         }
 
@@ -228,33 +231,58 @@ public class CloneController : MonoBehaviour
         }
     }
 
-    private void Flip()
+    public void Flip()
     {
         facingDir *= -1;
         transform.Rotate(0, 180, 0);
     }
-
-    public void DestroyClone()
+    public void SetFacingDirection(int direction)
     {
-        StartCoroutine(FadeOutAndDestroy());
+        if (direction != facingDir)
+        {
+            Flip();
+        }
     }
 
-    private IEnumerator FadeOutAndDestroy()
+    public void DismissClone()
     {
+        if (!isActive) return;
+
         isActive = false;
+
+        // 通知 SkillManager 清除引用
+        SkillManager skillManager = player.GetComponent<SkillManager>();
+        if (skillManager != null)
+        {
+            skillManager.ClearCloneReference();
+        }
+
         float elapsedTime = 0;
         float fadeOutDuration = 0.5f;
         Color color = spriteRenderer.color;
 
-        while (elapsedTime < fadeOutDuration)
+        if (elapsedTime < fadeOutDuration)
         {
             elapsedTime += Time.deltaTime;
             color.a = Mathf.Lerp(1, 0, elapsedTime / fadeOutDuration);
             spriteRenderer.color = color;
-            yield return null;
+            return;
         }
 
-        Destroy(gameObject);
+        Destroy(gameObject, 0.5f);
+    }
+
+    private void OnDestroy()
+    {
+        // 當精靈被銷毀時，確保清除 SkillManager 的引用
+        if (player != null)
+        {
+            SkillManager skillManager = player.GetComponent<SkillManager>();
+            if (skillManager != null)
+            {
+                skillManager.ClearCloneReference();
+            }
+        }
     }
 
     // Debug用：繪製偵測範圍

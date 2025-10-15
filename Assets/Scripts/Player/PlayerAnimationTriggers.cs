@@ -8,7 +8,7 @@ public class PlayerAnimationTriggers : MonoBehaviour
 
     public void AnimationTrigger()
     {
-        Debug.Log("AnimationTrigger called. CurrentState: " + player.stateMachine.currentState);
+        
         player.AnimationTrigger();
     }
 

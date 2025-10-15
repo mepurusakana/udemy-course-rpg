@@ -7,6 +7,7 @@ public class SkillData : ScriptableObject
     public string skillName;
     public KeyCode activationKey;
     public float cooldown = 2f;
+    public Transform spawnPoint;
 
     [Header("技能預製體")]
     public GameObject skillPrefab;
@@ -18,13 +19,10 @@ public class SkillData : ScriptableObject
     public int damageAmount = 20;
     public float skillDuration = 1f;
 
-    [Header("使用條件")]
+    [Header("技能條件")]
     public bool requiresAirborne = false;
     public bool requiresGrounded = false;
-
-    [Header("技能類型")]
     public bool isProjectile = false;
-    public Transform spawnPoint;
     public bool isClone = false;
     public bool isSummon = false;
     public bool isFlyingSword = false;
