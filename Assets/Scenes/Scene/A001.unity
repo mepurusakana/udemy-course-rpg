@@ -5963,13 +5963,13 @@ MonoBehaviour:
   - {fileID: 7357757350161608670, guid: 2aaf8a7f14adb7544bcbdd6c338b0072, type: 3}
   - {fileID: 3151268957720226392, guid: 941c37d9d8b687e4c834298a656c52ab, type: 3}
   - {fileID: 695324970694660175, guid: 3cf02bdea01b9e34290778eb6fc804ba, type: 3}
-  leftBoundary: -49.9
+  leftBoundary: -80
   minY: 5
-  maxY: 15
+  maxY: 25
   minSpeed: 1
   maxSpeed: 4
-  initialCloudCount: 5
-  rightBoundary: 27.8
+  initialCloudCount: 50
+  rightBoundary: 400
   minSpawnDelay: 2
   maxSpawnDelay: 5
 --- !u!1 &856154091

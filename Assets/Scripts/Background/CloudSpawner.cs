@@ -26,7 +26,7 @@ public class CloudSpawner : MonoBehaviour
 
     [Header("生成設定")]
     [Tooltip("初始生成的雲朵數量")]
-    public int initialCloudCount = 5;
+    public int initialCloudCount = 50;
 
     [Tooltip("雲朵消失的右邊界 X 座標（要和 CloudController 一致）")]
     public float rightBoundary = 20f;
