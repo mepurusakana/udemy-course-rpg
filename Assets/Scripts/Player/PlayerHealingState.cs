@@ -15,7 +15,7 @@ public class PlayerHealingState : PlayerGroundedState
         player.holdTime = 0f;
         player.rb.velocity = Vector2.zero;
 
-
+        // 檢查是否有咏唱次數
         if (player.chantCharges <= 0)
         {
             stateMachine.ChangeState(player.idleState); // 沒有咏唱次數直接退出
@@ -23,34 +23,54 @@ public class PlayerHealingState : PlayerGroundedState
         }
 
         player.SetZeroVelocity();
+
+        // ★★★ 啟動治療特效（Light2D 和 Particle System）★★★
+        if (player.healingFX != null)
+        {
+            player.healingFX.StartHealingEffects();
+        }
+        else
+        {
+            Debug.LogWarning("PlayerHealingState: healingFX 未設置！");
+        }
     }
 
     public override void Exit()
     {
         base.Exit();
+
+        // ★★★ 停止治療特效（無論如何都會執行）★★★
+        if (player.healingFX != null)
+        {
+            player.healingFX.StopHealingEffects();
+        }
     }
 
     public override void Update()
     {
         base.Update();
 
+        // 保持玩家靜止
         player.rb.velocity = Vector2.zero;
 
         if (Input.GetKey(KeyCode.Q))
         {
             player.holdTime += Time.deltaTime;
 
+            // 達到治療時間
             if (player.holdTime >= player.healHoldTime)
             {
                 player.Heal(100);            // 回血量
                 player.UseChantCharge();    // 扣掉一格血藥
                 stateMachine.ChangeState(player.idleState);
+                // Exit() 會自動調用 StopHealingEffects()
             }
         }
         else
         {
             // 若玩家鬆開 Q，則取消治療
             stateMachine.ChangeState(player.idleState);
+            // Exit() 會自動調用 StopHealingEffects()
         }
     }
 }

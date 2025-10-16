@@ -45,12 +45,13 @@ public class Player : Entity, ISaveable
     public Light2D attackLight;
     private Coroutine fadeOutCoroutine; // 紀錄目前的淡出 Coroutine
 
-    [Header("Movement Particles")]
+    [Header("Particles Componenet Effect")]
     public ParticleSystem moveDustEffect;
-    //public float platformCatcher;
+    public HealingFXController healingFX;
 
     [SerializeField] public LayerMask whatIsOneWayPlatform;
 
+    //public float platformCatcher;
 
 
 
@@ -139,6 +140,7 @@ public class Player : Entity, ISaveable
         }
 
         StopMoveDust();
+        healingFX = GetComponentInChildren<HealingFXController>();
     }
 
     protected override void Start()
