@@ -147,53 +147,53 @@ public class SkillManager : MonoBehaviour
 
     private void UseCloneSkill(SkillData skill)
     {
-        //if (currentClone != null)
-        //{
-        //    // 如果已經有分身存在，則消除分身
-        //    CloneController cloneController = currentClone.GetComponent<CloneController>();
-        //    if (cloneController != null)
-        //    {
-        //        cloneController.DismissClone();
-        //    }
-        //    currentClone = null;
-        //}
-        //else
-        //{
-        //    // 召喚新的分身
-        //    StartCoroutine(SummonCloneDelayed(skill, 0));
-        //}
+        if (currentClone != null)
+        {
+            // 如果已經有分身存在，則消除分身
+            CloneController cloneController = currentClone.GetComponent<CloneController>();
+            if (cloneController != null)
+            {
+                cloneController.DismissClone();
+            }
+            currentClone = null;
+        }
+        else
+        {
+            // 召喚新的分身
+            StartCoroutine(SummonCloneDelayed(skill, 0));
+        }
     }
 
     private IEnumerator SummonCloneDelayed(SkillData skill, float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        //if (skill.skillPrefab != null)
-        //{
-        //    // 根據玩家面向決定召喚位置
-        //    Vector3 spawnOffset = new Vector3(player.facingDir * 1f, 0, 0);
-        //    Vector3 spawnPosition = player.transform.position + spawnOffset;
+        if (skill.skillPrefab != null)
+        {
+            // 根據玩家面向決定召喚位置
+            Vector3 spawnOffset = new Vector3(player.facingDir * 1f, 0, 0);
+            Vector3 spawnPosition = player.transform.position + spawnOffset;
 
-        //    // 生成分身
-        //    currentClone = Instantiate(skill.skillPrefab, spawnPosition, Quaternion.identity);
+            // 生成分身
+            currentClone = Instantiate(skill.skillPrefab, spawnPosition, Quaternion.identity);
 
-        //    // 獲取分身控制器
-        //    CloneController cloneController = currentClone.GetComponent<CloneController>();
-        //    if (cloneController != null)
-        //    {
-        //        // 將分身面向與玩家一致
-        //        if (player.facingDir == -1)
-        //        {
-        //            cloneController.SetFacingDirection(-1); //  新增方法設定方向
-        //        }
-        //        else
-        //        {
-        //            cloneController.SetFacingDirection(1);
-        //        }
-        //    }
+            // 獲取分身控制器
+            CloneController cloneController = currentClone.GetComponent<CloneController>();
+            if (cloneController != null)
+            {
+                // 將分身面向與玩家一致
+                if (player.facingDir == -1)
+                {
+                    cloneController.SetFacingDirection(-1); //  新增方法設定方向
+                }
+                else
+                {
+                    cloneController.SetFacingDirection(1);
+                }
+            }
 
-        //    Debug.Log($"分身已召喚，方向: {(player.facingDir == 1 ? "右" : "左")}");
-        //}
+            Debug.Log($"分身已召喚，方向: {(player.facingDir == 1 ? "右" : "左")}");
+        }
     }
 
 
