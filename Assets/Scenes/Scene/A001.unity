@@ -1626,12 +1626,12 @@ SpriteRenderer:
   m_SortingLayerID: -261313079
   m_SortingLayer: 10
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1074965589, guid: 3016df3a1185b0c4eb1e33acd9e9ca09, type: 3}
+  m_Sprite: {fileID: 990703528, guid: d187eb1c02753154897ff36aa36c5c26, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 5, y: 4.0017357}
+  m_Size: {x: 16, y: 12.005208}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2370,7 +2370,7 @@ Transform:
   m_GameObject: {fileID: 181803465}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 133.21188, y: 11.703359, z: -11.148502}
+  m_LocalPosition: {x: 133.21188, y: 13.580001, z: -11.148502}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6795,7 +6795,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: checkpoint_01
-  activationStatus: 0
+  activationStatus: 1
   checkpointSprite: {fileID: 727308186}
   inactiveColor: {r: 1, g: 1, b: 1, a: 1}
   activeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -6958,8 +6958,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.5
-      minScalar: 1
+      scalar: 2
+      minScalar: 1.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -11692,7 +11692,7 @@ Transform:
   m_GameObject: {fileID: 752802195}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.31, y: -2.66, z: 0}
+  m_LocalPosition: {x: -0.31, y: -4.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11996,7 +11996,7 @@ Transform:
   m_GameObject: {fileID: 814463230}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.31, y: -2.66, z: 0}
+  m_LocalPosition: {x: -0.31, y: -4.42, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12159,8 +12159,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.5
-      minScalar: 1
+      scalar: 2
+      minScalar: 1.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -17005,7 +17005,7 @@ Transform:
   m_GameObject: {fileID: 846376189}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.31, y: -2.66, z: 0}
+  m_LocalPosition: {x: -0.31, y: -4.42, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17168,8 +17168,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.5
-      minScalar: 1
+      scalar: 2
+      minScalar: 1.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -22119,8 +22119,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: -0.06304997, y: 0.15814996, z: 0}
-    m_Extent: {x: 1.3399501, y: 1.93465, z: 0}
+    m_Center: {x: 0.29549998, y: -0.5897, z: 0}
+    m_Extent: {x: 1.6457, y: 2.8434, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -22131,13 +22131,13 @@ MonoBehaviour:
   m_ShapeLightFalloffSize: 0.8
   m_ShapeLightFalloffOffset: {x: 0, y: 0}
   m_ShapePath:
-  - {x: -0.6040802, y: -0.96400785, z: 0}
-  - {x: 0.4767151, y: -0.97733355, z: 0}
-  - {x: 0.45902252, y: 0.758842, z: 0}
-  - {x: 0.27912903, y: 1.1372609, z: 0}
-  - {x: -0.04837799, y: 1.2923973, z: 0}
-  - {x: -0.35865784, y: 1.1027861, z: 0}
-  - {x: -0.52962494, y: 0.6860745, z: 0}
+  - {x: -0.32270813, y: -2.6321175, z: 0}
+  - {x: 0.6776962, y: -2.6253455, z: 0}
+  - {x: 1.1423492, y: 0.055422068, z: 0}
+  - {x: 0.8820648, y: 0.9362838, z: 0}
+  - {x: 0.33348083, y: 1.4531789, z: 0}
+  - {x: -0.21797943, y: 1.0223953, z: 0}
+  - {x: -0.54972076, y: 0.0027525425, z: 0}
 --- !u!1 &915476920
 GameObject:
   m_ObjectHideFlags: 0
@@ -22163,7 +22163,7 @@ Transform:
   m_GameObject: {fileID: 915476920}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.187, y: -1.915, z: 0}
+  m_LocalPosition: {x: 0.01, y: -3.79, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -30877,7 +30877,7 @@ Transform:
   m_GameObject: {fileID: 1421516777}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.362, y: -0.441, z: 0}
+  m_LocalPosition: {x: 1.16, y: -0.619, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31244,7 +31244,7 @@ Transform:
   m_GameObject: {fileID: 1485687397}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 133.21188, y: 11.703359, z: -11.148502}
+  m_LocalPosition: {x: 133.21188, y: 13.580001, z: -11.148502}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -48152,7 +48152,7 @@ Transform:
   m_GameObject: {fileID: 2000395057}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.56, y: -0.61, z: 0}
+  m_LocalPosition: {x: 2.2, y: -0.61, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -49291,8 +49291,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.2582245, y: -0.5264447}
-  m_Size: {x: 1.254364, y: 2.8104053}
+  m_Offset: {x: -0.12078476, y: -0.99984837}
+  m_Size: {x: 2.5982132, y: 5.772998}
   m_Direction: 0
 --- !u!114 &2097175306
 MonoBehaviour:
@@ -49311,7 +49311,7 @@ MonoBehaviour:
   knockbackDuration: 0.3
   isKnocked: 0
   attackCheck: {fileID: 2000395058}
-  attackCheckRadius: 2.5
+  attackCheckRadius: 5
   groundCheck: {fileID: 915476921}
   groundCheckDistance: 0.5
   wallCheck: {fileID: 1421516778}
@@ -49355,7 +49355,7 @@ Transform:
   m_GameObject: {fileID: 2097175299}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 118.46971, y: -2.9966419, z: -1.1485019}
+  m_LocalPosition: {x: 118.46971, y: -1.12, z: -1.1485019}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
