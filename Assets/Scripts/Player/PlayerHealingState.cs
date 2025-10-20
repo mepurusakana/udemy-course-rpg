@@ -24,7 +24,7 @@ public class PlayerHealingState : PlayerGroundedState
 
         player.SetZeroVelocity();
 
-        // ★★★ 啟動治療特效（Light2D 和 Particle System）★★★
+        //  啟動治療特效（Light2D 和 Particle System）
         if (player.healingFX != null)
         {
             player.healingFX.StartHealingEffects();
@@ -39,7 +39,7 @@ public class PlayerHealingState : PlayerGroundedState
     {
         base.Exit();
 
-        // ★★★ 停止治療特效（無論如何都會執行）★★★
+        //  停止治療特效（無論如何都會執行)
         if (player.healingFX != null)
         {
             player.healingFX.StopHealingEffects();

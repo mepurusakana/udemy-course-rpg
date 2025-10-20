@@ -21,7 +21,7 @@ public class CharacterStats : MonoBehaviour
     public int currentHealth;
 
     public System.Action onHealthChanged;
-    public bool isDead { get; private set; }
+    public bool isDead { get; protected set; }
     public bool isInvincible { get; private set; }
 
     private SpikeTrapWithRespawn trap;
@@ -111,7 +111,7 @@ public class CharacterStats : MonoBehaviour
         GetComponent<Entity>().DamageImpact();
         fx.StartCoroutine("FlashFX");
 
-        if (currentHealth < 0 && !isDead)
+        if (currentHealth <= 0 && !isDead)
             Die();
 
 

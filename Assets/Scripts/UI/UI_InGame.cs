@@ -8,15 +8,6 @@ public class UI_InGame : MonoBehaviour
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private Slider slider;
 
-    //[SerializeField] private Image dashImage;
-    //[SerializeField] private Image parryImage;
-    //[SerializeField] private Image crystalImage;
-    //[SerializeField] private Image swordImage;
-    //[SerializeField] private Image blackholeImage;
-    //[SerializeField] private Image flaskImage;
-
-    //private SkillManager skills;
-
 
     [Header("Souls info")]
     [SerializeField] private TextMeshProUGUI currentSouls;
@@ -25,55 +16,56 @@ public class UI_InGame : MonoBehaviour
 
     void Start()
     {
-        if (playerStats != null)
-            playerStats.onHealthChanged += UpdateHealthUI;
-
-        //skills = SkillManager.instance;
+        FindAndSubscribeToPlayer();
     }
 
-    
+    private void OnEnable()
+    {
+        // 每次啟用時都重新尋找玩家（場景切換後）
+        FindAndSubscribeToPlayer();
+    }
+
+    private void OnDisable()
+    {
+        // 取消訂閱
+        if (playerStats != null)
+            playerStats.onHealthChanged -= UpdateHealthUI;
+    }
+
+    public void FindAndSubscribeToPlayer()
+    {
+        // 先取消舊的訂閱
+        if (playerStats != null)
+            playerStats.onHealthChanged -= UpdateHealthUI;
+
+        // 尋找玩家
+        if (PlayerManager.instance != null && PlayerManager.instance.player != null)
+        {
+            playerStats = PlayerManager.instance.player.GetComponent<PlayerStats>();
+
+            if (playerStats != null)
+            {
+                playerStats.onHealthChanged += UpdateHealthUI;
+                UpdateHealthUI(); // 立即更新一次
+            }
+        }
+        else
+        {
+            // 如果 PlayerManager 還沒準備好，稍後再試
+            Invoke(nameof(FindAndSubscribeToPlayer), 0.5f);
+        }
+    }
+
     void Update()
     {
-        //UpdateSoulsUI();
-
-        //if (Input.GetKeyDown(KeyCode.LeftShift) && skills.dash.dashUnlocked)
-        //    SetCooldownOf(dashImage);
-
-        //if (Input.GetKeyDown(KeyCode.Q) && skills.parry.parryUnlocked)
-        //    SetCooldownOf(parryImage);
-
-        //if (Input.GetKeyDown(KeyCode.F) && skills.crystal.crystalUnlocked)
-        //    SetCooldownOf(crystalImage);
-
-        //if (Input.GetKeyDown(KeyCode.Mouse1) && skills.sword.swordUnlocked)
-        //    SetCooldownOf(swordImage);
-
-        //if (Input.GetKeyDown(KeyCode.R) && skills.blackhole.blackholeUnlocked)
-        //    SetCooldownOf(blackholeImage);
-
-
-        //if (Input.GetKeyDown(KeyCode.Alpha1) && Inventory.instance.GetEquipment(EquipmentType.Flask) != null)
-        //    SetCooldownOf(flaskImage);
-
-        //CheckCooldownOf(dashImage, skills.dash.cooldown);
-        //CheckCooldownOf(parryImage, skills.parry.cooldown);
-        //CheckCooldownOf(crystalImage, skills.crystal.cooldown);
-        //CheckCooldownOf(swordImage, skills.sword.cooldown);
-        //CheckCooldownOf(blackholeImage, skills.blackhole.cooldown);
-
-        //CheckCooldownOf(flaskImage, Inventory.instance.flaskCooldown);
-
+        UpdateSoulsUI();
     }
 
     private void UpdateSoulsUI()
     {
-        if (soulsAmount < PlayerManager.instance.GetCurrency())
-            soulsAmount += Time.deltaTime * increaseRate;
-        else
-            soulsAmount = PlayerManager.instance.GetCurrency();
 
 
-        currentSouls.text = ((int)soulsAmount).ToString();
+        //currentSouls.text = ((int)soulsAmount).ToString();
     }
 
     private void UpdateHealthUI()

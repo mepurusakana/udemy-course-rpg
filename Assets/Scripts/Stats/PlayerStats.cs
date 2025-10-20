@@ -21,10 +21,11 @@ public class PlayerStats : CharacterStats
     protected override void Die()
     {
         base.Die();
-        player.Die();
 
-        GameManager.instance.lostCurrencyAmount = PlayerManager.instance.currency;
-        PlayerManager.instance.currency = 0;
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.RespawnPlayer();
+        }
     }
 
     protected override void DecreaseHealthBy(int _damage)
@@ -52,8 +53,14 @@ public class PlayerStats : CharacterStats
 
         if (onHealthChanged != null)
             onHealthChanged();
+    }
 
-        if (currentHealth <= 0 && !isDead)
-            Die();
+    public void ResetHealthOnRespawn()
+    {
+        isDead = false;
+        currentHealth = GetMaxHealthValue();
+
+        if (onHealthChanged != null)
+            onHealthChanged();
     }
 }

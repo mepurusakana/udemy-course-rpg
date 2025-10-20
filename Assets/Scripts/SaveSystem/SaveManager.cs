@@ -68,14 +68,22 @@ public class SaveManager : MonoBehaviour
             if (stats != null)
                 stats.SetHealth(gameData.playerHealth);
         }
+
+        allSaveables = FindISaveables().Where(s => s != null).ToList();
     }
 
     public void SaveGame()
     {
-        foreach(var saveable in allSaveables)
-            saveable.SaveData(ref gameData);
+        allSaveables = FindISaveables().Where(s => s != null).ToList();
+
+        foreach (var saveable in allSaveables)
+        {
+            if (saveable != null)
+                saveable.SaveData(ref gameData);
+        }
 
         dataHandler.SaveData(gameData);
+        Debug.Log("Game saved successfully.");
     }
     public bool HasSaveInSlot(int slotIndex)
     {

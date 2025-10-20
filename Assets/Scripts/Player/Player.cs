@@ -10,6 +10,8 @@ public class Player : Entity, ISaveable
 {
     public static Player instance;
 
+    private UI_FadeScreen fadeScreen;
+
     [Header("Attack details")]
     public Vector2[] attackMovement;
     public float counterAttackDuration = .2f;
@@ -168,6 +170,8 @@ public class Player : Entity, ISaveable
             attackLight.enabled = false;
             attackLight.intensity = 0f;
         }
+
+        fadeScreen = FindObjectOfType<UI_FadeScreen>();
     }
 
     // ========== 新增：受擊相關方法 ========== //
@@ -267,13 +271,6 @@ public class Player : Entity, ISaveable
         //if (skill.dash.dashUnlocked == false)
         //    return;
 
-    }
-
-    public override void Die()
-    {
-        base.Die();
-
-        stateMachine.ChangeState(deadState);
     }
 
     protected override void SetupZeroKnockbackPower()
@@ -398,4 +395,29 @@ public class Player : Entity, ISaveable
             moveDustEffect.Stop();
     }
 
+    private IEnumerator InvincibilityFlashEffect(float duration)
+    {
+        float elapsed = 0f;
+        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+
+        while (elapsed < duration)
+        {
+            // 閃爍效果
+            sr.color = new Color(1, 1, 1, 0.5f);
+            yield return new WaitForSeconds(0.1f);
+            sr.color = new Color(1, 1, 1, 1f);
+            yield return new WaitForSeconds(0.1f);
+
+            elapsed += 0.2f;
+        }
+
+        // 確保最後恢復正常
+        sr.color = new Color(1, 1, 1, 1f);
+    }
+
+    // 保留原有的 Die() 方法(現在不會被呼叫)
+    public override void Die()
+    {
+        stateMachine.ChangeState(deadState);
+    }
 }

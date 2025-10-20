@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class UI : MonoBehaviour, ISaveable
 {
+    public static UI instance; // 新增：Singleton
+
     [Header("End screen")]
     [SerializeField] private UI_FadeScreen fadeScreen;
     [SerializeField] private GameObject endText;
@@ -11,38 +13,31 @@ public class UI : MonoBehaviour, ISaveable
     [Space]
 
     [SerializeField] private GameObject PauseUI;
-    //[SerializeField] private GameObject skillTreeUI;
-    //[SerializeField] private GameObject craftUI;
-    //[SerializeField] private GameObject optionsUI;
     [SerializeField] private GameObject inGameUI;
     public UI_Dialogue dialogueUI { get; private set; }
-
-
-
-    //public UI_SkillToolTip skillToolTip;
-    //public UI_ItemTooltip itemToolTip;
-    //public UI_StatToolTip statToolTip;
-    //public UI_CraftWindow craftWindow;
-
-    //[SerializeField] private UI_VolumeSlider[] volumeSettings;
+    
 
     private void Awake()
     {
+        // 新增：Singleton 設定
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); // 讓 Canvas 跨場景存在
+        }
 
-        //SwitchTo(skillTreeUI); // we need this to assign events on skill tree slots before we asssign events on skill scripts
         fadeScreen.gameObject.SetActive(true);
-
         dialogueUI = GetComponentInChildren<UI_Dialogue>(true);
     }
 
     void Start()
     {
         SwitchTo(inGameUI);
-
-        //itemToolTip.gameObject.SetActive(false);
-        //statToolTip.gameObject.SetActive(false);
-
-        //gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -55,11 +50,12 @@ public class UI : MonoBehaviour, ISaveable
 
         if (Input.GetKeyDown(KeyCode.Escape))
             SwitchWithKeyTo(PauseUI);
-
-
-
     }
 
+    public UI_FadeScreen GetFadeScreen()
+    {
+        return fadeScreen;
+    }
 
     public void SwitchTo(GameObject _menu)
     {
