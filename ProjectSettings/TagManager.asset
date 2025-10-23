@@ -71,14 +71,14 @@ TagManager:
   - name: Skill
     uniqueID: 3009866631
     locked: 0
-  - name: New
-    uniqueID: 2064641169
-    locked: 0
   - name: Player
     uniqueID: 4033654217
     locked: 0
   - name: Grass
     uniqueID: 2734538949
+    locked: 0
+  - name: ScreenFlash
+    uniqueID: 2064641169
     locked: 0
   - name: UI
     uniqueID: 2251128885

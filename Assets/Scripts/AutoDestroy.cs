@@ -6,4 +6,12 @@ public class AutoDestroy : MonoBehaviour
     {
         Destroy(transform.parent.gameObject); // ¾P·´¤÷ª«¥ó
     }
+
+    public void CloseFlash()
+    {
+        if (ScreenFlashController.instance != null)
+        {
+            ScreenFlashController.instance.CloseFlash(0.1f); // ©µ¿ð 0.3 ¬íÃö³¬
+        }
+    }
 }

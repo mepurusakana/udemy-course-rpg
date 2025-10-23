@@ -12,6 +12,8 @@ public class SkillManager : MonoBehaviour
     //private CloneController clone;
     private GameObject currentSpirit; // 當前召喚的精靈
     private GameObject currentClone; //當前召喚的分身
+
+    private SkillData pendingSkill;
     
 
     // 添加屬性讓 Player 可以訪問技能數量
@@ -97,36 +99,38 @@ public class SkillManager : MonoBehaviour
 
         Debug.Log($"使用技能: {skill.skillName}");
 
-        // 如果是召喚分身技能
-        if (skill.isClone)
-        {
-            UseCloneSkill(skill);
-        }
-        // 如果是召喚技能（精靈）
-        if (skill.isSummon)
-        {
-            UseSummonSkill(skill);
-        }
-        // 如果是投射物技能
-        else if (skill.isProjectile)
-        {
-            UseProjectileSkill(skill);
-        }
-        // 如果是飛劍技能
-        else if (skill.isFlyingSword)
-        {
-            UseFlyingSwordSkill(skill);
-        }
-        // 如果是次元槍技能
-        else if (skill.isDimensionGun)
-        {
-            UseDimensionGunSkill(skill);
-        }
-        // 一般技能
-        else
-        {
-            UseNormalSkill(skill);
-        }
+        pendingSkill = skill;
+
+        //// 如果是召喚分身技能
+        //if (skill.isClone)
+        //{
+        //    UseCloneSkill(skill);
+        //}
+        //// 如果是召喚技能（精靈）
+        //else if (skill.isSummon)
+        //{
+        //    UseSpiritSkill(skill);
+        //}
+        //// 如果是投射物技能
+        //else if (skill.isProjectile)
+        //{
+        //    UseProjectileSkill(skill);
+        //}
+        //// 如果是飛劍技能
+        //else if (skill.isFlyingSword)
+        //{
+        //    UseFlyingSwordSkill(skill);
+        //}
+        //// 如果是次元槍技能
+        //else if (skill.isDimensionGun)
+        //{
+        //    UseDimensionGunSkill(skill);
+        //}
+        //// 一般技能
+        //else 
+        //{
+        //    UseHitGroundSkill(skill);
+        //}
 
 
         // 設置冷卻時間
@@ -139,30 +143,56 @@ public class SkillManager : MonoBehaviour
             cooldownTimers.Add(skill.activationKey, skill.cooldown);
         }
 
-        if (player.skillStates != null && skillIndex >= 0 && skillIndex < player.skillStates.Length && !skill.isSummon) // 召喚技能可能不需切換狀態
+        if (player.skillStates != null && skillIndex >= 0 && skillIndex < player.skillStates.Length)
         {
             player.stateMachine.ChangeState(player.skillStates[skillIndex]);
         }
     }
 
-    private void UseCloneSkill(SkillData skill)
+    /// <summary>
+    /// 在動畫事件中調用此方法來執行技能效果
+    /// </summary>
+    public void ExecutePendingSkillEffect()
     {
-        if (currentClone != null)
+        if (pendingSkill == null)
         {
-            // 如果已經有分身存在，則消除分身
-            CloneController cloneController = currentClone.GetComponent<CloneController>();
-            if (cloneController != null)
-            {
-                cloneController.DismissClone();
-            }
-            currentClone = null;
+            Debug.LogWarning("沒有待執行的技能！");
+            return;
+        }
+
+        Debug.Log($"執行技能效果: {pendingSkill.skillName}");
+
+        // 根據技能類型執行相應效果
+        if (pendingSkill.isClone)
+        {
+            ExecuteCloneSkill(pendingSkill);
+        }
+        else if (pendingSkill.isSummon)
+        {
+            ExecuteSpiritSkill(pendingSkill);
+        }
+        else if (pendingSkill.isProjectile)
+        {
+            ExecuteProjectileSkill(pendingSkill);
+        }
+        else if (pendingSkill.isFlyingSword)
+        {
+            ExecuteFlyingSwordSkill(pendingSkill);
+        }
+        else if (pendingSkill.isDimensionGun)
+        {
+            ExecuteDimensionGunSkill(pendingSkill);
         }
         else
         {
-            // 召喚新的分身
-            StartCoroutine(SummonCloneDelayed(skill, 0));
+            ExecuteHitGroundSkill(pendingSkill);
         }
+
+        // 清除待執行技能
+        pendingSkill = null;
     }
+
+
 
     private IEnumerator SummonCloneDelayed(SkillData skill, float delay)
     {
@@ -184,7 +214,7 @@ public class SkillManager : MonoBehaviour
                 // 將分身面向與玩家一致
                 if (player.facingDir == -1)
                 {
-                    cloneController.SetFacingDirection(-1); //  新增方法設定方向
+                    cloneController.SetFacingDirection(-1);
                 }
                 else
                 {
@@ -195,9 +225,43 @@ public class SkillManager : MonoBehaviour
             Debug.Log($"分身已召喚，方向: {(player.facingDir == 1 ? "右" : "左")}");
         }
     }
+    private IEnumerator SummonSpiritDelayed(SkillData skill, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (skill.skillPrefab != null)
+        {
+            Vector3 spawnPosition = player.transform.position + new Vector3(player.facingDir * 2f, 0.5f, 0);
+            currentSpirit = Instantiate(skill.skillPrefab, spawnPosition, Quaternion.identity);
+            Debug.Log("精靈已召喚");
+        }
+    }
 
 
-    private void UseSummonSkill(SkillData skill)
+
+    //=========================================//
+
+
+
+    private void ExecuteCloneSkill(SkillData skill)
+    {
+        if (currentClone != null)
+        {
+            // 如果已經有分身存在，則消除分身
+            CloneController cloneController = currentClone.GetComponent<CloneController>();
+            if (cloneController != null)
+            {
+                cloneController.DismissClone();
+            }
+            currentClone = null;
+            return;
+        }
+
+            // 召喚新的分身
+        StartCoroutine(SummonCloneDelayed(skill, 0.5f));
+    }
+
+    private void ExecuteSpiritSkill(SkillData skill)
     {
         if (currentSpirit != null)
         {
@@ -212,26 +276,15 @@ public class SkillManager : MonoBehaviour
         }
 
         // *** 移除 SetTrigger，讓 PlayerSkillState 處理（或如果召喚需播放動畫，在這裡啟動 Coroutine 播放 Trigger）***
-        // 如果召喚需播放玩家動畫，可在這裡：player.anim.SetTrigger(skill.animationBoolName);
         // 但為了統一，建議添加一個 SummonState 繼承 PlayerSkillState，並在 Animator 用 Trigger。
+        //player.anim.SetBool(skill.animationBoolName, true);
 
         // 延遲一點召喚，讓玩家動畫能跑起來
         StartCoroutine(SummonSpiritDelayed(skill, 0.5f));
     }
 
-    private IEnumerator SummonSpiritDelayed(SkillData skill, float delay)
-    {
-        yield return new WaitForSeconds(delay);
 
-        if (skill.skillPrefab != null)
-        {
-            Vector3 spawnPosition = player.transform.position + new Vector3(player.facingDir * 2f, 0.5f, 0);
-            currentSpirit = Instantiate(skill.skillPrefab, spawnPosition, Quaternion.identity);
-            Debug.Log("精靈已召喚");
-        }
-    }
-
-    private void UseProjectileSkill(SkillData skill)
+    private void ExecuteProjectileSkill(SkillData skill)
     {
         // 生成投射物
         if (skill.skillPrefab != null)
@@ -258,7 +311,7 @@ public class SkillManager : MonoBehaviour
         player.StartCoroutine("BusyFor", 0.3f);
     }
 
-    private void UseFlyingSwordSkill(SkillData skill)
+    private void ExecuteFlyingSwordSkill(SkillData skill)
     {
         // 生成飛劍
         if (skill.skillPrefab != null)
@@ -277,7 +330,7 @@ public class SkillManager : MonoBehaviour
         player.StartCoroutine("BusyFor", 0.5f);
     }
 
-    private void UseDimensionGunSkill(SkillData skill)
+    private void ExecuteDimensionGunSkill(SkillData skill)
     {
         // 生成次元槍效果
         if (skill.skillPrefab != null)
@@ -296,14 +349,8 @@ public class SkillManager : MonoBehaviour
         player.StartCoroutine("BusyFor", 0.4f);
     }
 
-    private void UseNormalSkill(SkillData skill)
+    private void ExecuteHitGroundSkill(SkillData skill)
     {
-        // 播放技能動畫
-        //if (!string.IsNullOrEmpty(skill.animationBoolName))
-        //{
-        //    player.anim.SetBool(skill.animationBoolName, true);
-        //}
-
         // 生成技能效果
         if (skill.skillPrefab != null)
         {
@@ -320,6 +367,16 @@ public class SkillManager : MonoBehaviour
 
         player.StartCoroutine("BusyFor", skill.skillDuration);
     }
+
+
+
+
+
+    //===================//
+
+
+
+
 
     // 獲取技能冷卻剩餘時間（用於UI顯示）
     public float GetCooldownRemaining(KeyCode key)

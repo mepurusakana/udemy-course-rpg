@@ -15,7 +15,6 @@ public class Archer : Enemy
     public ArcherMoveState moveState { get; private set; }
     public ArcherBattleState battleState { get; private set; }
     public ArcherAttackState attackState { get; private set; }
-    //public MummyStunnedState stunnedState { get; private set; }
     public ArcherDeadState deadState { get; private set; }
     #endregion
 
@@ -51,7 +50,6 @@ public class Archer : Enemy
     {
         if (base.CanBeStunned())
         {
-            //stateMachine.ChangeState(stunnedState);
             return true;
         }
 

@@ -29,6 +29,5 @@ public class ArcherMoveState : ArcherGroundedState
             enemy.Flip();
             stateMachine.ChangeState(enemy.idleState);
         }
-
     }
 }
