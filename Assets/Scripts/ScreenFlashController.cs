@@ -84,10 +84,11 @@ public class ScreenFlashController : MonoBehaviour
             transform.SetParent(canvasObj.transform);
         }
 
-        // 设置排序层级（比玩家低）
-        flashCanvas.sortingOrder = sortOrderBelowPlayer;
+        // 設定 Canvas 的 Sorting Layer
+        flashCanvas.sortingLayerName = "FlashEffect";
+        flashCanvas.sortingOrder = 0;
 
-        Debug.Log($"[ScreenFlash] Canvas Sort Order 设置为: {flashCanvas.sortingOrder}");
+        Debug.Log($"[ScreenFlash] Canvas 使用排序層: {flashCanvas.sortingLayerName} (Order: {flashCanvas.sortingOrder})");
     }
 
 
@@ -98,30 +99,30 @@ public class ScreenFlashController : MonoBehaviour
     /// 延遲關閉閃屏
     /// </summary>
     public void CloseFlash(float delay)
+{
+    if (currentFlashCoroutine != null)
     {
-        if (currentFlashCoroutine != null)
-        {
-            StopCoroutine(currentFlashCoroutine);
-            currentFlashCoroutine = null;
-        }
-
-        // 啟動新的延遲關閉協程
-        currentFlashCoroutine = StartCoroutine(CloseFlashCoroutine(delay));
-    }
-
-    private IEnumerator CloseFlashCoroutine(float delay)
-    {
-        // 等待指定秒數（不受 Time.timeScale 影響）
-        yield return new WaitForSecondsRealtime(delay);
-
-        if (canvasGroup != null)
-        {
-            canvasGroup.alpha = 0f;
-            Debug.Log($"[ScreenFlash] 延遲 {delay} 秒後關閉閃屏 (Alpha = 0)");
-        }
-
+        StopCoroutine(currentFlashCoroutine);
         currentFlashCoroutine = null;
     }
+
+    // 啟動新的延遲關閉協程
+    currentFlashCoroutine = StartCoroutine(CloseFlashCoroutine(delay));
+}
+
+private IEnumerator CloseFlashCoroutine(float delay)
+{
+    // 等待指定秒數（不受 Time.timeScale 影響）
+    yield return new WaitForSecondsRealtime(delay);
+
+    if (canvasGroup != null)
+    {
+        canvasGroup.alpha = 0f;
+        Debug.Log($"[ScreenFlash] 延遲 {delay} 秒後關閉閃屏 (Alpha = 0)");
+    }
+
+    currentFlashCoroutine = null;
+}
 
     /// <summary>
     /// 黑幕效果（快速闪现）

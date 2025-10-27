@@ -111,6 +111,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   travelDistance: 30
+  damage: 20
+  introTime: 0.3
+  outroTime: 0.3
 --- !u!1 &8611979761029308216
 GameObject:
   m_ObjectHideFlags: 0
@@ -183,8 +186,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -261313079
-  m_SortingLayer: 7
+  m_SortingLayerID: -1285100665
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -1181858226, guid: b2ee290bd8f6b1e4baf9667063664fe4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

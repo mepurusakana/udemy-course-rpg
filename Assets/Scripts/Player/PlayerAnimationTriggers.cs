@@ -81,6 +81,23 @@ public class PlayerAnimationTriggers : MonoBehaviour
         {
             ScreenFlashController.instance.CloseFlash(0.3f); // 延遲 0.3 秒關閉
         }
+
+        SpriteRenderer playerSR = player.GetComponentInChildren<SpriteRenderer>();
+        if (playerSR != null)
+        {
+            playerSR.sortingLayerName = "PlayerBeforeUI";
+            Debug.Log($"[PlayerAnimationTriggers] 改為 SortingLayer: {playerSR.sortingLayerName}");
+
+            // 1 秒後恢復
+            StartCoroutine(RestoreSortingLayer(playerSR, "Player", 1f));
+        }
+    }
+
+    private IEnumerator RestoreSortingLayer(SpriteRenderer sr, string targetLayer, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        sr.sortingLayerName = targetLayer;
+        Debug.Log($"[PlayerAnimationTriggers] 恢復 SortingLayer: {sr.sortingLayerName}");
     }
 
     public void TriggerBlackFlash()
@@ -88,6 +105,13 @@ public class PlayerAnimationTriggers : MonoBehaviour
         if (ScreenFlashController.instance != null)
         {
             ScreenFlashController.instance.BlackFlash(1f);
+        }
+
+        SpriteRenderer playerSR = player.GetComponentInChildren<SpriteRenderer>();
+        if (playerSR != null)
+        {
+            playerSR.sortingLayerName = "PlayerBeforeUI";
+            Debug.Log($"[PlayerAnimationTriggers] 改為 SortingLayer: {playerSR.sortingLayerName}");
         }
     }
 
@@ -98,6 +122,14 @@ public class PlayerAnimationTriggers : MonoBehaviour
         if (ScreenFlashController.instance != null)
         {
             ScreenFlashController.instance.WhiteFlash(1f);
+        }
+
+        //  找到 Player 的 SpriteRenderer
+        SpriteRenderer playerSR = player.GetComponentInChildren<SpriteRenderer>();
+        if (playerSR != null)
+        {
+            playerSR.sortingLayerName = "PlayerBeforeUI";
+            Debug.Log($"[PlayerAnimationTriggers] 改為 SortingLayer: {playerSR.sortingLayerName}");
         }
     }
 
