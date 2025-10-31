@@ -60,6 +60,7 @@ public class Archer : Enemy
     public override void Die()
     {
         base.Die();
+        stateMachine.ChangeState(idleState);
         stateMachine.ChangeState(deadState);
     }
     public void FireArrow()

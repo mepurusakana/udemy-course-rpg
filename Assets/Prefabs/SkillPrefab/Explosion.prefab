@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7719759911774225350}
   - component: {fileID: 3224878769090126259}
   - component: {fileID: 1797694552022972298}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1285100665
-  m_SortingLayer: 7
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 1107239574, guid: 80a5e969728f1ae4e9255acfdde813be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -117,8 +117,7 @@ GameObject:
   - component: {fileID: 7058996853780298321}
   - component: {fileID: 6331661278993545686}
   - component: {fileID: 4029389822937529935}
-  - component: {fileID: -9191658604549055947}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -170,12 +169,12 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.06913376, y: 0.15061283}
+  m_Offset: {x: -0.091038465, y: 1.0487373}
   serializedVersion: 2
-  m_Radius: 2.6372533
+  m_Radius: 3.5134742
 --- !u!114 &4029389822937529935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,17 +185,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4772c55e2a94304f891f1152aca7570, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &-9191658604549055947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3827153382828336076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4880811b504a4dd47881e75e51143cc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

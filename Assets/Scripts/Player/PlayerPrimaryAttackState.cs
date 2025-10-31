@@ -1,17 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 
 public class PlayerPrimaryAttackState : PlayerState
 {
-
     public int comboCounter { get; private set; }
 
     private float lastTimeAttacked;
     private float comboWindow = 2;
 
-    public PlayerPrimaryAttackState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
+    public PlayerPrimaryAttackState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
+        : base(_player, _stateMachine, _animBoolName)
     {
     }
 
@@ -19,44 +18,53 @@ public class PlayerPrimaryAttackState : PlayerState
     {
         base.Enter();
 
-        //AudioManager.instance.PlaySFX(2); // attack sound effect
-
-        // 停止之前的淡出，立即恢復亮度
+        // 攻擊光效控制
         if (player.attackLight != null)
         {
-            player.StopFadeOut(); // 停止淡出
+            player.StopFadeOut();
             player.attackLight.enabled = true;
-            player.attackLight.intensity = 0.32f; // 重設亮度
+            player.attackLight.intensity = 0.32f;
         }
 
-        xInput = 0;  // we need this to fix bug on attack direction
+        // 確保進入攻擊時停下
+        player.SetZeroVelocity();
 
+        xInput = 0;
+
+        // Combo 計數重設邏輯
         if (comboCounter > 2 || Time.time >= lastTimeAttacked + comboWindow)
             comboCounter = 0;
 
         player.anim.SetInteger("ComboCounter", comboCounter);
 
-
+        // 攻擊方向
         float attackDir = player.facingDir;
-
         if (xInput != 0)
             attackDir = xInput;
-        
 
-        player.SetVelocity(player.attackMovement[comboCounter].x * attackDir, player.attackMovement[comboCounter].y);
+        //  僅使用攻擊定義的推進，不保留原本速度
+        Vector2 attackMove = player.attackMovement[comboCounter];
+        player.SetVelocity(attackMove.x * attackDir, attackMove.y);
 
+        // 攻擊期間暫停重力
+        player.rb.gravityScale = 0f;
 
-        stateTimer = .1f;
+        // 攻擊持續時間
+        stateTimer = 0.1f;
     }
 
     public override void Exit()
     {
         base.Exit();
 
-        if (player.attackLight != null)
-            player.StartFadeOut(0.3f); // 使用管理好的方法
+        // 恢復重力
+        player.rb.gravityScale = player.defaultGravity; //  建議你在 Player 腳本中定義 public float defaultGravity
 
-        player.StartCoroutine("BusyFor", .15f);
+        // 淡出攻擊光
+        if (player.attackLight != null)
+            player.StartFadeOut(0.3f);
+
+        player.StartCoroutine("BusyFor", 0.15f);
 
         comboCounter++;
         lastTimeAttacked = Time.time;
@@ -66,12 +74,11 @@ public class PlayerPrimaryAttackState : PlayerState
     {
         base.Update();
 
+        // 攻擊結束後歸零速度
         if (stateTimer < 0)
             player.SetZeroVelocity();
 
         if (triggerCalled)
-            stateMachine.ChangeState(player.idleState);
+            stateMachine.ChangeState(player.airState);
     }
-
-    
 }

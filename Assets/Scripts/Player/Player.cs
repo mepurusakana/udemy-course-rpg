@@ -17,7 +17,13 @@ public class Player : Entity, ISaveable
     public float counterAttackDuration = .2f;
 
     [Header("Jump Info")]
-    public float jumpTimer = 0.5f;
+    public float jumpTimer = 0.2f;
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2f;
+    public int maxAirJumps = 1;    // 空中可額外跳的次數（=1 代表二段跳）
+    [HideInInspector] public int airJumpCount = 0;  // 已使用空中跳次數
+    public ParticleSystem doubleJumpVFX;  // 二段跳特效（可為空）
+
     public bool isBusy { get;  set; }
     [Header("Move info")]
     public float moveSpeed = 12f;
@@ -30,6 +36,13 @@ public class Player : Entity, ISaveable
     public float dashSpeed;
     public float dashDuration;
     private float defaultDashSpeed;
+    public float dashDir;
+
+    public float dashCooldown = 1.0f;       // 衝刺冷卻秒數
+    public float lastDashTime;
+
+    public int maxAirDashes = 1;            // 空中最多衝刺次數
+    [HideInInspector] public int airDashCount = 0; // 當前空中衝刺次數
 
     [Header("BladeLight info")]
     public GameObject slashEffectPrefab;
@@ -55,9 +68,12 @@ public class Player : Entity, ISaveable
 
     //public float platformCatcher;
 
+    [Header("Physics")]
+    public float defaultGravity = 20f;
+
+    [HideInInspector] public Transform lastAttacker; // 記錄最近攻擊你的敵人
 
 
-    public float dashDir { get; private set; }
 
 
     //public SkillManager skill { get; private set; }
@@ -79,16 +95,16 @@ public class Player : Entity, ISaveable
     public PlayerMoveState moveState { get; private set; }
     public PlayerJumpState jumpState { get; private set; }
     public PlayerAirState airState { get; private set; }
-    public PlayerWallSlideState wallSlide { get; private set; }
-    public PlayerWallJumpState wallJump { get; private set; }
+    //public PlayerWallSlideState wallSlide { get; private set; }
+    //public PlayerWallJumpState wallJump { get; private set; }
     public PlayerDashState dashState { get; private set; }
 
     public PlayerPrimaryAttackState primaryAttack { get; private set; }
-    public PlayerCounterAttackState counterAttack { get; private set; }
+    //public PlayerCounterAttackState counterAttack { get; private set; }
 
-    public PlayerAimSwordState aimSowrd { get; private set; }
+    //public PlayerAimSwordState aimSowrd { get; private set; }
     //public PlayerCatchSwordState catchSword { get; private set; }
-    public PlayerBlackholeState blackHole { get; private set; }
+    //public PlayerBlackholeState blackHole { get; private set; }
     public PlayerDeadState deadState { get; private set; }
     public PlayerHealingState healingState { get; private set; }
     public PlayerHurtState hurtState { get; private set; }
@@ -109,15 +125,15 @@ public class Player : Entity, ISaveable
         jumpState = new PlayerJumpState(this, stateMachine, "Jump");
         airState = new PlayerAirState(this, stateMachine, "Jump");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
-        wallSlide = new PlayerWallSlideState(this, stateMachine, "WallSlide");
-        wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
+        //wallSlide = new PlayerWallSlideState(this, stateMachine, "WallSlide");
+        //wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
 
         primaryAttack = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
-        counterAttack = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
+        //counterAttack = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
 
-        aimSowrd = new PlayerAimSwordState(this, stateMachine, "AimSword");
-        catchSword = new PlayerCatchSwordState(this, stateMachine, "CatchSword");
-        blackHole = new PlayerBlackholeState(this, stateMachine, "Jump");
+        //aimSowrd = new PlayerAimSwordState(this, stateMachine, "AimSword");
+        //catchSword = new PlayerCatchSwordState(this, stateMachine, "CatchSword");
+        //blackHole = new PlayerBlackholeState(this, stateMachine, "Jump");
 
         deadState = new PlayerDeadState(this, stateMachine, "Die");
         healingState = new PlayerHealingState(this, stateMachine, "Healing");
@@ -183,17 +199,16 @@ public class Player : Entity, ISaveable
     /// <param name="knockbackForce">自訂擊退力道（可選）</param>
     public void TakeDamageAndEnterHurtState(Transform damageDirection, Vector2? knockbackForce = null)
     {
-        // 1. 設置擊退方向（根據傷害來源）
+        // 設定擊退方向
         SetupKnockbackDir(damageDirection);
 
-        // 2. 設置擊退力道（如果有自訂）
+        // 設定擊退力道（如果有自訂）
         if (knockbackForce.HasValue)
-        {
             SetupKnockbackPower(knockbackForce.Value);
-        }
 
-        // 3. 切換到受擊狀態（狀態內會自動處理回彈和僵直）
-        stateMachine.ChangeState(hurtState);
+        // 切換到受擊狀態
+        if (stateMachine.currentState != hurtState)
+            stateMachine.ChangeState(hurtState);
     }
 
     /// <summary>
@@ -413,6 +428,15 @@ public class Player : Entity, ISaveable
 
         // 確保最後恢復正常
         sr.color = new Color(1, 1, 1, 1f);
+    }
+
+    public void EnterHurtState()
+    {
+        // 防止重複進入或在忙碌期間被打斷
+        if (isBusy || stateMachine.currentState == hurtState)
+            return;
+
+        stateMachine.ChangeState(hurtState);
     }
 
     // 保留原有的 Die() 方法(現在不會被呼叫)

@@ -201,7 +201,7 @@ public class SkillManager : MonoBehaviour
         if (skill.skillPrefab != null)
         {
             // 根據玩家面向決定召喚位置
-            Vector3 spawnOffset = new Vector3(player.facingDir * 1f, 0, 0);
+            Vector3 spawnOffset = new Vector3(player.facingDir * 2f, 0.5f, 0);
             Vector3 spawnPosition = player.transform.position + spawnOffset;
 
             // 生成分身
@@ -257,8 +257,9 @@ public class SkillManager : MonoBehaviour
             return;
         }
 
+        else
             // 召喚新的分身
-        StartCoroutine(SummonCloneDelayed(skill, 0.5f));
+            StartCoroutine(SummonCloneDelayed(skill, 0.5f));
     }
 
     private void ExecuteSpiritSkill(SkillData skill)
@@ -274,13 +275,13 @@ public class SkillManager : MonoBehaviour
             Debug.Log("精靈已消失");
             return;
         }
+        else
+            // *** 移除 SetTrigger，讓 PlayerSkillState 處理（或如果召喚需播放動畫，在這裡啟動 Coroutine 播放 Trigger）***
+            // 但為了統一，建議添加一個 SummonState 繼承 PlayerSkillState，並在 Animator 用 Trigger。
+            //player.anim.SetBool(skill.animationBoolName, true);
 
-        // *** 移除 SetTrigger，讓 PlayerSkillState 處理（或如果召喚需播放動畫，在這裡啟動 Coroutine 播放 Trigger）***
-        // 但為了統一，建議添加一個 SummonState 繼承 PlayerSkillState，並在 Animator 用 Trigger。
-        //player.anim.SetBool(skill.animationBoolName, true);
-
-        // 延遲一點召喚，讓玩家動畫能跑起來
-        StartCoroutine(SummonSpiritDelayed(skill, 0.5f));
+            // 延遲一點召喚，讓玩家動畫能跑起來
+            StartCoroutine(SummonSpiritDelayed(skill, 0.5f));
     }
 
 
@@ -300,10 +301,10 @@ public class SkillManager : MonoBehaviour
             }
 
             // 設置投射物的傷害
-            SkillController controller = projectile.GetComponent<SkillController>();
+            Projectile controller = projectile.GetComponent<Projectile>();
             if (controller != null)
             {
-                controller.Setup(skill.damageAmount);
+                controller.Setup(skill.damageAmount, player.facingDir);
             }
         }
 

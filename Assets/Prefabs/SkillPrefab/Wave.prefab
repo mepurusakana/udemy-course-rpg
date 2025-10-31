@@ -73,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1285100665
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 549531915, guid: bfe07236bc5df25478e18ed27968f3b6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -129,7 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7512729157698771729}
   - component: {fileID: 5795966722834650966}
-  - component: {fileID: 8009349235948334888}
+  - component: {fileID: 78067988196060232}
   m_Layer: 0
   m_Name: Wave
   m_TagString: Untagged
@@ -198,7 +198,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 63.786507, y: 16.646004}
   m_EdgeRadius: 0
---- !u!114 &8009349235948334888
+--- !u!114 &78067988196060232
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -207,6 +207,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1125033659123340007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4880811b504a4dd47881e75e51143cc8, type: 3}
+  m_Script: {fileID: 11500000, guid: 091879ef15ce7b54f81205aa4d7a71fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lifeTime: 2

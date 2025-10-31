@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpikeTrapWithRespawn : MonoBehaviour
@@ -10,9 +11,9 @@ public class SpikeTrapWithRespawn : MonoBehaviour
     [SerializeField] private Vector2 bounceForce = new Vector2(8f, 12f);
 
     [Header("畫面淡出設定")]
-    [SerializeField] private float fadeOutDuration = 0.5f;
-    [SerializeField] private float fadeInDuration = 0.5f;
-    [SerializeField] private float pauseDuration = 0.3f;
+    [SerializeField] private float fadeOutDuration = 1f;
+    [SerializeField] private float fadeInDuration = 1f;
+    [SerializeField] private float pauseDuration = 1f;
     [SerializeField] private float hurtStateDuration = 0.4f; // 受擊狀態持續時間
 
     [Header("無敵時間設定")]
@@ -56,6 +57,17 @@ public class SpikeTrapWithRespawn : MonoBehaviour
         // === 階段 1：造成傷害和進入受擊狀態 === //
         playerStats.TakeDamage(damage);
 
+        // 停止所有移動並凍結玩家
+        player.SetZeroVelocity();
+        player.isBusy = true;
+
+        // 新增：檢查是否正在重生中，若是則中斷流程
+        if (GameManager.instance != null && GameManager.instance.isRespawning)
+        {
+            Debug.Log("玩家踩到陷阱時正在重生中，忽略陷阱邏輯。");
+            yield break; // 用 yield break 代替 return，以安全結束協程
+        }
+
         // 設置擊退力道並進入受擊狀態
         // HurtState 會自動處理：回彈、僵直、禁止操作
         player.TakeDamageAndEnterHurtState(transform, bounceForce);
@@ -63,12 +75,11 @@ public class SpikeTrapWithRespawn : MonoBehaviour
         // 等待受擊狀態完成（玩家回彈和僵直）
         yield return new WaitForSeconds(hurtStateDuration);
 
-        // === 階段 2：畫面淡出 === //
-
-        // 停止所有移動並凍結玩家
-        player.SetZeroVelocity();
         player.rb.gravityScale = 0;
         player.isBusy = true;
+
+        // === 階段 2：畫面淡出 === //
+
 
         if (fadeScreen != null)
         {
@@ -85,7 +96,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
         player.stateMachine.ChangeState(player.idleState);
         player.SetZeroVelocity();
         player.rb.gravityScale = 20;
-
+        player.isBusy = true;
         // 黑屏停留
         yield return new WaitForSeconds(pauseDuration);
 
@@ -105,6 +116,8 @@ public class SpikeTrapWithRespawn : MonoBehaviour
             player.fx.StartInvincibilityEffect();
         }
 
+        yield return new WaitForSeconds(1f);
+
         // === 階段 5：畫面淡入 === //
 
         if (fadeScreen != null)
@@ -113,8 +126,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
         }
         yield return new WaitForSeconds(fadeInDuration);
 
-        // 恢復玩家控制
-        player.isBusy = false;
+        
 
         // === 階段 6：無敵時間倒數 === //
 
@@ -152,6 +164,8 @@ public class SpikeTrapWithRespawn : MonoBehaviour
             player.fx.StopInvincibilityEffect();
         }
 
+        // 恢復玩家控制
+        player.isBusy = false;
 
         Debug.Log("尖刺陷阱序列完成");
     }

@@ -5,22 +5,33 @@ public class FlyingSwordController : MonoBehaviour
 {
     public float speed = 10f;
     public LayerMask groundLayer;
+
     private int damage;
     private int direction;
     private Rigidbody2D rb;
     private bool isStuck = false;
+    private SpriteRenderer spriteRenderer;
 
     public void Setup(int _damage, float _direction)
     {
         damage = _damage;
-        direction = (int)_direction; // ← 儲存方向
+        direction = (int)_direction;
+
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        // 設定飛行方向
         rb.velocity = new Vector2(speed * direction, 0);
+
+        //  根據方向翻轉 Sprite
+        if (spriteRenderer != null)
+            spriteRenderer.flipX = (direction == -1);
     }
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     private void Update()
@@ -39,9 +50,7 @@ public class FlyingSwordController : MonoBehaviour
         {
             CharacterStats enemyStats = collision.GetComponent<CharacterStats>();
             if (enemyStats != null)
-            {
                 enemyStats.TakeDamage(damage);
-            }
 
             StickToTarget(collision.transform);
         }
@@ -52,22 +61,22 @@ public class FlyingSwordController : MonoBehaviour
     }
 
     private void StickToTarget(Transform target)
-{
-    isStuck = true;
-    rb.velocity = Vector2.zero;
-    rb.isKinematic = true;
-    transform.SetParent(target);
+    {
+        isStuck = true;
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = true;
+        transform.SetParent(target);
 
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
         {
-            // 黏地面時 → 強制在 Tilemap 後面
+            // 黏地面 → 放到 Tilemap 後面
             if (target.GetComponentInChildren<TilemapRenderer>() != null)
             {
                 sr.sortingLayerName = "Ground";
-                sr.sortingOrder = -1; // 比 TilemapRenderer 小
+                sr.sortingOrder = -1;
             }
-            // 黏敵人時 → 比敵人的 renderer 小
+            // 黏敵人 → 比敵人圖層低
             else
             {
                 SpriteRenderer enemySR = target.GetComponentInChildren<SpriteRenderer>();
@@ -80,5 +89,5 @@ public class FlyingSwordController : MonoBehaviour
         }
 
         Destroy(gameObject, 5f);
-}
+    }
 }

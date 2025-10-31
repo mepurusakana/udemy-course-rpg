@@ -13,14 +13,15 @@ public class SkillController : MonoBehaviour
         damage = _damage;
         Destroy(gameObject, lifeTime);
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        CharacterStats targetStats = collision.GetComponent<CharacterStats>();
-        if (targetStats != null && !hitTargets.Contains(targetStats))
+        if (collision.CompareTag("Enemy"))
         {
-            hitTargets.Add(targetStats);
-            targetStats.TakeDamage(damage);
+            CharacterStats enemyStats = collision.GetComponent<CharacterStats>();
+            if (enemyStats != null)
+            {
+                enemyStats.TakeDamage(damage);
+            }
         }
     }
 }

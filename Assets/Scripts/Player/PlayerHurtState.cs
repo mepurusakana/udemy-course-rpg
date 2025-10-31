@@ -1,103 +1,91 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerHurtState : PlayerState
 {
-    private bool isGrounded;
     private bool hasAppliedKnockback = false;
+    private float hurtDuration = 0.35f;       // 僵直時間（秒）
+    private float invincibleDuration = 1.2f;  // 無敵總時長
+    private Coroutine hurtRoutine;
 
-    public PlayerHurtState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
+    public PlayerHurtState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
+        : base(_player, _stateMachine, _animBoolName)
     {
     }
 
     public override void Enter()
     {
         base.Enter();
+        Debug.Log(" 進入受擊狀態");
 
-        Debug.Log("進入受擊狀態");
-
-        // 設定狀態計時器（受擊僵直時間）
-        stateTimer = 0.4f;
-
-        // 重置標記
+        player.isBusy = true;
         hasAppliedKnockback = false;
 
-        // 禁止玩家操作
-        player.isBusy = true;
+        // 停止玩家移動
+        player.SetZeroVelocity();
 
-        // 立即應用受擊回彈力道
+        // 播放受擊動畫
+        player.anim.SetTrigger("Hurt");
+
+        // 啟動無敵
+        player.stats.MakeInvincible(true);
+
+        // 開始閃爍
+        player.fx.StartCoroutine("FlashFX");
+
+        // 施加反方向擊退
         ApplyHurtKnockback();
+
+        // 啟動受擊流程（僵直+無敵）
+        hurtRoutine = player.StartCoroutine(HurtRoutine());
     }
 
     public override void Exit()
     {
         base.Exit();
-
         Debug.Log("離開受擊狀態");
 
-        // 恢復玩家操作
-        player.isBusy = false;
+        if (hurtRoutine != null)
+            player.StopCoroutine(hurtRoutine);
 
-        // 確保重力恢復正常
-        if (player.rb.gravityScale == 0)
-        {
-            player.rb.gravityScale = 1;
-        }
+        player.isBusy = false;
+        player.rb.gravityScale = player.defaultGravity;
+        player.stats.MakeInvincible(false);
+    }
+
+    private void ApplyHurtKnockback()
+    {
+        if (hasAppliedKnockback) return;
+
+        Vector2 knockbackForce = player.GetKnockbackPower();
+        if (knockbackForce == Vector2.zero)
+            knockbackForce = new Vector2(8f, 12f);
+
+        int direction = knockbackForce.x >= 0 ? 1 : -1; // 確保X方向有正負值
+        player.rb.velocity = knockbackForce;
+
+        hasAppliedKnockback = true;
+        Debug.Log($"玩家受擊反彈 (力道={knockbackForce})");
+    }
+
+    private IEnumerator HurtRoutine()
+    {
+        // 等待僵直期間
+        yield return new WaitForSeconds(hurtDuration);
+
+        // 切回空中狀態（或 Idle）
+        stateMachine.ChangeState(player.airState);
+
+        // 剩餘時間繼續無敵
+        yield return new WaitForSeconds(invincibleDuration - hurtDuration);
+
+        player.stats.MakeInvincible(false);
+        player.isBusy = false;
     }
 
     public override void Update()
     {
         base.Update();
-
-        // 檢測是否落地
-        isGrounded = player.IsGroundDetected();
-
-        player.rb.gravityScale = 0;
-        // 如果計時器結束且已著地，回到 Idle 狀態
-        //if (stateTimer < 0 && isGrounded)
-        //{
-        //    stateMachine.ChangeState(player.idleState);
-        //}
-
-        // 在空中時允許玩家微調水平方向（可選，模擬空中控制）
-        // 如果不想要空中控制，可以註解掉下面這段
-        /*
-        if (!isGrounded && xInput != 0)
-        {
-            player.SetVelocity(player.moveSpeed * 0.2f * xInput, rb.velocity.y);
-        }
-        */
-    }
-
-    /// <summary>
-    /// 應用受擊回彈力道（朝向相反 + 向上）
-    /// </summary>
-    private void ApplyHurtKnockback()
-    {
-        if (hasAppliedKnockback) return;
-
-        // 獲取已設定的擊退力道
-        Vector2 knockbackForce = player.GetKnockbackPower();
-
-        // 如果沒有設定擊退力道，使用預設值
-        if (knockbackForce == Vector2.zero)
-        {
-            knockbackForce = new Vector2(8f, 12f);
-        }
-
-        // 計算擊退方向（朝向相反）
-        int knockbackDirection = player.knockbackDir;
-
-        // 如果沒有設定擊退方向，則根據玩家朝向反向擊退
-        if (knockbackDirection == 0)
-        {
-            knockbackDirection = -player.facingDir;
-        }
-
-        // 應用擊退力（X軸朝向相反，Y軸向上）
-        rb.velocity = new Vector2(knockbackForce.x * knockbackDirection, knockbackForce.y);
-
-        Debug.Log($"受擊回彈：方向={knockbackDirection}, 力道={knockbackForce}");
-
-        hasAppliedKnockback = true;
+        // 不再每幀修改速度或重力，僅在初始擊退時套用一次即可
     }
 }

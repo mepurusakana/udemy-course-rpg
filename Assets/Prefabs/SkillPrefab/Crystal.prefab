@@ -109,8 +109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78785f0f8da657a4ea39e0b8023ce604, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwForceX: 100
-  throwForceY: 100
+  throwForceX: 10
+  throwForceY: 10
   initialBounceForceY: 10
   bounceDecay: 0.7
   maxBounces: 0
@@ -186,7 +186,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_Sprite: {fileID: 1401566071, guid: 0db1928b37b862b4db8e32661977b9d1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

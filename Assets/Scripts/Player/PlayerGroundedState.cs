@@ -12,6 +12,9 @@ public class PlayerGroundedState : PlayerState
     public override void Enter()
     {
         base.Enter();
+
+        player.airJumpCount = 0;
+        player.airDashCount = 0; //  登地時重置空中衝刺次數
     }
 
     public override void Exit()
@@ -23,22 +26,22 @@ public class PlayerGroundedState : PlayerState
     {
         base.Update();
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !player.isBusy)
             stateMachine.ChangeState(player.primaryAttack);
 
         if (!player.IsGroundDetected())
             stateMachine.ChangeState(player.airState);
 
-        if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected())
+        if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected() && !player.isBusy)
             stateMachine.ChangeState(player.jumpState);
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !player.isBusy)
             stateMachine.ChangeState(player.dashState);
 
-        if (Input.GetKeyDown(KeyCode.Q) && player.chantCharges > 0)
+        if (Input.GetKeyDown(KeyCode.Q) && player.chantCharges > 0 && !player.isBusy)
             stateMachine.ChangeState(player.healingState);
 
-        if (Input.GetKey(KeyCode.S) /*&& Input.GetKeyDown(KeyCode.Space)*/) // ↓ + 空白
+        if (Input.GetKey(KeyCode.S) && !player.isBusy /*&& Input.GetKeyDown(KeyCode.Space)*/) // ↓ + 空白
         {
             // 檢查是不是在木板上
             Collider2D hit = Physics2D.OverlapCircle(player.groundCheck.position, 0.1f, player.whatIsGround);

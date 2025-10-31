@@ -125,7 +125,7 @@ public class PlayerRespawnManager : MonoBehaviour
     {
         if (showDebugInfo)
         {
-            Debug.Log($"<color=magenta>[讀取]</color> 返回安全位置：{lastSafePosition}");
+            //Debug.Log($"<color=magenta>[讀取]</color> 返回安全位置：{lastSafePosition}");
         }
         return lastSafePosition;
     }

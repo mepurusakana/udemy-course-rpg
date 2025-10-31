@@ -26,7 +26,12 @@ public class Arrow_Controller : MonoBehaviour
 
         if (collision.gameObject.layer == LayerMask.NameToLayer(targetLayerName))
         {
-            collision.GetComponent<CharacterStats>()?.TakeDamage(damage);
+            Player player = collision.GetComponent<Player>();
+            if (player != null)
+            {
+                player.lastAttacker = this.transform; // 記錄攻擊來源
+                player.stats.TakeDamage(damage);
+            }
             StuckInto(collision);
         }
         else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))

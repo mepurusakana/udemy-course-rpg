@@ -12,12 +12,14 @@ public class Explosion : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log($"Explosion hit: {collision.name}, Tag: {collision.tag}");
         if (collision.CompareTag("Enemy"))
         {
             CharacterStats enemyStats = collision.GetComponent<CharacterStats>();
             if (enemyStats != null)
             {
                 enemyStats.TakeDamage(damage);
+                Debug.Log("敵人受傷成功！");
             }
         }
     }

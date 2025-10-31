@@ -88,7 +88,7 @@ public class ScreenFlashController : MonoBehaviour
         flashCanvas.sortingLayerName = "FlashEffect";
         flashCanvas.sortingOrder = 0;
 
-        Debug.Log($"[ScreenFlash] Canvas 使用排序層: {flashCanvas.sortingLayerName} (Order: {flashCanvas.sortingOrder})");
+        //Debug.Log($"[ScreenFlash] Canvas 使用排序層: {flashCanvas.sortingLayerName} (Order: {flashCanvas.sortingOrder})");
     }
 
 

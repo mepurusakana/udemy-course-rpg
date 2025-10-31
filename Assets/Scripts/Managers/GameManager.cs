@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager instance;
 
     private Transform player;
@@ -17,12 +16,15 @@ public class GameManager : MonoBehaviour
     private string lastCheckpointId;
     private Vector3 lastCheckpointPosition;
 
+    [Header("預設設定")]
+    [SerializeField] private string defaultCheckpointId = "checkpoint_01"; //  預設存檔點ID
+    [SerializeField] private string defaultSceneName = "A001"; //  如果有多場景可指定預設場景
+
     [SerializeField] private float respawnInvincibilityDuration = 2f;
     [SerializeField] private Checkpoint[] checkpoints;
-    [SerializeField] private string closestCheckpointId;
 
     private bool pasuedGame;
-    private bool isRespawning = false; // 新增:防止重複重生
+    public bool isRespawning = false; // 新增:防止重複重生
 
     private void Awake()
     {
@@ -46,6 +48,8 @@ public class GameManager : MonoBehaviour
         {
             player = PlayerManager.instance.player.transform;
         }
+
+        TrySetDefaultCheckpoint();
     }
     private void OnEnable()
     {
@@ -67,11 +71,36 @@ public class GameManager : MonoBehaviour
             player = PlayerManager.instance.player.transform;
         }
     }
+
     private void RefreshCheckpoints()
     {
         checkpoints = FindObjectsOfType<Checkpoint>();
         Debug.Log($"Found {checkpoints.Length} checkpoints in current scene");
     }
+
+    private void TrySetDefaultCheckpoint()
+    {
+        if (checkpoints == null || checkpoints.Length == 0)
+            return;
+
+        // 如果已經有存檔點，不要覆蓋
+        if (!string.IsNullOrEmpty(lastCheckpointId))
+            return;
+
+        foreach (var cp in checkpoints)
+        {
+            if (cp.id == defaultCheckpointId)
+            {
+                SetLastCheckpoint(cp);
+                Debug.Log($"[GameManager] Default checkpoint set: Scene='{cp.sceneName}', ID='{cp.id}', Pos={cp.transform.position}");
+                return;
+            }
+        }
+
+        Debug.LogWarning($"[GameManager] Default checkpoint '{defaultCheckpointId}' not found in scene '{SceneManager.GetActiveScene().name}'");
+    }
+
+
 
     private void Update()
     {
@@ -107,9 +136,6 @@ public class GameManager : MonoBehaviour
         lastCheckpointPosition = checkpoint.transform.position;
 
         Debug.Log($"Last checkpoint set: Scene='{lastCheckpointSceneName}', ID='{lastCheckpointId}', Pos={lastCheckpointPosition}");
-
-        // 可以在這裡呼叫存檔系統
-        // SaveManager.instance?.SaveGame();
     }
 
     public void CheckIfLastCheckpoint(Checkpoint checkpoint)
@@ -122,13 +148,31 @@ public class GameManager : MonoBehaviour
     }
     public void RespawnPlayer()
     {
-        if (isRespawning) return;
+        if (isRespawning)
+        {
+            Debug.LogWarning("[GameManager] RespawnPlayer() 被重複呼叫，忽略。");
+            return;
+        }
 
+        isRespawning = true; // 提前鎖定
         StartCoroutine(RespawnPlayerCoroutine());
     }
+
     private IEnumerator RespawnPlayerCoroutine()
     {
         isRespawning = true;
+
+        // 1. 畫面漸黑
+        if (UI.instance != null)
+        {
+            UI_FadeScreen fadeScreen = UI.instance.GetFadeScreen();
+            if (fadeScreen != null)
+            {
+                fadeScreen.FadeOut();
+            }
+        }
+
+        yield return new WaitForSeconds(2f);
 
         // 檢查是否需要切換場景
         string currentSceneName = SceneManager.GetActiveScene().name;
@@ -137,18 +181,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log($"Need to load scene: {lastCheckpointSceneName}");
 
-            // 1. 畫面漸黑
-            if (UI.instance != null)
-            {
-                UI_FadeScreen fadeScreen = UI.instance.GetFadeScreen();
-                if (fadeScreen != null)
-                {
-                    fadeScreen.FadeOut();
-                }
-            }
-
-            yield return new WaitForSeconds(1f);
-
+            
             // 2. 載入存檔點所在場景
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(lastCheckpointSceneName);
 
@@ -164,17 +197,19 @@ public class GameManager : MonoBehaviour
         // 4. 確保 player 參考正確
         if (PlayerManager.instance != null && PlayerManager.instance.player != null)
         {
-            player = PlayerManager.instance.player.transform;
+            this.player = PlayerManager.instance.player.transform;
 
             // 5. 傳送玩家到存檔點
             if (lastCheckpointPosition != Vector3.zero)
             {
-                player.position = lastCheckpointPosition;
+                this.player.position = lastCheckpointPosition;
                 Debug.Log($"Player respawned at {lastCheckpointPosition}");
             }
 
-            Player playerScript = PlayerManager.instance.player;
-            PlayerStats playerStats = playerScript.GetComponent<PlayerStats>();
+            Player player = PlayerManager.instance.player;
+            player.isBusy = true; //玩家在無敵期間無法移動
+
+            PlayerStats playerStats = player.GetComponent<PlayerStats>();
 
             // 6. 重置玩家狀態
             if (playerStats != null)
@@ -182,11 +217,27 @@ public class GameManager : MonoBehaviour
                 playerStats.ResetHealthOnRespawn();
             }
 
-            playerScript.stateMachine.ChangeState(playerScript.idleState);
-            playerScript.SetZeroVelocity();
+            player.stateMachine.ChangeState(player.idleState);
+            player.SetZeroVelocity();
 
             // 7. 重新設定相機
             SetupCameraAfterRespawn();
+
+            // 給予無敵狀態
+            playerStats.MakeInvincible(true);
+
+            // 啟動無敵特效
+            PlayerFX playerFX = player.fx as PlayerFX;
+            if (playerFX != null)
+            {
+                playerFX.StartPlayerInvincibilityEffect();
+            }
+            else
+            {
+                player.fx.StartInvincibilityEffect();
+            }
+
+            yield return new WaitForSeconds(1f);
 
             // 8. 畫面漸亮
             if (UI.instance != null)
@@ -198,15 +249,42 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(0.5f);
+            // 計算無敵剩餘時間
+            float warningTime = 0.5f;
+            float remainingTime = 1f - warningTime;
 
-            // 9. 給予無敵時間
-            playerStats.MakeInvincible(true);
-            StartCoroutine(InvincibilityFlashEffect(playerScript, respawnInvincibilityDuration));
+            if (remainingTime > 0)
+            {
+                yield return new WaitForSeconds(remainingTime);
 
-            yield return new WaitForSeconds(respawnInvincibilityDuration);
+                // 播放警告特效（無敵即將結束）
+                if (playerFX != null)
+                {
+                    playerFX.PlayInvincibilityEndWarning();
+                }
+
+                yield return new WaitForSeconds(warningTime);
+            }
+            else
+            {
+                yield return new WaitForSeconds(1f);
+            }
+
+            // === 階段 7：結束無敵 === //
 
             playerStats.MakeInvincible(false);
+
+            if (playerFX != null)
+            {
+                playerFX.StopPlayerInvincibilityEffect();
+            }
+            else
+            {
+                player.fx.StopInvincibilityEffect();
+            }
+
+            // 恢復玩家控制
+            player.isBusy = false;
         }
 
         isRespawning = false;
@@ -303,7 +381,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (Checkpoint checkpoint in checkpoints)
         {
-            if (closestCheckpointId == checkpoint.id)
+            if (lastCheckpointId == checkpoint.id)
                 player.position = checkpoint.transform.position;
         }
     }
