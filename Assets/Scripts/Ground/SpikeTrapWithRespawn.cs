@@ -34,29 +34,34 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
         Player player = collision.GetComponent<Player>();
+        if (player == null) return;
+
+        // 記錄攻擊來源（避免 lastAttacker 未設定報錯）
+        player.lastAttacker = transform;
+
+        // 取消無敵
         player.stats.MakeInvincible(false);
-        if (player != null)
+
+        PlayerStats playerStats = player.GetComponent<PlayerStats>();
+        if (playerStats != null)
         {
-            PlayerStats playerStats = player.GetComponent<PlayerStats>();
-            if (playerStats != null)
-            {
-                // 檢查是否允許在無敵時觸發
-                //if (!canTriggerDuringInvincibility && playerStats.isInvincible)
-                //{
-                //    return;
-                //}
-                StartCoroutine(HandleSpikeTrapSequence(player, playerStats));
-            }
+            StartCoroutine(HandleSpikeTrapSequence(player, playerStats));
         }
     }
 
     private IEnumerator HandleSpikeTrapSequence(Player player, PlayerStats playerStats)
     {
-        // === 階段 1：造成傷害和進入受擊狀態 === //
+        // === 階段 1：畫面淡出 === //
         playerStats.TakeDamage(damage);
+        if (fadeScreen != null)
+        {
+            fadeScreen.FadeOut();
+        }
+        yield return new WaitForSeconds(fadeOutDuration);
 
+
+        // === 階段 2：造成傷害和進入受擊狀態 === //
         // 停止所有移動並凍結玩家
         player.SetZeroVelocity();
         player.isBusy = true;
@@ -78,14 +83,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
         player.rb.gravityScale = 0;
         player.isBusy = true;
 
-        // === 階段 2：畫面淡出 === //
 
-
-        if (fadeScreen != null)
-        {
-            fadeScreen.FadeOut();
-        }
-        yield return new WaitForSeconds(fadeOutDuration);
 
         // === 階段 3：回溯位置（黑屏期間） === //
 
@@ -98,7 +96,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
         player.rb.gravityScale = 20;
         player.isBusy = true;
         // 黑屏停留
-        yield return new WaitForSeconds(pauseDuration);
+        //yield return new WaitForSeconds(pauseDuration);
 
         // === 階段 4：無敵保護和特效 === //
 

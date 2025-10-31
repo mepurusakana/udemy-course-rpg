@@ -19,24 +19,23 @@ public class StartToButtonsUI : MonoBehaviour
     [Tooltip("四顆按鈕出現的淡入時間；0 = 立即出現")]
     public float appearFadeSeconds = 0f;
 
-    [Header("開始鈕消失/出場效果（按下後）")]
-    [Tooltip("開始鈕淡出+位移動畫時間（秒），也同時用於『初次喚醒淡入+上浮』")]
+    [Header("開始鈕出/入場通用參數")]
+    [Tooltip("開始鈕淡出+位移動畫時間（秒），也用於『喚醒時淡入+上浮』")]
     public float startFadeSeconds = 0.5f;
-    [Tooltip("位移像素量：正數=向下（按下後），初次喚醒則反向向上")]
+    [Tooltip("位移像素量：正數=向下（按下後）；喚醒時則反向向上")]
     public float startMoveDownPixels = 80f;
 
-    [Header("通用")]
+    [Header("時間/行為")]
     [Tooltip("使用 UnscaledDeltaTime（不受 Time.timeScale 影響）")]
     public bool useUnscaledTime = true;
-    [Tooltip("動畫結束後是否把開始鈕物件關閉（按下後）")]
+    [Tooltip("按下後動畫結束是否把開始鈕物件關閉")]
     public bool deactivateStartButtonGO = true;
 
-    [Header("初次喚醒：開始鈕淡入+上浮")]
-    [Tooltip("此 UI 第一次啟用時，開始鈕由下方淡入並上浮到定位")]
-    public bool playIntroOnFirstEnable = true;
+    [Header("喚醒：開始鈕淡入+上浮")]
+    [Tooltip("喚醒時，先延遲這麼久才開始淡入+上浮（秒）")]
+    public float startIntroDelay = 0.25f;
 
-    private bool switched;                 // 是否已按過開始
-    private bool introPlayed;              // 是否已播放過初次喚醒動畫
+    private bool switched;                 // 是否已按過開始（每次喚醒會重置）
     private CanvasGroup bottomCG;
 
     // 開始鈕快取
@@ -44,6 +43,8 @@ public class StartToButtonsUI : MonoBehaviour
     private CanvasGroup _startCG;
     private Vector2 _startOriPos;
     private bool _startPosCaptured;
+
+    private Coroutine _introCo;
 
     void Reset()
     {
@@ -68,12 +69,7 @@ public class StartToButtonsUI : MonoBehaviour
         {
             bottomCG = bottomButtonsRoot.GetComponent<CanvasGroup>();
             if (bottomCG == null) bottomCG = bottomButtonsRoot.gameObject.AddComponent<CanvasGroup>();
-
-            // 初始：隱藏且不可互動（保持啟用方便淡入）
-            bottomButtonsRoot.gameObject.SetActive(true);
-            bottomCG.alpha = 0f;
-            bottomCG.interactable = false;
-            bottomCG.blocksRaycasts = false;
+            bottomButtonsRoot.gameObject.SetActive(true); // 方便淡入
         }
 
         CacheStartRefs();
@@ -83,36 +79,46 @@ public class StartToButtonsUI : MonoBehaviour
     {
         CacheStartRefs();
 
-        // 第一次喚醒 → 開始鈕「淡入＋上浮」
-        if (playIntroOnFirstEnable && !introPlayed && _startRT != null && _startCG != null)
+        // 每次喚醒都重置狀態
+        switched = false;
+
+        // 1) 開始鈕：確保可見並重置到「由下開始、透明」
+        if (startButton != null)
+            startButton.gameObject.SetActive(true); // 若上次按下後被關掉，這裡打開
+
+        if (_introCo != null) { StopCoroutine(_introCo); _introCo = null; }
+
+        if (_startRT != null && _startCG != null)
         {
-            // 準備起始狀態：從「原位置的下方」開始，alpha=0，禁互動
             if (!_startPosCaptured)
             {
                 _startOriPos = _startRT.anchoredPosition;
                 _startPosCaptured = true;
             }
-            Vector2 fromPos = _startOriPos + new Vector2(0f, -Mathf.Abs(startMoveDownPixels)); // 由下往上
+
+            Vector2 fromPos = _startOriPos + new Vector2(0f, -Mathf.Abs(startMoveDownPixels));
             _startRT.anchoredPosition = fromPos;
 
             _startCG.alpha = 0f;
             _startCG.interactable = false;
             _startCG.blocksRaycasts = false;
 
-            StartCoroutine(IntroAppear());
+            _introCo = StartCoroutine(IntroAppearWithDelay());
         }
-        else
+
+        // 2) 底部四鍵：每次喚醒先隱藏與關互動
+        if (bottomCG != null)
         {
-            // 非初次或不播放 intro → 確保開始鈕可見且可互動
-            if (_startCG != null)
-            {
-                _startCG.alpha = 1f;
-                _startCG.interactable = true;
-                _startCG.blocksRaycasts = true;
-            }
-            if (_startRT != null && _startPosCaptured)
-                _startRT.anchoredPosition = _startOriPos;
+            bottomCG.alpha = 0f;
+            bottomCG.interactable = false;
+            bottomCG.blocksRaycasts = false;
+            bottomButtonsRoot.gameObject.SetActive(true); // 保持啟用以利之後淡入
         }
+    }
+
+    void OnDisable()
+    {
+        if (_introCo != null) { StopCoroutine(_introCo); _introCo = null; }
     }
 
     void OnDestroy()
@@ -137,8 +143,17 @@ public class StartToButtonsUI : MonoBehaviour
         }
     }
 
-    IEnumerator IntroAppear()
+    IEnumerator IntroAppearWithDelay()
     {
+        // 延遲
+        if (startIntroDelay > 0f)
+        {
+            float tDelay = 0f;
+            float Dt() => useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            while (tDelay < startIntroDelay) { tDelay += Dt(); yield return null; }
+        }
+
+        // 淡入 + 上浮
         float dur = Mathf.Max(0.0001f, startFadeSeconds);
         float t = 0f;
         float dt() => useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
@@ -161,7 +176,7 @@ public class StartToButtonsUI : MonoBehaviour
         _startCG.interactable = true;
         _startCG.blocksRaycasts = true;
 
-        introPlayed = true;
+        _introCo = null;
     }
 
     public void OnStartClicked()
@@ -171,13 +186,12 @@ public class StartToButtonsUI : MonoBehaviour
 
         if (startButton) startButton.interactable = false;
 
-        // 依序：1) 開始鈕淡出+下滑 → 2) 顯示四顆按鈕
         StartCoroutine(HideStartThenShowBottom());
     }
 
     IEnumerator HideStartThenShowBottom()
     {
-        // --- 1) 開始鈕動畫（淡出 + 向下位移） ---
+        // --- 1) 開始鈕：淡出 + 向下位移 ---
         if (_startRT != null && _startCG != null)
         {
             _startCG.blocksRaycasts = true; // 動畫期間擋點擊
@@ -214,7 +228,7 @@ public class StartToButtonsUI : MonoBehaviour
             }
         }
 
-        // --- 2) 顯示底部四鍵（淡入或立即） ---
+        // --- 2) 底部四鍵：淡入或立即 ---
         yield return StartCoroutine(ShowBottomButtons());
     }
 
