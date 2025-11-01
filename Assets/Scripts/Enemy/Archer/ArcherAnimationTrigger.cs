@@ -21,7 +21,7 @@ public class ArcherAnimationTriggers : MonoBehaviour
             {
 
                 PlayerStats target = hit.GetComponent<PlayerStats>();
-                enemy.stats.DoDamage(target);
+                enemy.stats.DoDamage(target, this.transform);
             }
         }
     }

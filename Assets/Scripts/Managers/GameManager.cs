@@ -162,6 +162,8 @@ public class GameManager : MonoBehaviour
     {
         isRespawning = true;
 
+        Player player = PlayerManager.instance.player;
+        player.isBusy = true;
         // 1. 畫面漸黑
         if (UI.instance != null)
         {
@@ -205,8 +207,6 @@ public class GameManager : MonoBehaviour
                 this.player.position = lastCheckpointPosition;
                 Debug.Log($"Player respawned at {lastCheckpointPosition}");
             }
-
-            Player player = PlayerManager.instance.player;
             player.isBusy = true; //玩家在無敵期間無法移動
 
             PlayerStats playerStats = player.GetComponent<PlayerStats>();

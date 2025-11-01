@@ -24,10 +24,20 @@ public class ScreenFlashController : MonoBehaviour
 
     private void Awake()
     {
-        // 单例模式
+        // 單例檢查
         if (instance == null)
         {
             instance = this;
+
+            // 讓父物件在切換場景時保留
+            if (transform.parent != null)
+            {
+                DontDestroyOnLoad(transform.parent.gameObject);
+            }
+            else
+            {
+                DontDestroyOnLoad(gameObject);
+            }
         }
         else
         {
@@ -35,31 +45,29 @@ public class ScreenFlashController : MonoBehaviour
             return;
         }
 
-        // 确保有 Image 组件
-        if (flashImage == null)
+        if (instance != null && instance != this)
         {
-            flashImage = GetComponent<Image>();
+            Destroy(transform.parent != null ? transform.parent.gameObject : gameObject);
+            return;
         }
 
-        // 获取或添加 CanvasGroup（用于控制透明度）
+        // 原有初始化邏輯
+        if (flashImage == null)
+            flashImage = GetComponent<Image>();
+
         canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup == null)
-        {
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
-        }
 
-        // 初始化为完全透明
         if (flashImage != null)
         {
             Color color = flashImage.color;
-            color.a = 1f; // 保持颜色不透明
+            color.a = 1f;
             flashImage.color = color;
-            flashImage.raycastTarget = false; // 不阻挡点击
+            flashImage.raycastTarget = false;
         }
 
-        canvasGroup.alpha = 0f; // 用 CanvasGroup 控制透明度
-
-        // 设置 Canvas 层级
+        canvasGroup.alpha = 0f;
         SetupCanvas();
     }
 

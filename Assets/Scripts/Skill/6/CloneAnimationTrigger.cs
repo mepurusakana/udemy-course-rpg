@@ -5,6 +5,7 @@ using UnityEngine;
 public class CloneAnimationTrigger : MonoBehaviour
 {
     private CloneController clone => GetComponentInParent<CloneController>();
+    private Transform player;
 
     public void AnimationTrigger()
     {
@@ -24,7 +25,7 @@ public class CloneAnimationTrigger : MonoBehaviour
                 EnemyStats _target = hit.GetComponent<EnemyStats>();
 
                 if (_target != null)
-                    _target.TakeDamage(10);
+                    _target.TakeDamage(10, this.transform);
 
                 //ItemData_Equipment weaponData = Inventory.instance.GetEquipment(EquipmentType.Weapon);
 

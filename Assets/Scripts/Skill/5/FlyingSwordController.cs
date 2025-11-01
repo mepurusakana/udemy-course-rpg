@@ -6,6 +6,7 @@ public class FlyingSwordController : MonoBehaviour
     public float speed = 10f;
     public LayerMask groundLayer;
 
+    public Transform player;
     private int damage;
     private int direction;
     private Rigidbody2D rb;
@@ -50,7 +51,7 @@ public class FlyingSwordController : MonoBehaviour
         {
             CharacterStats enemyStats = collision.GetComponent<CharacterStats>();
             if (enemyStats != null)
-                enemyStats.TakeDamage(damage);
+                enemyStats.TakeDamage(damage, this.transform);
 
             StickToTarget(collision.transform);
         }

@@ -31,6 +31,7 @@ public class CloneController : MonoBehaviour
     private float lifeTimer;
     private float attackTimer;
     private Transform enemy;
+    private Transform clone;
     private int facingDir = 1;
     private bool canAttack = true;
     private bool isActive = false;
@@ -215,7 +216,7 @@ public class CloneController : MonoBehaviour
             CharacterStats stats = enemy.GetComponent<CharacterStats>();
             if (stats != null && enemy.GetComponent<Enemy>() != null)
             {
-                stats.TakeDamage(damage);
+                stats.TakeDamage(damage, this.transform);
             }
         }
     }

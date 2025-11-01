@@ -127,6 +127,10 @@ public class Enemy : Entity
 
         return false;
     }
+    public virtual void OnTakeDamage(Transform attacker)
+    {
+        // 預設敵人什麼都不做，由子類去覆寫
+    }
 
     public virtual void AnimationFinishTrigger() => stateMachine.currentState.AnimationFinishTrigger();
     public virtual void AnimationSpecialAttackTrigger()
@@ -154,4 +158,5 @@ public class Enemy : Entity
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, new Vector3(transform.position.x + attackDistance * facingDir, transform.position.y));
     }
+
 }

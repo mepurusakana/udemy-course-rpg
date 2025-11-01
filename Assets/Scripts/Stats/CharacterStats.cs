@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 
@@ -54,21 +55,29 @@ public class CharacterStats : MonoBehaviour
 
         _statToModify.RemoveModifier(_modifier);
     }
-    
 
-    public virtual void DoDamage(CharacterStats _targetStats)
+
+    public virtual void DoDamage(CharacterStats _targetStats, Transform _attacker)
     {
-
-
-        if (_targetStats.isInvincible)
+        if (_targetStats == null || _targetStats.isInvincible)
             return;
 
-
-        _targetStats.GetComponent<Entity>().SetupKnockbackDir(transform);
+        // 取得目標的 Entity（用來設置擊退方向）
+        Entity targetEntity = _targetStats.GetComponent<Entity>();
+        if (targetEntity != null)
+            targetEntity.SetupKnockbackDir(_attacker);
 
         int totalDamage = damage.GetValue();
 
-        _targetStats.TakeDamage(totalDamage);
+        // 若對象是 Player
+        Player player = _targetStats.GetComponent<Player>();
+        if (player != null)
+        {
+            player.lastAttacker = _attacker; // 記錄攻擊者
+        }
+
+        // 統一呼叫 PlayerStats 的 TakeDamage
+        _targetStats.TakeDamage(totalDamage, _attacker);
     }
 
     private void HitNearestTargetWithShockStrike()
@@ -98,7 +107,7 @@ public class CharacterStats : MonoBehaviour
     }
 
 
-    public virtual void TakeDamage(int _damage)
+    public virtual void TakeDamage(int _damage, Transform _attacker)
     {
 
         if (isInvincible)

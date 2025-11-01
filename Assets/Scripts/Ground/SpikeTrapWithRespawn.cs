@@ -53,7 +53,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
     private IEnumerator HandleSpikeTrapSequence(Player player, PlayerStats playerStats)
     {
         // === 階段 1：畫面淡出 === //
-        playerStats.TakeDamage(damage);
+        playerStats.TakeDamage(damage, this.transform);
         if (fadeScreen != null)
         {
             fadeScreen.FadeOut();

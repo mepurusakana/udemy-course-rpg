@@ -7,6 +7,7 @@ public class PlayerHurtState : PlayerState
     private float hurtDuration = 0.35f;       // 僵直時間（秒）
     private float invincibleDuration = 1.2f;  // 無敵總時長
     private Coroutine hurtRoutine;
+    private bool isDeadDuringHurt = false;
 
     public PlayerHurtState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
         : base(_player, _stateMachine, _animBoolName)
@@ -16,34 +17,36 @@ public class PlayerHurtState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        Debug.Log(" 進入受擊狀態");
+        Debug.Log("進入受擊狀態");
 
         player.isBusy = true;
         hasAppliedKnockback = false;
 
-        // 停止玩家移動
         player.SetZeroVelocity();
-
-        // 播放受擊動畫
         player.anim.SetTrigger("Hurt");
 
         // 啟動無敵
         player.stats.MakeInvincible(true);
-
-        // 開始閃爍
         player.fx.StartCoroutine("FlashFX");
 
-        // 施加反方向擊退
         ApplyHurtKnockback();
 
-        // 啟動受擊流程（僵直+無敵）
+        // 啟動受擊流程
         hurtRoutine = player.StartCoroutine(HurtRoutine());
     }
 
     public override void Exit()
     {
         base.Exit();
-        Debug.Log("離開受擊狀態");
+
+        // 若玩家死亡，不解除控制與無敵，由 GameManager 處理
+        if (isDeadDuringHurt)
+        {
+            Debug.Log("離開受擊狀態（死亡中，不解除控制）");
+            return;
+        }
+
+        Debug.Log("離開受擊狀態（正常受傷恢復）");
 
         if (hurtRoutine != null)
             player.StopCoroutine(hurtRoutine);
@@ -61,22 +64,34 @@ public class PlayerHurtState : PlayerState
         if (knockbackForce == Vector2.zero)
             knockbackForce = new Vector2(8f, 12f);
 
-        int direction = knockbackForce.x >= 0 ? 1 : -1; // 確保X方向有正負值
         player.rb.velocity = knockbackForce;
-
         hasAppliedKnockback = true;
         Debug.Log($"玩家受擊反彈 (力道={knockbackForce})");
     }
 
     private IEnumerator HurtRoutine()
     {
-        // 等待僵直期間
         yield return new WaitForSeconds(hurtDuration);
 
-        // 切回空中狀態（或 Idle）
+        //  判斷玩家是否死亡
+        if (player.stats.currentHealth <= 0)
+        {
+            Debug.Log("玩家在受擊中死亡，進入重生流程");
+            isDeadDuringHurt = true;
+
+            // 防止操作、交給 GameManager 處理
+            player.isBusy = true;
+            player.SetZeroVelocity();
+            player.rb.gravityScale = player.defaultGravity;
+
+            GameManager.instance.RespawnPlayer();
+            yield break;
+        }
+
+        // === 若還活著 ===
         stateMachine.ChangeState(player.airState);
 
-        // 剩餘時間繼續無敵
+        // 保持無敵一小段時間
         yield return new WaitForSeconds(invincibleDuration - hurtDuration);
 
         player.stats.MakeInvincible(false);

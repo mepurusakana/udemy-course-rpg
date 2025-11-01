@@ -28,6 +28,7 @@ public class DiamondMissile : MonoBehaviour
     private Vector2 direction; // 飛行方向
     private Vector3 originalScale; // 原始縮放
     private Animator anim; // 動畫控制器
+    private Transform player;
 
     private void Awake()
     {
@@ -156,7 +157,7 @@ public class DiamondMissile : MonoBehaviour
             CharacterStats enemyStats = collision.GetComponent<CharacterStats>();
             if (enemyStats != null)
             {
-                enemyStats.TakeDamage(damage);
+                enemyStats.TakeDamage(damage, this.transform);
                 Debug.Log($"飛彈擊中敵人 {collision.name}，造成 {damage} 點傷害！");
             }
 

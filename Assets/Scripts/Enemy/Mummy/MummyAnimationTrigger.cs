@@ -17,11 +17,9 @@ public class MummyAnimationTriggers : MonoBehaviour
 
         foreach (var hit in colliders)
         {
-            if (hit.GetComponent<Player>() != null)
+            if (hit.TryGetComponent(out PlayerStats target))
             {
-
-                PlayerStats target = hit.GetComponent<PlayerStats>();
-                enemy.stats.DoDamage(target);
+                enemy.stats.DoDamage(target, enemy.transform);
             }
         }
     }

@@ -18,7 +18,7 @@ public class Explosion : MonoBehaviour
             CharacterStats enemyStats = collision.GetComponent<CharacterStats>();
             if (enemyStats != null)
             {
-                enemyStats.TakeDamage(damage);
+                enemyStats.TakeDamage(damage, this.transform);
                 Debug.Log("敵人受傷成功！");
             }
         }

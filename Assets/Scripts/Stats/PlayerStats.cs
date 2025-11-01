@@ -15,26 +15,31 @@ public class PlayerStats : CharacterStats
     }
 
     // PlayerStats.cs
-    public override void TakeDamage(int _damage)
+    public override void TakeDamage(int _damage, Transform _attacker)
     {
         if (isInvincible || isDead) return;
 
-        Vector2 knockbackDirection = Vector2.zero;
-        if (player != null && player.lastAttacker != null)
-        {
-            knockbackDirection = (player.transform.position - player.lastAttacker.position).normalized;
-            player.SetupKnockbackPower(knockbackDirection * new Vector2(8, 12));
-        }
+        // 紀錄攻擊者
+        player.lastAttacker = _attacker;
 
-        base.TakeDamage(_damage);
+        // 計算擊退方向
+        Vector2 direction = (player.transform.position - _attacker.position).normalized;
+        Vector2 knockbackForce = new Vector2(direction.x * 8f, 12f);
+        player.SetupKnockbackPower(knockbackForce);
+
+        // 扣血
+        base.TakeDamage(_damage, _attacker);
 
         if (isDead) return;
 
-        if (player != null && player.stateMachine != null)
-        {
-            player.TakeDamageAndEnterHurtState(player.lastAttacker);
-        }
+        // 調整面向方向：面朝敵人
+        int faceDir = (_attacker.position.x > player.transform.position.x) ? 1 : -1;
+        player.FlipController(faceDir);
+
+        // 進入受擊狀態
+        player.TakeDamageAndEnterHurtState(_attacker);
     }
+
 
 
 

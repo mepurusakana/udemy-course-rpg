@@ -70,10 +70,13 @@ public class Entity : MonoBehaviour
 
     public virtual void SetupKnockbackDir(Transform _damageDirection)
     {
-        if (_damageDirection.position.x > transform.position.x)
-            knockbackDir = -1;
-        else if (_damageDirection.position.x < transform.position.x)
-            knockbackDir = 1;
+        if (_damageDirection == null)
+        {
+            Debug.LogWarning($"{name} 被攻擊時未提供 damageDirection！");
+            return;
+        }
+
+        knockbackDir = transform.position.x > _damageDirection.position.x ? 1 : -1;
     }
 
     // 確保這個方法存在且是 public

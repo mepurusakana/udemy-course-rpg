@@ -2,17 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeathFallAnimationTrigger : MonoBehaviour
+public class DeathFallAnimationTriggers : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private DeathFall enemy => GetComponentInParent<DeathFall>();
+
+    private void AnimationTrigger()
     {
-        
+        enemy.AnimationFinishTrigger();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void AttackTrigger()
     {
-        
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(enemy.attackCheck.position, enemy.attackCheckRadius);
+
+        foreach (var hit in colliders)
+        {
+            if (hit.TryGetComponent(out PlayerStats target))
+            {
+                enemy.stats.DoDamage(target, enemy.transform);
+            }
+        }
     }
+
+    private void OpenCounterWindow() => enemy.OpenCounterAttackWindow();
+    private void CloseCounterWindow() => enemy.CloseCounterAttackWindow();
 }

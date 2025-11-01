@@ -30,7 +30,7 @@ public class Arrow_Controller : MonoBehaviour
             if (player != null)
             {
                 player.lastAttacker = this.transform; // 記錄攻擊來源
-                player.stats.TakeDamage(damage);
+                player.stats.TakeDamage(damage, this.transform);
             }
             StuckInto(collision);
         }

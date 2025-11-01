@@ -6,6 +6,7 @@ public class SkillController : MonoBehaviour
 {
     public float lifeTime = 0.3f;
     private int damage;
+    public Transform player;
     private List<CharacterStats> hitTargets = new List<CharacterStats>();
 
     public void Setup(int _damage)
@@ -20,7 +21,7 @@ public class SkillController : MonoBehaviour
             CharacterStats enemyStats = collision.GetComponent<CharacterStats>();
             if (enemyStats != null)
             {
-                enemyStats.TakeDamage(damage);
+                enemyStats.TakeDamage(damage, this.transform);
             }
         }
     }

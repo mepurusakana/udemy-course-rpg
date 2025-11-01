@@ -16,7 +16,7 @@ public class SkillAttack : MonoBehaviour
             CharacterStats enemyStats = collision.GetComponent<CharacterStats>();
             if (enemyStats != null)
             {
-                enemyStats.TakeDamage(damage);
+                enemyStats.TakeDamage(damage, this.transform);
             }
         }
     }

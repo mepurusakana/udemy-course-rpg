@@ -20,6 +20,7 @@ public class SpearController : MonoBehaviour
     private bool isIntroPlaying = true;
     private bool isOutroPlaying = false;
 
+    public Transform player;
     private Animator animator;
     private Rigidbody2D rb;
     private CapsuleCollider2D capsuleCollider;
@@ -156,7 +157,7 @@ public class SpearController : MonoBehaviour
             CharacterStats enemyStats = collision.GetComponent<CharacterStats>();
             if (enemyStats != null)
             {
-                enemyStats.TakeDamage(damage);
+                enemyStats.TakeDamage(damage, this.transform);
                 Debug.Log($"長矛擊中敵人，造成 {damage} 點傷害！");
             }
 

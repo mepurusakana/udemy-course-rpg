@@ -54,6 +54,22 @@ public class DeathFall : Enemy
         return false;
     }
 
+    public override void OnTakeDamage(Transform attacker)
+    {
+        base.OnTakeDamage(attacker);
+
+        // 如果敵人已經死亡或當前狀態是 Stunned，不重複進入
+        if (stats.isDead || stateMachine.currentState == stunnedState)
+            return;
+
+        // 面向玩家
+        int playerDir = attacker.position.x > transform.position.x ? 1 : -1;
+        if (facingDir != playerDir)
+            Flip();
+
+        // 進入暈眩狀態
+        stateMachine.ChangeState(stunnedState);
+    }
 
     public override void Die()
     {

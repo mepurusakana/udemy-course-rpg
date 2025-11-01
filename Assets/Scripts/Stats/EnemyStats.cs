@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,10 +41,17 @@ public class EnemyStats : CharacterStats
         }
     }
 
-    public override void TakeDamage(int _damage)
+    public override void TakeDamage(int _damage, Transform _attacker)
     {
-        base.TakeDamage(_damage);
+        base.TakeDamage(_damage, _attacker);
+
+        if (isDead) return;
+
+        Enemy enemy = GetComponent<Enemy>();
+        if (enemy != null)
+            enemy.OnTakeDamage(_attacker);
     }
+
 
     protected override void Die()
     {
