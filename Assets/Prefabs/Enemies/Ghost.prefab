@@ -259,7 +259,7 @@ Transform:
   m_GameObject: {fileID: 1285029708057629557}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10, y: 0, z: 0}
+  m_LocalPosition: {x: -15, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -622,7 +622,7 @@ Transform:
   m_GameObject: {fileID: 5428734491214069199}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.01, y: 0, z: 0}
+  m_LocalPosition: {x: -0.02, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -718,7 +718,12 @@ MonoBehaviour:
   leftPoint: {fileID: 4737759511329270400}
   rightPoint: {fileID: 3792404226939058675}
   projectilePrefab: {fileID: 7094881826884899634, guid: 3438314941e30654c97fc92dfd093788, type: 3}
-  firePoint: {fileID: 0}
+  firePoint: {fileID: 5717262327324783785}
+  detectionRadius: 20
+  detectionAngle: 90
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!50 &8719484722474350122
 Rigidbody2D:
   serializedVersion: 4
@@ -734,7 +739,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 12
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -902,7 +907,7 @@ Transform:
   m_GameObject: {fileID: 5897467961574031672}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 0, z: 0}
+  m_LocalPosition: {x: 15, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

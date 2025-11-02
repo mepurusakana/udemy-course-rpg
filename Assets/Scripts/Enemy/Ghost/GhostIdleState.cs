@@ -21,12 +21,15 @@ public class GhostIdleState : EnemyState
     {
         base.Update();
 
-        // 若發現玩家 → 進入攻擊或移動狀態
+        // 檢測玩家
         if (enemy.IsPlayerDetected())
         {
             stateMachine.ChangeState(enemy.attackState);
+            return;
         }
-        else if (stateTimer <= 0)
+
+        // Idle時間結束，開始移動
+        if (stateTimer < 0)
         {
             stateMachine.ChangeState(enemy.moveState);
         }

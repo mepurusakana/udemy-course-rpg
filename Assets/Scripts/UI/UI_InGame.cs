@@ -2,90 +2,114 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class UI_InGame : MonoBehaviour
 {
+    public static UI_InGame instance;
+
+    [Header("Player Reference")]
     [SerializeField] private PlayerStats playerStats;
-    [SerializeField] private Slider slider;
 
+    [Header("Health UI")]
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Image healthFill; // HP 紅條
 
-    [Header("Souls info")]
-    [SerializeField] private TextMeshProUGUI currentSouls;
-    [SerializeField] private float soulsAmount;
-    [SerializeField] private float increaseRate = 100;
+    [Header("MP UI")]
+    [SerializeField] private Slider mpSlider;
+    [SerializeField] private Image mpFill; // MP 藍條
 
-    void Start()
+    [Header("Optional Text")]
+    [SerializeField] private TextMeshProUGUI healthText;
+    [SerializeField] private TextMeshProUGUI mpText;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    private void Start()
     {
         FindAndSubscribeToPlayer();
     }
 
     private void OnEnable()
     {
-        // 每次啟用時都重新尋找玩家（場景切換後）
         FindAndSubscribeToPlayer();
     }
 
     private void OnDisable()
     {
-        // 取消訂閱
         if (playerStats != null)
+        {
             playerStats.onHealthChanged -= UpdateHealthUI;
+            // 如果之後你加入 onMPChanged，也可以一併取消訂閱
+        }
     }
 
-    public void FindAndSubscribeToPlayer()
+    private void FindAndSubscribeToPlayer()
     {
-        // 先取消舊的訂閱
-        if (playerStats != null)
-            playerStats.onHealthChanged -= UpdateHealthUI;
-
-        // 尋找玩家
-        if (PlayerManager.instance != null && PlayerManager.instance.player != null)
+        if (PlayerManager.instance == null || PlayerManager.instance.player == null)
         {
-            playerStats = PlayerManager.instance.player.GetComponent<PlayerStats>();
-
-            if (playerStats != null)
-            {
-                playerStats.onHealthChanged += UpdateHealthUI;
-                UpdateHealthUI(); // 立即更新一次
-            }
-        }
-        else
-        {
-            // 如果 PlayerManager 還沒準備好，稍後再試
             Invoke(nameof(FindAndSubscribeToPlayer), 0.5f);
+            return;
         }
+
+        playerStats = PlayerManager.instance.player.GetComponent<PlayerStats>();
+        if (playerStats == null)
+        {
+            Invoke(nameof(FindAndSubscribeToPlayer), 0.5f);
+            return;
+        }
+
+        // 綁定事件
+        playerStats.onHealthChanged += UpdateHealthUI;
+
+        // 初始化 UI
+        UpdateHealthUI();
+        UpdateMPUI(playerStats.currentMP, playerStats.GetMaxMPValue());
     }
 
-    void Update()
+    private void Update()
     {
-        UpdateSoulsUI();
+        // 若 PlayerStats 在更新 MP 時沒呼叫 UI 更新（例如自然回魔），也可在這同步
+        if (playerStats != null)
+            UpdateMPUI(playerStats.currentMP, playerStats.GetMaxMPValue());
     }
 
-    private void UpdateSoulsUI()
-    {
-
-
-        //currentSouls.text = ((int)soulsAmount).ToString();
-    }
-
+    /// <summary>更新血量條</summary>
     private void UpdateHealthUI()
     {
-        slider.maxValue = playerStats.GetMaxHealthValue();
-        slider.value = playerStats.currentHealth;
+        if (playerStats == null) return;
+
+        int maxHealth = playerStats.GetMaxHealthValue();
+        healthSlider.maxValue = maxHealth;
+        healthSlider.value = playerStats.currentHealth;
+
+        if (healthText != null)
+            healthText.text = $"{playerStats.currentHealth}/{maxHealth}";
+
+        if (healthFill != null)
+            healthFill.fillAmount = (float)playerStats.currentHealth / maxHealth;
     }
 
-
-    private void SetCooldownOf(Image _image)
+    /// <summary>更新魔力條</summary>
+    public void UpdateMPUI(int currentMP, int maxMP)
     {
-        if (_image.fillAmount <= 0)
-            _image.fillAmount = 1;
+        if (mpSlider != null)
+        {
+            mpSlider.maxValue = maxMP;
+            mpSlider.value = currentMP;
+        }
+
+        if (mpText != null)
+            mpText.text = $"{currentMP}/{maxMP}";
+
+        if (mpFill != null)
+            mpFill.fillAmount = (float)currentMP / maxMP;
     }
-
-    private void CheckCooldownOf(Image _image, float _cooldown)
-    {
-        if (_image.fillAmount > 0)
-            _image.fillAmount -= 1 / _cooldown * Time.deltaTime;
-    }
-
-
 }

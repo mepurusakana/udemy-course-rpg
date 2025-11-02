@@ -23,6 +23,26 @@ public class Enemy_AnimationTriggers : MonoBehaviour
             }
         }
     }
+
+    private void GhostShootProjectile()
+    {
+        if (enemy is Ghost ghost)
+        {
+            Player targetPlayer = ghost.player ?? PlayerManager.instance?.player;
+            if (targetPlayer == null || ghost.projectilePrefab == null || ghost.firePoint == null)
+                return;
+
+            GameObject projectile = Instantiate(ghost.projectilePrefab, ghost.firePoint.position, Quaternion.identity);
+            GhostProjectile projectileScript = projectile.GetComponent<GhostProjectile>();
+
+            if (projectileScript != null)
+            {
+                projectileScript.SetupProjectile(targetPlayer.transform);
+            }
+        }
+    }
+
+
     private void SpeicalAttackTrigger()
     {
         enemy.AnimationSpecialAttackTrigger();
@@ -31,15 +51,35 @@ public class Enemy_AnimationTriggers : MonoBehaviour
     private void OpenCounterWindow() => enemy.OpenCounterAttackWindow();
     private void CloseCounterWindow() => enemy.CloseCounterAttackWindow();
 
-    private void JumpUpTriggerSmooth(float height)
+    private void UpTriggerSmooth(float height)
     {
-        StartCoroutine(JumpUpSmoothCoroutine(height));
+        StartCoroutine(UpSmoothCoroutine(height));
     }
 
-    private IEnumerator JumpUpSmoothCoroutine(float height)
+    private void DownTriggerSmooth(float height)
+    {
+        StartCoroutine(DownSmoothCoroutine(height));
+    }
+
+    private IEnumerator UpSmoothCoroutine(float height)
     {
         Vector3 startPos = enemy.transform.position;
         Vector3 endPos = startPos + new Vector3(0, height, 0);
+        float t = 0f;
+        float duration = 0.15f; // 調整上升時間
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duration;
+            enemy.transform.position = Vector3.Lerp(startPos, endPos, t);
+            yield return null;
+        }
+    }
+
+    private IEnumerator DownSmoothCoroutine(float height)
+    {
+        Vector3 startPos = enemy.transform.position;
+        Vector3 endPos = startPos - new Vector3(0, height, 0);
         float t = 0f;
         float duration = 0.15f; // 調整上升時間
 

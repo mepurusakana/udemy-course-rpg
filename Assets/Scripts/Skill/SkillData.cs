@@ -7,6 +7,7 @@ public class SkillData : ScriptableObject
     public string skillName;
     public KeyCode activationKey;
     public float cooldown = 2f;
+    public int mpCost;
     public Transform spawnPoint;
 
     [Header("技能預製體")]

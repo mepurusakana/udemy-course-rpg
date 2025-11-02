@@ -9,6 +9,7 @@ public class SkillManager : MonoBehaviour
 
     private Dictionary<KeyCode, float> cooldownTimers = new Dictionary<KeyCode, float>();
     private Player player;
+    private PlayerStats playerStats;
     //private CloneController clone;
     private GameObject currentSpirit; // 當前召喚的精靈
     private GameObject currentClone; //當前召喚的分身
@@ -22,6 +23,7 @@ public class SkillManager : MonoBehaviour
     private void Start()
     {
         player = GetComponent<Player>();
+        playerStats = GetComponent<PlayerStats>();
 
         // 初始化冷卻計時器
         foreach (SkillData skill in skills)
@@ -84,10 +86,22 @@ public class SkillManager : MonoBehaviour
             return;
         }
 
+        //  檢查 MP 是否足夠
+        if (playerStats.currentMP < skill.mpCost)
+        {
+            Debug.Log("MP 不足，無法使用技能！");
+            ShowMPNotEnoughMessage(); // 顯示UI提示
+            return;
+        }
+
+        //  扣除 MP
+        playerStats.ConsumeMP(skill.mpCost);
+
         // 使用技能
-        int skillIndex = skills.IndexOf(skill); // 找到 index
-        UseSkill(skill, skillIndex); // 傳遞 index
+        int skillIndex = skills.IndexOf(skill);
+        UseSkill(skill, skillIndex);
     }
+
 
     public void UseSkill(SkillData skill, int skillIndex)
     {
@@ -419,5 +433,22 @@ public class SkillManager : MonoBehaviour
     public bool HasActiveClone()
     {
         return currentClone != null; 
+    }
+
+
+
+
+    private void ShowMPNotEnoughMessage()
+    {
+        // 若有全局 UI 管理器
+        if (UI.instance != null)
+        {
+            //UI.instance.ShowCenterMessage("MP 不足！");
+        }
+        else
+        {
+            // 沒有 UI 系統就用 Debug.Log 代替
+            Debug.LogWarning("MP 不足！");
+        }
     }
 }

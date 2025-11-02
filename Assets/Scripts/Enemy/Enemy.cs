@@ -8,6 +8,9 @@ using UnityEngine;
 [RequireComponent(typeof(EntityFX))]
 public class Enemy : Entity
 {
+    
+
+
     [SerializeField] protected LayerMask whatIsPlayer;
 
 
@@ -31,6 +34,10 @@ public class Enemy : Entity
     public float maxAttackCooldown= 2;
     [HideInInspector] public float lastAttackTime;
 
+    public bool isDead { get; protected set; } = false;
+    
+
+
     public EnemyStateMachine stateMachine { get; private set; }
     public EntityFX fx { get; private set; }
     public Player player;
@@ -48,6 +55,9 @@ public class Enemy : Entity
         base.Start();
 
         fx = GetComponent<EntityFX>();
+
+        if (player == null && PlayerManager.instance != null)
+            player = PlayerManager.instance.player;
     }
 
     protected override void Update()
@@ -159,4 +169,11 @@ public class Enemy : Entity
         Gizmos.DrawLine(transform.position, new Vector3(transform.position.x + attackDistance * facingDir, transform.position.y));
     }
 
+    public override void Die()
+    {
+        if (isDead) return; // 避免重複死亡
+        isDead = true;
+
+        // 其他死亡處理
+    }
 }
