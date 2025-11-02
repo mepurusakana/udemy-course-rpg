@@ -15,6 +15,7 @@ MonoBehaviour:
   skillName: Summon Spirit
   activationKey: 52
   cooldown: 2
+  mpCost: 35
   spawnPoint: {fileID: 0}
   skillPrefab: {fileID: 1701850246773537926, guid: 539d0ce0e89bf9a408710d3e69f1ea08, type: 3}
   animationBoolName: SkillSommon

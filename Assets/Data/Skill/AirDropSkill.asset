@@ -15,6 +15,7 @@ MonoBehaviour:
   skillName: 
   activationKey: 50
   cooldown: 3
+  mpCost: 30
   spawnPoint: {fileID: 0}
   skillPrefab: {fileID: 1125033659123340007, guid: bead0ac7f52ce8b4baae255dc0a41e27, type: 3}
   animationBoolName: SkillFall

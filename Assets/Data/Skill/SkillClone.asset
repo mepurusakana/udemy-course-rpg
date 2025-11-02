@@ -15,6 +15,7 @@ MonoBehaviour:
   skillName: Summon Clone
   activationKey: 54
   cooldown: 2
+  mpCost: 40
   spawnPoint: {fileID: 0}
   skillPrefab: {fileID: 6505549667648419125, guid: d20132d0ed8ca754e8d015c65eed52c4, type: 3}
   animationBoolName: SkillClone

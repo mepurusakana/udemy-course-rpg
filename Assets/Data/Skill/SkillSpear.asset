@@ -15,6 +15,8 @@ MonoBehaviour:
   skillName: SkillSpear
   activationKey: 49
   cooldown: 2
+  mpCost: 20
+  spawnPoint: {fileID: 0}
   skillPrefab: {fileID: 2315596762675317849, guid: 1e7de3042bb188845aa1ad280a752613, type: 3}
   animationBoolName: SkillSpear
   damageAmount: 20
@@ -22,7 +24,7 @@ MonoBehaviour:
   requiresAirborne: 0
   requiresGrounded: 0
   isProjectile: 0
-  spawnPoint: {fileID: 0}
+  isClone: 0
   isSummon: 0
   isFlyingSword: 0
   isDimensionGun: 1

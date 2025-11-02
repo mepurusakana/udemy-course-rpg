@@ -15,6 +15,8 @@ MonoBehaviour:
   skillName: 
   activationKey: 51
   cooldown: 2
+  mpCost: 15
+  spawnPoint: {fileID: 0}
   skillPrefab: {fileID: 2836814696883367278, guid: 2dfb200677a7c244ca08a14d4d6c167c, type: 3}
   animationBoolName: ThrowBomb
   damageAmount: 20
@@ -22,5 +24,7 @@ MonoBehaviour:
   requiresAirborne: 0
   requiresGrounded: 1
   isProjectile: 1
+  isClone: 0
   isSummon: 0
   isFlyingSword: 0
+  isDimensionGun: 0

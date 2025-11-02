@@ -15,6 +15,8 @@ MonoBehaviour:
   skillName: 
   activationKey: 53
   cooldown: 2
+  mpCost: 15
+  spawnPoint: {fileID: 0}
   skillPrefab: {fileID: 1311407157767030158, guid: ead152c922d36bf4bb542b86a2bbef3d, type: 3}
   animationBoolName: FlyingSword
   damageAmount: 20
@@ -22,5 +24,7 @@ MonoBehaviour:
   requiresAirborne: 0
   requiresGrounded: 1
   isProjectile: 0
+  isClone: 0
   isSummon: 0
   isFlyingSword: 1
+  isDimensionGun: 0
