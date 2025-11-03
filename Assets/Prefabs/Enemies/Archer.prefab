@@ -228,7 +228,12 @@ MonoBehaviour:
   maxHealth:
     baseValue: 50
     modifiers: 
+  maxMP:
+    baseValue: 0
+    modifiers: 
   currentHealth: 50
+  currentMP: 0
+  mpRegenPerSecond: 1
   soulsDropAmount:
     baseValue: 0
     modifiers: 
@@ -249,11 +254,11 @@ MonoBehaviour:
   popUpTextPrefab: {fileID: 2894285104381243520, guid: 4b0d5792d42704c4bb5071d4a04d11b2, type: 3}
   flashDuration: 0
   hitMat: {fileID: 2100000, guid: 78758ed07969e5449922bd9487087aa7, type: 2}
-  igniteColor: []
-  chillColor: []
-  shockColor: []
   hitFx: {fileID: 4431538376159538090, guid: 2f387d67210ae6246b602d015d7b9968, type: 3}
   criticalHitFx: {fileID: 3347290265377545998, guid: b74d5da7ef04de04099c0144d41367ce, type: 3}
+  invincibilityFlashSpeed: 0.1
+  invincibilityColor: {r: 1, g: 1, b: 1, a: 0.5}
+  useGlowEffect: 0
 --- !u!114 &1894090683098891950
 MonoBehaviour:
   m_ObjectHideFlags: 0

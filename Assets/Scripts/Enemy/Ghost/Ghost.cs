@@ -143,18 +143,14 @@ public class Ghost : Enemy
         float knockbackDir = transform.position.x < attacker.position.x ? -1 : 1;
 
         // 設定擊退速度（可自行調整力度）
-        Vector2 knockbackVelocity = new Vector2(knockbackDir * 8f, 2f);
+        Vector2 knockbackVelocity = new Vector2(knockbackDir * 8f, 0);
         rb.velocity = knockbackVelocity;
 
-        // 可選：暫時允許重力（如果想要稍微往上拋的感覺）
-        float originalGravity = rb.gravityScale;
-        rb.gravityScale = 1f;
 
         // 保持擊退 0.2 秒
         yield return new WaitForSeconds(0.2f);
 
         // 恢復狀態
-        rb.gravityScale = originalGravity;
         rb.velocity = Vector2.zero;
     }
 

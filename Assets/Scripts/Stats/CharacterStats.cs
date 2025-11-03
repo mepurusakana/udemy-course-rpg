@@ -1,5 +1,6 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
+using System;
 
 public enum StatType
 {
@@ -12,7 +13,7 @@ public class CharacterStats : MonoBehaviour
     private EntityFX fx;
 
     [Header("Offensive stats")]
-    public Stat damage; // §ğÀ»¤O
+    public Stat damage; // æ”»æ“ŠåŠ›
 
     [Header("Defensive stats")]
     public Stat maxHealth;
@@ -22,11 +23,17 @@ public class CharacterStats : MonoBehaviour
     public int currentMP;
     public float mpRegenPerSecond = 1f;
 
-    public System.Action onHealthChanged;
     public bool isDead { get; protected set; }
     public bool isInvincible { get; private set; }
 
     private SpikeTrapWithRespawn trap;
+
+    
+
+    public System.Action onHealthChanged;
+    // äº‹ä»¶ï¼šå½“MPæ”¹å˜æ—¶è§¦å‘
+    public System.Action onMPChanged;
+
 
     protected virtual void Start()
     {
@@ -41,7 +48,7 @@ public class CharacterStats : MonoBehaviour
         RegenerateMP();
     }
 
-    // ´£¤ÉÄİ©Ê¼È®É©Ê buff
+    // æå‡å±¬æ€§æš«æ™‚æ€§ buff
     public virtual void IncreaseStatBy(int _modifier, float _duration, Stat _statToModify)
     {
         StartCoroutine(StatModCoroutine(_modifier, _duration, _statToModify));
@@ -54,7 +61,7 @@ public class CharacterStats : MonoBehaviour
         _statToModify.RemoveModifier(_modifier);
     }
 
-    // ¶Ë®`ÅŞ¿è
+    // å‚·å®³é‚è¼¯
     public virtual void DoDamage(CharacterStats _targetStats, Transform _attacker)
     {
         if (_targetStats == null || _targetStats.isInvincible)
@@ -127,7 +134,7 @@ public class CharacterStats : MonoBehaviour
 
     private void RegenerateMP()
     {
-        //  maxMP ¬O Stat¡A­n¥Î .GetValue() ¨ú¼Æ­È
+        //  maxMP æ˜¯ Statï¼Œè¦ç”¨ .GetValue() å–æ•¸å€¼
         int maxMPValue = maxMP.GetValue();
 
         if (currentMP < maxMPValue)
@@ -137,7 +144,7 @@ public class CharacterStats : MonoBehaviour
                 currentMP + Mathf.FloorToInt(mpRegenPerSecond * Time.deltaTime)
             );
 
-            // §ó·s UI
+            // æ›´æ–° UI
             if (UI_InGame.instance != null)
                 UI_InGame.instance.UpdateMPUI(currentMP, maxMPValue);
         }

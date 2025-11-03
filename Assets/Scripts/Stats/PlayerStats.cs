@@ -24,7 +24,7 @@ public class PlayerStats : CharacterStats
 
         // ≠p∫‚¿ª∞h§Ë¶V
         Vector2 direction = (player.transform.position - _attacker.position).normalized;
-        Vector2 knockbackForce = new Vector2(direction.x * 8f, 12f);
+        Vector2 knockbackForce = new Vector2(direction.x * 1f, 2f);
         player.SetupKnockbackPower(knockbackForce);
 
         // ¶©¶Â

@@ -1,4 +1,4 @@
-using TMPro;
+ï»¿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +11,11 @@ public class UI_InGame : MonoBehaviour
 
     [Header("Health UI")]
     [SerializeField] private Slider healthSlider;
-    [SerializeField] private Image healthFill; // HP ¬õ±ø
+    [SerializeField] private Image healthFill; // HP ç´…æ¢
 
     [Header("MP UI")]
     [SerializeField] private Slider mpSlider;
-    [SerializeField] private Image mpFill; // MP ÂÅ±ø
+    [SerializeField] private Image mpFill; // MP è—æ¢
 
     [Header("Optional Text")]
     [SerializeField] private TextMeshProUGUI healthText;
@@ -47,7 +47,7 @@ public class UI_InGame : MonoBehaviour
         if (playerStats != null)
         {
             playerStats.onHealthChanged -= UpdateHealthUI;
-            // ¦pªG¤§«á§A¥[¤J onMPChanged¡A¤]¥i¥H¤@¨Ö¨ú®ø­q¾\
+            // å¦‚æœä¹‹å¾Œä½ åŠ å…¥ onMPChangedï¼Œä¹Ÿå¯ä»¥ä¸€ä½µå–æ¶ˆè¨‚é–±
         }
     }
 
@@ -66,22 +66,22 @@ public class UI_InGame : MonoBehaviour
             return;
         }
 
-        // ¸j©w¨Æ¥ó
+        // ç¶å®šäº‹ä»¶
         playerStats.onHealthChanged += UpdateHealthUI;
 
-        // ªì©l¤Æ UI
+        // åˆå§‹åŒ– UI
         UpdateHealthUI();
         UpdateMPUI(playerStats.currentMP, playerStats.GetMaxMPValue());
     }
 
     private void Update()
     {
-        // ­Y PlayerStats ¦b§ó·s MP ®É¨S©I¥s UI §ó·s¡]¨Ò¦p¦ÛµM¦^Å]¡^¡A¤]¥i¦b³o¦P¨B
+        // è‹¥ PlayerStats åœ¨æ›´æ–° MP æ™‚æ²’å‘¼å« UI æ›´æ–°ï¼ˆä¾‹å¦‚è‡ªç„¶å›é­”ï¼‰ï¼Œä¹Ÿå¯åœ¨é€™åŒæ­¥
         if (playerStats != null)
             UpdateMPUI(playerStats.currentMP, playerStats.GetMaxMPValue());
     }
 
-    /// <summary>§ó·s¦å¶q±ø</summary>
+    /// <summary>æ›´æ–°è¡€é‡æ¢</summary>
     private void UpdateHealthUI()
     {
         if (playerStats == null) return;
@@ -97,7 +97,7 @@ public class UI_InGame : MonoBehaviour
             healthFill.fillAmount = (float)playerStats.currentHealth / maxHealth;
     }
 
-    /// <summary>§ó·sÅ]¤O±ø</summary>
+    /// <summary>æ›´æ–°é­”åŠ›æ¢</summary>
     public void UpdateMPUI(int currentMP, int maxMP)
     {
         if (mpSlider != null)

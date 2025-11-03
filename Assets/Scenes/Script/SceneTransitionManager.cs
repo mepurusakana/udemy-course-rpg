@@ -163,6 +163,8 @@ public class SceneTransitionManager : MonoBehaviour
 
         if (loadingText) loadingText.text = "";
 
+        yield return new WaitForSeconds(1f);
+
         // 4) ±q¶Â¹õ²H¦^
         yield return Fade(0f, fadeInDuration);
 

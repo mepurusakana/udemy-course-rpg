@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.Video; // 需要引用
 [RequireComponent(typeof(RectTransform))]
 public class ProximityText_ByTextBounds : MonoBehaviour
 {
@@ -9,22 +9,27 @@ public class ProximityText_ByTextBounds : MonoBehaviour
     [Tooltip("要控制透明度的 CanvasGroup（掛在文字的 Canvas 上）")]
     public CanvasGroup targetGroup;
 
+    [Header("影片控制")]
+    [Tooltip("可選：同級的 VideoPlayer，用於同步淡入淡出")]
+    public VideoPlayer videoPlayer;
+    [Tooltip("影片的 Renderer（如果你用 RawImage 或 MeshRenderer 顯示影片）")]
+    public Renderer videoRenderer;
+    [Tooltip("影片淡入淡出時間（秒）")]
+    public float videoFadeSpeed = 3f;
+
     [Header("距離判定（基於文字框 Bounds）")]
-    [Tooltip("<= 這個距離 → 文字全亮 (alpha=1)")]
     public float minDistanceForFullAlpha = 0.5f;
-    [Tooltip(">= 這個距離 → 文字全隱 (alpha=0)")]
     public float maxDistanceForZeroAlpha = 5f;
-    [Tooltip("透明度曲線，X=距離比例(0~1)，Y=透明度(0~1)")]
     public AnimationCurve falloffCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
     [Header("其他設定")]
     public string playerTag = "Player";
-    [Tooltip("更新頻率（秒）；0=每幀更新")]
     [Range(0f, 0.2f)] public float updateInterval = 0.05f;
     public bool debugLog = false;
 
     private RectTransform rect;
     private float timer;
+    private float currentVideoAlpha = 0f;
 
     private void Awake()
     {
@@ -38,10 +43,14 @@ public class ProximityText_ByTextBounds : MonoBehaviour
 
         if (targetGroup != null)
         {
-            targetGroup.alpha = 0f; // 一開始隱藏
+            targetGroup.alpha = 0f;
             targetGroup.blocksRaycasts = false;
             targetGroup.interactable = false;
         }
+
+        // 初始化影片
+        if (videoRenderer != null)
+            SetVideoAlpha(0f);
     }
 
     private void Update()
@@ -73,12 +82,47 @@ public class ProximityText_ByTextBounds : MonoBehaviour
             a = falloffCurve.Evaluate(t);
         }
 
-        // 套用透明度
+        // 套用文字透明度
         targetGroup.alpha = a;
         targetGroup.blocksRaycasts = false;
         targetGroup.interactable = false;
 
+        // 套用影片淡入淡出
+        UpdateVideoFade(a);
+
         if (debugLog) Debug.Log($"[ProximityText_ByTextBounds] d={dist:F2}, alpha={a:F2}");
+    }
+
+    private void UpdateVideoFade(float targetAlpha)
+    {
+        if (videoRenderer == null) return;
+
+        // 平滑過渡
+        currentVideoAlpha = Mathf.MoveTowards(currentVideoAlpha, targetAlpha, videoFadeSpeed * Time.deltaTime);
+
+        // 更新材質顏色透明度
+        SetVideoAlpha(currentVideoAlpha);
+
+        // 控制播放/暫停
+        if (videoPlayer != null)
+        {
+            if (currentVideoAlpha > 0.01f && !videoPlayer.isPlaying)
+                videoPlayer.Play();
+            else if (currentVideoAlpha <= 0.01f && videoPlayer.isPlaying)
+                videoPlayer.Pause();
+        }
+    }
+
+    private void SetVideoAlpha(float alpha)
+    {
+        if (videoRenderer == null) return;
+
+        if (videoRenderer.material.HasProperty("_Color"))
+        {
+            Color c = videoRenderer.material.color;
+            c.a = alpha;
+            videoRenderer.material.color = c;
+        }
     }
 
     /// <summary>
