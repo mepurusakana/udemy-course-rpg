@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FlyingSword
   m_EditorClassIdentifier: 
   skillName: 
-  activationKey: 53
+  activationKey: 101
   cooldown: 2
   mpCost: 15
   spawnPoint: {fileID: 0}
