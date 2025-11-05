@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerHurtState : PlayerState
 {
     private bool hasAppliedKnockback = false;
-    private float hurtDuration = 1.5f;
+    private float hurtDuration = 0.5f;
     private float invincibleDuration = 1.2f;
     private Coroutine hurtRoutine;
     private bool isDeadDuringHurt = false;

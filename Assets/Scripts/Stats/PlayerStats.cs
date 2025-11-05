@@ -95,10 +95,13 @@ public class PlayerStats : CharacterStats
             onHealthChanged();
     }
 
-    public void ResetHealthOnRespawn()
+    public void ResetOnRespawn()
     {
         isDead = false;
         currentHealth = GetMaxHealthValue();
+        currentMP=GetMaxMPValue();
+        player.chantCharges = 3;
+        player.UpdateChantUI();
 
         if (onHealthChanged != null)
             onHealthChanged();

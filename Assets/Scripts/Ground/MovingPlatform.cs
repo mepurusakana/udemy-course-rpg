@@ -21,8 +21,8 @@ public class MovingPlatform : MonoBehaviour
     private int nextIndex = 1;
     private int direction = 1;
 
-    private Rigidbody2D rb;
-    private float waitTimer = 0f;
+    public Rigidbody2D rb;
+    public float waitTimer = 0f;
     private Vector2 velocity;
 
     public Vector2 CurrentVelocity => velocity;

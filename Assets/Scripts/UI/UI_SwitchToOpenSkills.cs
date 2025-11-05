@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal; // 加入以使用 Light2D
+
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem; // 新輸入系統
 #endif
@@ -23,53 +25,56 @@ public class UI_SwitchToOpenSkills : MonoBehaviour
 
     public bool IsPlayerInRange { get; private set; } = false;
 
-#if ENABLE_INPUT_SYSTEM
-    // 新輸入系統：可在 Inspector 綁定，或在 Awake 內動態建立
-    [Header("Input System（新）")]
-    [SerializeField] private InputAction openSkillsAction; // 綁定鍵位：<Keyboard>/e
-#endif
+    
+
 
     private void Awake()
     {
         if (spriteRenderer == null)
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
+        
         ApplySprite(false);
 
-#if ENABLE_INPUT_SYSTEM
-         若未在 Inspector 綁定，動態建立一個 E 鍵
-        if (openSkillsAction == null || openSkillsAction.bindings.Count == 0)
-        {
-            openSkillsAction = new InputAction("OpenSkills", InputActionType.Button);
-            openSkillsAction.AddBinding("<Keyboard>/e");
-            // 也可加手把鍵位：
-            // openSkillsAction.AddBinding("<Gamepad>/south"); // A 鍵 (Xbox)
-        }
-        openSkillsAction.Enable();
-        if (showDebugLogs) Debug.Log("[UI_SwitchToOpenSkills] InputAction enabled (新輸入系統)", this);
-#endif
+        AutoFindUISkill();
     }
+
+    private void AutoFindUISkill()
+    {
+        if (skillsUIRootFallback != null)
+            return; // 已手動指定則不再尋找
+
+        // 嘗試尋找名為 "UI" 的物件
+        GameObject uiRoot = GameObject.Find("UI");
+        if (uiRoot != null)
+        {
+            Transform skillUI = uiRoot.transform.Find("UI_Skill");
+            if (skillUI != null)
+            {
+                skillsUIRootFallback = skillUI.gameObject;
+                if (showDebugLogs) Debug.Log($"[UI_SwitchToOpenSkills] 已自動綁定 UI_Skill: {skillsUIRootFallback.name}", this);
+            }
+            else
+            {
+                if (showDebugLogs) Debug.LogWarning("[UI_SwitchToOpenSkills] 找不到子物件 UI_Skill", this);
+            }
+        }
+        else
+        {
+            if (showDebugLogs) Debug.LogWarning("[UI_SwitchToOpenSkills] 找不到名為 'UI' 的物件", this);
+        }
+    }
+
 
     private void OnDestroy()
     {
-#if ENABLE_INPUT_SYSTEM
-        if (openSkillsAction != null) openSkillsAction.Disable();
-#endif
+        
     }
 
     private void Update()
     {
-        // ---- 舊輸入系統 ----
-        bool pressedE_Old = Input.GetKeyDown(KeyCode.E);
-
-        // ---- 新輸入系統（若有啟用）----
-        bool pressedE_New = false;
-#if ENABLE_INPUT_SYSTEM
-        if (openSkillsAction != null)
-            pressedE_New = openSkillsAction.WasPerformedThisFrame();
-#endif
-
-        if (IsPlayerInRange && (pressedE_Old || pressedE_New))
+        bool pressedE_Old = Input.GetKeyDown(KeyCode.F);
+        if (IsPlayerInRange && pressedE_Old)
         {
             TryOpenSkillsUI();
         }
@@ -78,6 +83,18 @@ public class UI_SwitchToOpenSkills : MonoBehaviour
     private void TryOpenSkillsUI()
     {
         if (showDebugLogs) Debug.Log("[UI_SwitchToOpenSkills] 嘗試開啟 Skills UI", this);
+
+        //  找到玩家並重置狀態
+        Player player = FindFirstObjectByType<Player>();
+        if (player != null)
+        {
+            PlayerStats stats = player.GetComponent<PlayerStats>();
+            if (stats != null)
+            {
+                stats.ResetOnRespawn();
+                if (showDebugLogs) Debug.Log("[UI_SwitchToOpenSkills] 玩家狀態已重置 (ResetOnRespawn)", this);
+            }
+        }
 
         if (UI_Manager.Instance != null)
         {
@@ -135,9 +152,14 @@ public class UI_SwitchToOpenSkills : MonoBehaviour
     // ===== 圖片切換 =====
     private void ApplySprite(bool inRange)
     {
-        if (spriteRenderer == null) return;
 
-        if (inRange && onSprite != null) spriteRenderer.sprite = onSprite;
-        else if (!inRange && offSprite != null) spriteRenderer.sprite = offSprite;
+        if (spriteRenderer == null) return; 
+
+        if (inRange && onSprite != null) 
+            spriteRenderer.sprite = onSprite; 
+
+        else if (!inRange && offSprite != null) 
+            spriteRenderer.sprite = offSprite;
+
     }
 }

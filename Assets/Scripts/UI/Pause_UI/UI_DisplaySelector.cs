@@ -1,16 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;     // Unity 的舊 Text
+using TMPro;              // TextMeshPro
 
 public class UI_DisplaySelector : MonoBehaviour
 {
-    public GameObject[] pages; // 拖入 Page_0（視窗）、Page_1（無邊界）、Page_2（全螢幕）
-    private int currentIndex = 0; // 預設為 Page_0：視窗模式
+    [Header("顯示模式頁面")]
+    public GameObject[] pages;
+
+    [Header("顯示文字（兩者擇一或都填，留空則不顯示）")]
+    public Text legacyText;                 // UnityEngine.UI.Text
+    public TextMeshProUGUI tmpText;         // TextMeshProUGUI
+
+    [Header("可選：前綴格式")]
+    [Tooltip("例如：\"顯示模式：{0}\"，{0} 會被替換成模式名稱")]
+    public string displayFormat = "{0}";    // 可改成 "顯示模式：{0}"
+
+    private int currentIndex = 0;
+
+    private readonly FullScreenMode[] modes = {
+        FullScreenMode.Windowed,
+        FullScreenMode.FullScreenWindow,
+        FullScreenMode.ExclusiveFullScreen
+    };
+
+    private readonly string[] labels = { "視窗", "無邊框視窗", "全螢幕" };
 
     void Start()
     {
+        var m = SettingsService.Instance.Settings.screenMode;
+        currentIndex = IndexFromMode(m);
         ApplyCurrentPage();
-        Debug.Log("[初始化] 顯示模式控制已啟用，共有 " + pages.Length + " 種顯示模式");
     }
 
     public void NextPage()
@@ -27,31 +46,33 @@ public class UI_DisplaySelector : MonoBehaviour
 
     void ApplyCurrentPage()
     {
-        // 切換 UI 頁面
+        // 顯示目前頁面
         for (int i = 0; i < pages.Length; i++)
-        {
             pages[i].SetActive(i == currentIndex);
-        }
 
-        // 設定顯示模式
-        SetDisplayMode(currentIndex);
+        // 套用顯示模式
+        var mode = modes[Mathf.Clamp(currentIndex, 0, modes.Length - 1)];
+        SettingsService.Instance.SetScreenMode(mode);
+
+        // 更新文字顯示
+        UpdateLabelText();
+
+        Debug.Log($"[顯示模式切換] {labels[currentIndex]}（{mode}）");
     }
 
-    void SetDisplayMode(int index)
+    void UpdateLabelText()
     {
-        // 顯示模式標籤（用於 Debug）
-        string[] displayModeLabels = { "視窗模式", "無邊界視窗", "全螢幕模式" };
+        string label = labels[Mathf.Clamp(currentIndex, 0, labels.Length - 1)];
+        string finalText = string.IsNullOrEmpty(displayFormat) ? label : string.Format(displayFormat, label);
 
-        // 對應 Unity 的 FullScreenMode
-        FullScreenMode[] modes = {
-            FullScreenMode.Windowed,
-            FullScreenMode.FullScreenWindow,
-            FullScreenMode.ExclusiveFullScreen
-        };
+        if (tmpText != null) tmpText.text = finalText;
+        if (legacyText != null) legacyText.text = finalText;
+    }
 
-        int clampedIndex = Mathf.Clamp(index, 0, modes.Length - 1);
-        Screen.fullScreenMode = modes[clampedIndex];
-
-        Debug.Log($"[顯示模式切換] 第 {clampedIndex} 頁 → {displayModeLabels[clampedIndex]}（{modes[clampedIndex]}）");
+    private int IndexFromMode(FullScreenMode m)
+    {
+        for (int i = 0; i < modes.Length; i++)
+            if (modes[i] == m) return i;
+        return 0;
     }
 }

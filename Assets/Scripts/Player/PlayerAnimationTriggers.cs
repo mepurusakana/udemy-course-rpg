@@ -20,12 +20,19 @@ public class PlayerAnimationTriggers : MonoBehaviour
 
         foreach (var hit in colliders)
         {
+            if (hit == null) continue;
+
             if (hit.GetComponent<Enemy>() != null)
             {
                 EnemyStats _target = hit.GetComponent<EnemyStats>();
 
                 if (_target != null)
                     player.stats.DoDamage(_target, this.transform);
+            }
+
+            if (hit.TryGetComponent(out SpriteShatter2D shatter))
+            {
+                shatter.Shatter();
             }
         }
     }

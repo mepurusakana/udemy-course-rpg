@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 1580088871654798395}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.97, y: -3.73, z: 0}
+  m_LocalPosition: {x: 2.01, y: -3.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -348,7 +348,7 @@ GameObject:
   - component: {fileID: 3462098701866683001}
   m_Layer: 7
   m_Name: DeathFall
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -409,7 +409,7 @@ MonoBehaviour:
   idleTime: 2
   battleTime: 7
   agroDistance: 2
-  attackDistance: 7.21
+  attackDistance: 12.4
   attackCooldown: 0.5
   minAttackCooldown: 1
   maxAttackCooldown: 2
@@ -480,7 +480,12 @@ MonoBehaviour:
   maxHealth:
     baseValue: 250
     modifiers: 
+  maxMP:
+    baseValue: 0
+    modifiers: 
   currentHealth: 0
+  currentMP: 0
+  mpRegenPerSecond: 1
   soulsDropAmount:
     baseValue: 0
     modifiers: 

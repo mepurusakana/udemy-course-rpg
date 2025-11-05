@@ -15,13 +15,13 @@ public class GhostStunnedState : EnemyState
         base.Enter();
 
         // 開啟重力（讓Ghost掉落）
-        enemy.rb.gravityScale = 5f;
+        enemy.rb.gravityScale = 0f;
 
         // 設定眩暈時間
         stateTimer = 0.2f; // 你要求的0.2秒
 
         // 清除當前速度
-        enemy.rb.velocity = Vector2.zero;
+        Vector2 knockbackVelocity = new Vector2(enemy.knockbackDir * 8f, 0);
     }
 
     public override void Update()

@@ -68,11 +68,17 @@ public class PlayerGroundedState : PlayerState
                 {
                     Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
 
-                    float maxSpeed = 5f; //The maximum speed you want to limit
+                    float maxSpeed = 5f;//The maximum speed you want to limit
 
                     newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
 
-                    player.rb.velocity = newVelocity;
+                    if (platform.waitTimer > 0)
+                    {
+                        player.rb.velocity = Vector2.zero;
+                    }
+                    else
+                        player.rb.velocity = newVelocity;
+
                 }
             }
         }

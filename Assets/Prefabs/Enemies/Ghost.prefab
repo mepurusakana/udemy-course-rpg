@@ -410,7 +410,7 @@ MonoBehaviour:
   stunDuration: 1
   stunDirection: {x: 10, y: 0}
   counterImage: {fileID: 0}
-  moveSpeed: 10
+  moveSpeed: 5
   idleTime: 2
   battleTime: 7
   agroDistance: 2
@@ -613,7 +613,7 @@ GameObject:
   - component: {fileID: 3661043629298839858}
   m_Layer: 0
   m_Name: Ghost
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

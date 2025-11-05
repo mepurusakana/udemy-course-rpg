@@ -15,8 +15,11 @@ public class UI_Dialogue : MonoBehaviour
     [SerializeField] private KeyCode advanceKey = KeyCode.E;
     [SerializeField] private bool enableLogs = true;
 
-    [SerializeField] private Image panelImage;
-    //對話面板底圖
+    [SerializeField] private Image panelImage; // 對話面板底圖
+
+    // ★ 新增：是否允許滑鼠左鍵推進（左鍵 = GetMouseButtonDown(0)）
+    [Header("滑鼠互動")]
+    [SerializeField] private bool advanceOnLeftClick = true;
 
     private DialogueLineSO currentLine;
     private int currentIndex = 0;
@@ -28,9 +31,18 @@ public class UI_Dialogue : MonoBehaviour
     {
         if (!IsOpen) return;
 
+        // 鍵盤推進（原本就有）
         if (Input.GetKeyDown(advanceKey))
         {
             Advance();
+            return;
+        }
+
+        // ★ 新增：滑鼠左鍵推進
+        if (advanceOnLeftClick && Input.GetMouseButtonDown(0))
+        {
+            Advance();
+            return;
         }
     }
 
@@ -55,7 +67,7 @@ public class UI_Dialogue : MonoBehaviour
             if (panelImage)
             {
                 panelImage.sprite = sp.panelSprite;        // 套面板底圖
-                panelImage.color = sp.panelTint;          // 套面板色
+                panelImage.color = sp.panelTint;           // 套面板色
                 // 若使用 9-sliced，記得 Panel 的 Image Type 設為 Sliced
             }
         }
@@ -86,6 +98,7 @@ public class UI_Dialogue : MonoBehaviour
         }
         else
         {
+            // 注意：當前已在最後一頁，再按一次（鍵盤或滑鼠）就會進到這裡 → 關閉
             Close();
         }
     }
@@ -142,6 +155,4 @@ public class UI_Dialogue : MonoBehaviour
         IsOpen = true;
         if (enableLogs) Debug.Log("[UI_Dialogue] Show()");
     }
-
-
 }

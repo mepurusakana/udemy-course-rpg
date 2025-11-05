@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -18,11 +19,37 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         if (instance != null)
-            Destroy(instance.gameObject);
-        else
-            instance = this;
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
 
         Invoke("AllowSFX", 1f);
+        SceneManager.sceneLoaded += OnSceneLoaded; // ºÊÅ¥³õ´º¸ü¤J
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        switch (scene.name)
+        {
+            case "A001":
+                PlayBGM(0);
+                break;
+            case "B001":
+                PlayBGM(1);
+                break;
+            default:
+                StopAllBGM();
+                break;
+        }
     }
 
     private void Update()

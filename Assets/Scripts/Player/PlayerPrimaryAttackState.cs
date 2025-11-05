@@ -26,8 +26,35 @@ public class PlayerPrimaryAttackState : PlayerState
             player.attackLight.intensity = 0.32f;
         }
 
-        // 確保進入攻擊時停下
-        player.SetZeroVelocity();
+        if (player.IsGroundDetected() && player.rb.velocity.y <= 0.1f)
+        {
+            Collider2D hit = Physics2D.OverlapCircle(player.groundCheck.position, 0.1f, player.whatIsGround);
+            if (hit != null)
+            {
+                MovingPlatform platform = hit.GetComponent<MovingPlatform>();
+                if (platform != null)
+                {
+                    Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
+
+                    float maxSpeed = 5f;//The maximum speed you want to limit
+
+                    newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
+
+                    if (platform.waitTimer > 0)
+                    {
+                        player.rb.velocity = Vector2.zero;
+                    }
+                    else
+                        player.rb.velocity = newVelocity;
+
+                }
+            }
+        }
+        else
+        {
+            // 確保進入攻擊時停下
+            player.SetZeroVelocity();
+        }
 
         xInput = 0;
 
@@ -80,5 +107,30 @@ public class PlayerPrimaryAttackState : PlayerState
 
         if (triggerCalled)
             stateMachine.ChangeState(player.airState);
+
+        if (player.IsGroundDetected() && player.rb.velocity.y <= 0.1f)
+        {
+            Collider2D hit = Physics2D.OverlapCircle(player.groundCheck.position, 0.1f, player.whatIsGround);
+            if (hit != null)
+            {
+                MovingPlatform platform = hit.GetComponent<MovingPlatform>();
+                if (platform != null)
+                {
+                    Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
+
+                    float maxSpeed = 5f;//The maximum speed you want to limit
+
+                    newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
+
+                    if (platform.waitTimer > 0)
+                    {
+                        player.rb.velocity = Vector2.zero;
+                    }
+                    else
+                        player.rb.velocity = newVelocity;
+
+                }
+            }
+        }
     }
 }

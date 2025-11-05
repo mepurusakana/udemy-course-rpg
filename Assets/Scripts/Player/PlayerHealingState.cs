@@ -51,7 +51,34 @@ public class PlayerHealingState : PlayerGroundedState
         base.Update();
 
         // 保持玩家靜止
-        player.rb.velocity = Vector2.zero;
+        if (player.IsGroundDetected() && player.rb.velocity.y <= 0.1f)
+        {
+            Collider2D hit = Physics2D.OverlapCircle(player.groundCheck.position, 0.1f, player.whatIsGround);
+            if (hit != null)
+            {
+                MovingPlatform platform = hit.GetComponent<MovingPlatform>();
+                if (platform != null)
+                {
+                    Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
+
+                    float maxSpeed = 5f;//The maximum speed you want to limit
+
+                    newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
+
+                    if (platform.waitTimer > 0)
+                    {
+                        player.rb.velocity = Vector2.zero;
+                    }
+                    else
+                        player.rb.velocity = newVelocity;
+
+                }
+            }
+        }
+        else
+        {
+            player.rb.velocity = Vector2.zero;
+        }
 
         if (Input.GetKey(KeyCode.Q))
         {

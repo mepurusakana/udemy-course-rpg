@@ -50,7 +50,7 @@ MonoBehaviour:
   lifeTime: 5
   damage: 10
   spawnAnimationDuration: 0.5
-  projectileSpeed: 6
+  projectileSpeed: 24
   spawnAnimationName: Spawn
   flyAnimationName: Fly
   hitAnimationName: Hit

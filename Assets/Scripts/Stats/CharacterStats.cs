@@ -21,6 +21,7 @@ public class CharacterStats : MonoBehaviour
 
     public int currentHealth;
     public int currentMP;
+
     public float mpRegenPerSecond = 1f;
 
     public bool isDead { get; protected set; }
@@ -144,9 +145,6 @@ public class CharacterStats : MonoBehaviour
                 currentMP + Mathf.FloorToInt(mpRegenPerSecond * Time.deltaTime)
             );
 
-            // 更新 UI
-            if (UI_InGame.instance != null)
-                UI_InGame.instance.UpdateMPUI(currentMP, maxMPValue);
         }
     }
 
@@ -158,8 +156,6 @@ public class CharacterStats : MonoBehaviour
         {
             currentMP -= amount;
 
-            if (UI_InGame.instance != null)
-                UI_InGame.instance.UpdateMPUI(currentMP, maxMPValue);
 
             return true;
         }
@@ -172,7 +168,5 @@ public class CharacterStats : MonoBehaviour
         int maxMPValue = maxMP.GetValue();
         currentMP = Mathf.Min(maxMPValue, currentMP + amount);
 
-        if (UI_InGame.instance != null)
-            UI_InGame.instance.UpdateMPUI(currentMP, maxMPValue);
     }
 }

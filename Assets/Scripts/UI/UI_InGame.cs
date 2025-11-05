@@ -1,115 +1,91 @@
-ï»¿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class UI_InGame : MonoBehaviour
 {
-    public static UI_InGame instance;
-
-    [Header("Player Reference")]
     [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private Slider slider;
 
-    [Header("Health UI")]
-    [SerializeField] private Slider healthSlider;
-    [SerializeField] private Image healthFill; // HP ç´…æ¢
 
-    [Header("MP UI")]
-    [SerializeField] private Slider mpSlider;
-    [SerializeField] private Image mpFill; // MP è—æ¢
+    [Header("Souls info")]
+    [SerializeField] private TextMeshProUGUI currentSouls;
+    [SerializeField] private float soulsAmount;
+    [SerializeField] private float increaseRate = 100;
 
-    [Header("Optional Text")]
-    [SerializeField] private TextMeshProUGUI healthText;
-    [SerializeField] private TextMeshProUGUI mpText;
-
-    private void Awake()
-    {
-        if (instance == null)
-            instance = this;
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-    }
-
-    private void Start()
+    void Start()
     {
         FindAndSubscribeToPlayer();
     }
 
     private void OnEnable()
     {
+        // ¨C¦¸±Ò¥Î®É³£­«·s´M§äª±®a¡]³õ´º¤Á´««á¡^
         FindAndSubscribeToPlayer();
     }
 
     private void OnDisable()
     {
+        // ¨ú®ø­q¾\
         if (playerStats != null)
-        {
             playerStats.onHealthChanged -= UpdateHealthUI;
-            // å¦‚æœä¹‹å¾Œä½ åŠ å…¥ onMPChangedï¼Œä¹Ÿå¯ä»¥ä¸€ä½µå–æ¶ˆè¨‚é–±
-        }
     }
 
-    private void FindAndSubscribeToPlayer()
+    public void FindAndSubscribeToPlayer()
     {
-        if (PlayerManager.instance == null || PlayerManager.instance.player == null)
-        {
-            Invoke(nameof(FindAndSubscribeToPlayer), 0.5f);
-            return;
-        }
-
-        playerStats = PlayerManager.instance.player.GetComponent<PlayerStats>();
-        if (playerStats == null)
-        {
-            Invoke(nameof(FindAndSubscribeToPlayer), 0.5f);
-            return;
-        }
-
-        // ç¶å®šäº‹ä»¶
-        playerStats.onHealthChanged += UpdateHealthUI;
-
-        // åˆå§‹åŒ– UI
-        UpdateHealthUI();
-        UpdateMPUI(playerStats.currentMP, playerStats.GetMaxMPValue());
-    }
-
-    private void Update()
-    {
-        // è‹¥ PlayerStats åœ¨æ›´æ–° MP æ™‚æ²’å‘¼å« UI æ›´æ–°ï¼ˆä¾‹å¦‚è‡ªç„¶å›é­”ï¼‰ï¼Œä¹Ÿå¯åœ¨é€™åŒæ­¥
+        // ¥ı¨ú®øÂÂªº­q¾\
         if (playerStats != null)
-            UpdateMPUI(playerStats.currentMP, playerStats.GetMaxMPValue());
+            playerStats.onHealthChanged -= UpdateHealthUI;
+
+        // ´M§äª±®a
+        if (PlayerManager.instance != null && PlayerManager.instance.player != null)
+        {
+            playerStats = PlayerManager.instance.player.GetComponent<PlayerStats>();
+
+            if (playerStats != null)
+            {
+                playerStats.onHealthChanged += UpdateHealthUI;
+                UpdateHealthUI(); // ¥ß§Y§ó·s¤@¦¸
+            }
+        }
+        else
+        {
+            // ¦pªG PlayerManager ÁÙ¨S·Ç³Æ¦n¡Aµy«á¦A¸Õ
+            Invoke(nameof(FindAndSubscribeToPlayer), 0.5f);
+        }
     }
 
-    /// <summary>æ›´æ–°è¡€é‡æ¢</summary>
+    void Update()
+    {
+        UpdateSoulsUI();
+    }
+
+    private void UpdateSoulsUI()
+    {
+
+
+        //currentSouls.text = ((int)soulsAmount).ToString();
+    }
+
     private void UpdateHealthUI()
     {
-        if (playerStats == null) return;
-
-        int maxHealth = playerStats.GetMaxHealthValue();
-        healthSlider.maxValue = maxHealth;
-        healthSlider.value = playerStats.currentHealth;
-
-        if (healthText != null)
-            healthText.text = $"{playerStats.currentHealth}/{maxHealth}";
-
-        if (healthFill != null)
-            healthFill.fillAmount = (float)playerStats.currentHealth / maxHealth;
+        slider.maxValue = playerStats.GetMaxHealthValue();
+        slider.value = playerStats.currentHealth;
     }
 
-    /// <summary>æ›´æ–°é­”åŠ›æ¢</summary>
-    public void UpdateMPUI(int currentMP, int maxMP)
+
+    private void SetCooldownOf(Image _image)
     {
-        if (mpSlider != null)
-        {
-            mpSlider.maxValue = maxMP;
-            mpSlider.value = currentMP;
-        }
-
-        if (mpText != null)
-            mpText.text = $"{currentMP}/{maxMP}";
-
-        if (mpFill != null)
-            mpFill.fillAmount = (float)currentMP / maxMP;
+        if (_image.fillAmount <= 0)
+            _image.fillAmount = 1;
     }
+
+    private void CheckCooldownOf(Image _image, float _cooldown)
+    {
+        if (_image.fillAmount > 0)
+            _image.fillAmount -= 1 / _cooldown * Time.deltaTime;
+    }
+
+
 }

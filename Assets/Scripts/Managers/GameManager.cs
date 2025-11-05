@@ -214,7 +214,7 @@ public class GameManager : MonoBehaviour
             // 6. ­«¸mª±®aª¬ºA
             if (playerStats != null)
             {
-                playerStats.ResetHealthOnRespawn();
+                playerStats.ResetOnRespawn();
             }
 
             player.stateMachine.ChangeState(player.idleState);
