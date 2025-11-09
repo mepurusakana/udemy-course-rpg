@@ -7,18 +7,27 @@ public class SkillManager : MonoBehaviour
     [Header("技能列表")]
     public List<SkillData> skills = new List<SkillData>(); // 改為 public，讓 Player 可以訪問
 
-    private Dictionary<KeyCode, float> cooldownTimers = new Dictionary<KeyCode, float>();
+    [Header("統一觸發鍵")]
+    public KeyCode unifiedActivationKey = KeyCode.E;
+
+    [Header("當前裝備技能索引（-1 表示未裝備）")]
+    [SerializeField] private int selectedIndex = -1;
+
+    private readonly Dictionary<SkillData, float> cooldownTimers = new Dictionary<SkillData, float>();
+
     private Player player;
     private PlayerStats playerStats;
+
     //private CloneController clone;
     private GameObject currentSpirit; // 當前召喚的精靈
     private GameObject currentClone; //當前召喚的分身
 
     private SkillData pendingSkill;
-    
 
-    // 添加屬性讓 Player 可以訪問技能數量
     public int SkillCount => skills.Count;
+    public int SelectedIndex => selectedIndex;
+    public SkillData SelectedSkill => (selectedIndex >= 0 && selectedIndex < skills.Count) ? skills[selectedIndex] : null;
+
 
     private void Start()
     {
@@ -26,84 +35,51 @@ public class SkillManager : MonoBehaviour
         playerStats = GetComponent<PlayerStats>();
 
         // 初始化冷卻計時器
-        foreach (SkillData skill in skills)
+        foreach (var s in skills)
         {
-            if (skill != null)
-            {
-                cooldownTimers[skill.activationKey] = 0f;
-            }
+            if (s != null && !cooldownTimers.ContainsKey(s))
+                cooldownTimers.Add(s, 0f);
         }
     }
 
     private void Update()
     {
-        // 更新所有冷卻計時器
-        List<KeyCode> keys = new List<KeyCode>(cooldownTimers.Keys);
-        foreach (KeyCode key in keys)
+        if (cooldownTimers.Count > 0)
         {
-            if (cooldownTimers[key] > 0)
+            var keys = new List<SkillData>(cooldownTimers.Keys);
+            foreach (var s in keys)
             {
-                cooldownTimers[key] -= Time.deltaTime;
+                if (s == null) continue;
+                if (cooldownTimers[s] > 0f)
+                    cooldownTimers[s] -= Time.deltaTime;
             }
         }
 
-        // 檢查技能輸入
-        foreach (SkillData skill in skills)
+        // 只監聽 E（或你設定的 unifiedActivationKey），且只嘗試施放「被選中的唯一技能」
+        if (Input.GetKeyDown(unifiedActivationKey))
         {
-            if (skill != null && Input.GetKeyDown(skill.activationKey))
-            {
-                TryUseSkill(skill);
-            }
+            if (SelectedSkill != null)
+                TryUseSkill(SelectedSkill);
+            else
+                Debug.Log("[SkillManager] 尚未選擇任何技能（selectedIndex = -1）。");
         }
     }
+
+
+    /// <summary>由 TwoStateButtonGroup 傳入索引。</summary>
+    public void SetSelectedIndex(int index)
+    {
+        if (index >= 0 && index < skills.Count)
+            selectedIndex = index;
+        else
+            selectedIndex = -1; // 支援取消選取（TwoState allowDeselect 時會傳 -1）
+
+        Debug.Log($"[SkillManager] 選中技能 => index={selectedIndex}, name={(SelectedSkill ? SelectedSkill.skillName : "None")}");
+    }
+
+
 
     private void TryUseSkill(SkillData skill)
-    {
-        // 檢查冷卻時間
-        if (cooldownTimers.ContainsKey(skill.activationKey) && cooldownTimers[skill.activationKey] > 0)
-        {
-            Debug.Log($"{skill.skillName} 還在冷卻中！剩餘: {cooldownTimers[skill.activationKey]:F1}秒");
-            return;
-        }
-
-        // 檢查使用條件
-        if (skill.requiresGrounded && !player.IsGroundDetected())
-        {
-            Debug.Log($"{skill.skillName} 需要在地面上使用！");
-            return;
-        }
-
-        if (skill.requiresAirborne && player.IsGroundDetected())
-        {
-            Debug.Log($"{skill.skillName} 需要在空中使用！");
-            return;
-        }
-
-        // 檢查是否正在忙碌
-        if (player.isBusy)
-        {
-            Debug.Log("玩家正在執行其他動作！");
-            return;
-        }
-
-        //  檢查 MP 是否足夠
-        if (playerStats.currentMP < skill.mpCost)
-        {
-            Debug.Log("MP 不足，無法使用技能！");
-            ShowMPNotEnoughMessage(); // 顯示UI提示
-            return;
-        }
-
-        //  扣除 MP
-        playerStats.ConsumeMP(skill.mpCost);
-
-        // 使用技能
-        int skillIndex = skills.IndexOf(skill);
-        UseSkill(skill, skillIndex);
-    }
-
-
-    public void UseSkill(SkillData skill, int skillIndex)
     {
         if (skill == null)
         {
@@ -111,61 +87,73 @@ public class SkillManager : MonoBehaviour
             return;
         }
 
-        Debug.Log($"使用技能: {skill.skillName}");
+        // 以「技能」檢查冷卻
+        if (cooldownTimers.TryGetValue(skill, out float remain) && remain > 0f)
+        {
+            Debug.Log($"{skill.skillName} 還在冷卻中！剩餘: {remain:F1} 秒");
+            return;
+        }
+
+        // 使用條件
+        if (skill.requiresGrounded && !player.IsGroundDetected())
+        {
+            Debug.Log($"{skill.skillName} 需要在地面上使用！");
+            return;
+        }
+        if (skill.requiresAirborne && player.IsGroundDetected())
+        {
+            Debug.Log($"{skill.skillName} 需要在空中使用！");
+            return;
+        }
+
+        // 忙碌判斷
+        if (player.isBusy)
+        {
+            Debug.Log("玩家正在執行其他動作！");
+            return;
+        }
+
+        // MP 檢查與扣除
+        if (playerStats.currentMP < skill.mpCost)
+        {
+            Debug.Log("MP 不足，無法使用技能！");
+            ShowMPNotEnoughMessage();
+            return;
+        }
+        playerStats.ConsumeMP(skill.mpCost);
+
+        // 進入技能前置（交由動畫事件呼叫 ExecutePendingSkillEffect 真正生成）
+        UseSkill(skill, selectedIndex);
+    }
+
+
+    public void UseSkill(SkillData skill, int skillIndexInList)
+    {
+        if (skill == null) return;
 
         pendingSkill = skill;
 
-        //// 如果是召喚分身技能
-        //if (skill.isClone)
-        //{
-        //    UseCloneSkill(skill);
-        //}
-        //// 如果是召喚技能（精靈）
-        //else if (skill.isSummon)
-        //{
-        //    UseSpiritSkill(skill);
-        //}
-        //// 如果是投射物技能
-        //else if (skill.isProjectile)
-        //{
-        //    UseProjectileSkill(skill);
-        //}
-        //// 如果是飛劍技能
-        //else if (skill.isFlyingSword)
-        //{
-        //    UseFlyingSwordSkill(skill);
-        //}
-        //// 如果是次元槍技能
-        //else if (skill.isDimensionGun)
-        //{
-        //    UseDimensionGunSkill(skill);
-        //}
-        //// 一般技能
-        //else 
-        //{
-        //    UseHitGroundSkill(skill);
-        //}
+        // 設置冷卻（以技能為 key）
+        if (!cooldownTimers.ContainsKey(skill))
+            cooldownTimers.Add(skill, skill.cooldown);
+        else
+            cooldownTimers[skill] = skill.cooldown;
 
-
-        // 設置冷卻時間
-        if (cooldownTimers.ContainsKey(skill.activationKey))
+        // 進入對應的 SkillState（索引需和 skills 對齊）
+        if (player.skillStates != null && skillIndexInList >= 0 && skillIndexInList < player.skillStates.Length)
         {
-            cooldownTimers[skill.activationKey] = skill.cooldown;
+            player.stateMachine.ChangeState(player.skillStates[skillIndexInList]);
         }
         else
         {
-            cooldownTimers.Add(skill.activationKey, skill.cooldown);
-        }
-
-        if (player.skillStates != null && skillIndex >= 0 && skillIndex < player.skillStates.Length)
-        {
-            player.stateMachine.ChangeState(player.skillStates[skillIndex]);
+            Debug.LogWarning("[SkillManager] player.skillStates 數量或順序與 skills 不一致。");
         }
     }
 
     /// <summary>
     /// 在動畫事件中調用此方法來執行技能效果
     /// </summary>
+    /// <summary>由動畫事件（Animation Event）呼叫，真正施放技能效果。</summary>
     public void ExecutePendingSkillEffect()
     {
         if (pendingSkill == null)
@@ -174,36 +162,15 @@ public class SkillManager : MonoBehaviour
             return;
         }
 
-        Debug.Log($"執行技能效果: {pendingSkill.skillName}");
-
-        // 根據技能類型執行相應效果
-        if (pendingSkill.isClone)
-        {
-            ExecuteCloneSkill(pendingSkill);
-        }
-        else if (pendingSkill.isSummon)
-        {
-            ExecuteSpiritSkill(pendingSkill);
-        }
-        else if (pendingSkill.isProjectile)
-        {
-            ExecuteProjectileSkill(pendingSkill);
-        }
-        else if (pendingSkill.isFlyingSword)
-        {
-            ExecuteFlyingSwordSkill(pendingSkill);
-        }
-        else if (pendingSkill.isDimensionGun)
-        {
-            ExecuteDimensionGunSkill(pendingSkill);
-        }
-        else
-        {
-            ExecuteHitGroundSkill(pendingSkill);
-        }
-
-        // 清除待執行技能
+        var s = pendingSkill;
         pendingSkill = null;
+
+        if (s.isClone) ExecuteCloneSkill(s);
+        else if (s.isSummon) ExecuteSpiritSkill(s);
+        else if (s.isProjectile) ExecuteProjectileSkill(s);
+        else if (s.isFlyingSword) ExecuteFlyingSwordSkill(s);
+        else if (s.isDimensionGun) ExecuteDimensionGunSkill(s);
+        else if (s.isHitGround) ExecuteHitGroundSkill(s);
     }
 
 
@@ -305,6 +272,10 @@ public class SkillManager : MonoBehaviour
         if (skill.skillPrefab != null)
         {
             Vector3 spawnPos = skill.spawnPoint != null ? skill.spawnPoint.position : player.transform.position;
+
+            Vector3 offset = new Vector3(2f * player.facingDir, 0, 0f);
+            spawnPos += offset;
+
             GameObject projectile = Instantiate(skill.skillPrefab, spawnPos, Quaternion.identity);
 
             // 設置投射物方向
@@ -394,35 +365,25 @@ public class SkillManager : MonoBehaviour
 
 
     // 獲取技能冷卻剩餘時間（用於UI顯示）
-    public float GetCooldownRemaining(KeyCode key)
+    public float GetCooldownRemainingByIndex(int index)
     {
-        if (cooldownTimers.ContainsKey(key))
-        {
-            return Mathf.Max(0, cooldownTimers[key]);
-        }
-        return 0f;
+        if (index < 0 || index >= skills.Count) return 0f;
+        var s = skills[index];
+        if (s == null) return 0f;
+        return cooldownTimers.TryGetValue(s, out float t) ? Mathf.Max(0f, t) : 0f;
     }
 
     // 檢查技能是否可用
-    public bool IsSkillReady(KeyCode key)
+    public bool IsSelectedSkillReady()
     {
-        if (cooldownTimers.ContainsKey(key))
-        {
-            return cooldownTimers[key] <= 0;
-        }
-        return false;
+        var s = SelectedSkill;
+        if (s == null) return false;
+        return !cooldownTimers.TryGetValue(s, out float t) || t <= 0f;
     }
 
-    // 清除當前精靈的引用（當精靈被其他方式銷毀時）
-    public void ClearSpiritReference()
-    {
-        currentSpirit = null;
-    }
-
-    public void ClearCloneReference()
-    { 
-        currentClone = null; 
-    }
+    // ====== 其他 ======
+    public void ClearSpiritReference() { currentSpirit = null; }
+    public void ClearCloneReference() { currentClone = null; }
 
     // 檢查是否有精靈存在
     public bool HasActiveSpirit()
@@ -435,19 +396,14 @@ public class SkillManager : MonoBehaviour
         return currentClone != null; 
     }
 
-
-
-
     private void ShowMPNotEnoughMessage()
     {
-        // 若有全局 UI 管理器
         if (UI.instance != null)
         {
-            //UI.instance.ShowCenterMessage("MP 不足！");
+            // UI.instance.ShowCenterMessage("MP 不足！");
         }
         else
         {
-            // 沒有 UI 系統就用 Debug.Log 代替
             Debug.LogWarning("MP 不足！");
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,10 @@ public class UI : MonoBehaviour, ISaveable
 
     [SerializeField] private GameObject PauseUI;
     [SerializeField] private GameObject inGameUI;
+    public GameObject UI_Skill;
+
+    public static event Action<GameObject> OnSkillUILoaded;
+
     public UI_Dialogue dialogueUI { get; private set; }
     
 
@@ -123,6 +128,21 @@ public class UI : MonoBehaviour, ISaveable
         yield return new WaitForSeconds(1.5f);
         restartButton.SetActive(true);
 
+    }
+
+    public void ShowSkillsUI()
+    {
+        UI_Skill.SetActive(true);
+    }
+
+    public void HideSkillsUI()
+    {
+        UI_Skill.SetActive(false);
+    }
+
+    public void RegisterSkillUI(GameObject skillUI)
+    {
+        OnSkillUILoaded?.Invoke(skillUI);
     }
 
     public void RestartGameButton() => GameManager.instance.RestartScene();

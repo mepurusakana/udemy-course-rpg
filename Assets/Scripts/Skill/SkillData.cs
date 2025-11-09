@@ -23,6 +23,7 @@ public class SkillData : ScriptableObject
     [Header("技能條件")]
     public bool requiresAirborne = false;
     public bool requiresGrounded = false;
+    public bool isHitGround = false;
     public bool isProjectile = false;
     public bool isClone = false;
     public bool isSummon = false;

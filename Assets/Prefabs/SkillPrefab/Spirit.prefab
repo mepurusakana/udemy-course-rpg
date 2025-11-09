@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d007a5d6f7e591439d591238f6f4d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 20
+  detectionRadius: 30
   attackInterval: 1.5
   lifeTime: 60
   enemyLayer:
@@ -58,8 +58,8 @@ MonoBehaviour:
   firePoint: {fileID: 7724082993524839662}
   missileDamage: 15
   followSpeed: 8
-  maxFollowDistance: 4
-  attackRangeFromPlayer: 12
+  maxFollowDistance: 8
+  attackRangeFromPlayer: 16
   followOffsetX: 2
   followOffsetY: 0.5
   smoothTime: 0.3
@@ -150,7 +150,7 @@ Transform:
   m_GameObject: {fileID: 3956830169027079479}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0, z: 0}
+  m_LocalPosition: {x: 2.56, y: 2.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -231,7 +231,7 @@ SpriteRenderer:
   m_SortingLayerID: 516246769
   m_SortingLayer: 7
   m_SortingOrder: 0
-  m_Sprite: {fileID: -643812778, guid: 8a691f7475b4d7b42a1e08fb55fd2de2, type: 3}
+  m_Sprite: {fileID: -1697236760, guid: b1bd346459d3e6542988279317b0c5c0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -116,7 +116,7 @@ MonoBehaviour:
   columns: 10
   rows: 1
   useSquareBlocks: 1
-  blockPixelSize: 150
+  blockPixelSize: 90
   overrideBlockSprite: {fileID: 0}
   colorizeFromTexture: 1
   explodeForce: 0.5

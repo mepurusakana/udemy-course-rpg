@@ -18,6 +18,9 @@ public class InGame : MonoBehaviour
     private float maxHp = 100;
     private float maxMp = 100;
 
+    public Image displayImage;
+    public Sprite[] optionSprites;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -57,5 +60,28 @@ public class InGame : MonoBehaviour
 
         Debug.Log(mp);
         Debug.Log(currentMp);
+    }
+
+    public void OnOptionSelected(int index)
+    {
+        if (index >= 0 && index < optionSprites.Length)
+        {
+            displayImage.sprite = optionSprites[index];
+
+            // 顯示圖片（恢復透明度）
+            Color color = displayImage.color;
+            color.a = 1f;
+            displayImage.color = color;
+        }
+        else
+        {
+            // 若沒選中任何項目（index = -1）
+            displayImage.sprite = null;
+
+            // 讓圖片完全透明
+            Color color = displayImage.color;
+            color.a = 0f;
+            displayImage.color = color;
+        }
     }
 }

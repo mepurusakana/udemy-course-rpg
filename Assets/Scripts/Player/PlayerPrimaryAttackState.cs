@@ -54,9 +54,9 @@ public class PlayerPrimaryAttackState : PlayerState
         {
             // 確保進入攻擊時停下
             player.SetZeroVelocity();
+            xInput = 0;
         }
 
-        xInput = 0;
 
         // Combo 計數重設邏輯
         if (comboCounter > 2 || Time.time >= lastTimeAttacked + comboWindow)

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc095a433ee49b545ac6eacf6fda02ce, type: 3}
+  m_Name: RandomSpriteTile
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 21300000, guid: 01ebd71356583524d961329ecf7b2229, type: 3}
+  - {fileID: 21300000, guid: 8e4099fcbc9afc84a90aca989ebda06b, type: 3}
+  - {fileID: 21300000, guid: 19762a5d1bd982b4397ccf03e684c88a, type: 3}
+  - {fileID: 21300000, guid: ca49f6a914fec4a43aa29cfbad49fa06, type: 3}
+  color: {r: 1, g: 1, b: 1, a: 1}
+  colliderType: 0

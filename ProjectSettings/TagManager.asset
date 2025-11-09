@@ -10,6 +10,8 @@ TagManager:
   - Enemy
   - OneWayPlatform
   - Ground
+  - UI
+  - UI_Skill
   layers:
   - Default
   - TransparentFX
