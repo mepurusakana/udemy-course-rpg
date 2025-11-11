@@ -54,8 +54,6 @@ public class PlayerStats : CharacterStats
                 player.SetupKnockbackPower(new Vector2(10, 6));
                 player.fx.ScreenShake(player.fx.shakeHighDamage);
 
-                int randomSound = Random.Range(34, 35);
-                AudioManager.instance.PlaySFX(randomSound, null);
             }
         }
 

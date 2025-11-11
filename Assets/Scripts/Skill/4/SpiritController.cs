@@ -7,7 +7,7 @@ public class SpiritController : MonoBehaviour
     [Header("精靈設定")]
     [SerializeField] private float detectionRadius = 10f; // 偵測半徑
     [SerializeField] private float attackInterval = 1.5f; // 攻擊間隔
-    [SerializeField] private float lifeTime = 60f; // 存在時間
+    [SerializeField] private float lifeTime = 15f; // 存在時間
     [SerializeField] private LayerMask enemyLayer; // 敵人圖層
 
     [Header("飛彈設定")]

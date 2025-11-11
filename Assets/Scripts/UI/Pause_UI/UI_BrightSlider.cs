@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[DefaultExecutionOrder(-10000)]
 public class UI_BrightSlider : MonoBehaviour
 {
     public Image brightnessOverlay;

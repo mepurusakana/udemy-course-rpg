@@ -2,17 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UI : MonoBehaviour, ISaveable
 {
     public static UI instance; // 新增：Singleton
+
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
+    [SerializeField] private string[] gameplaySceneNames = { "A001", "B001" }; // 關卡場景清單
 
     [Header("End screen")]
     [SerializeField] private UI_FadeScreen fadeScreen;
     [SerializeField] private GameObject endText;
     [SerializeField] private GameObject restartButton;
     [Space]
-
+    
     [SerializeField] private GameObject PauseUI;
     [SerializeField] private GameObject inGameUI;
     public GameObject UI_Skill;
@@ -20,7 +24,41 @@ public class UI : MonoBehaviour, ISaveable
     public static event Action<GameObject> OnSkillUILoaded;
 
     public UI_Dialogue dialogueUI { get; private set; }
-    
+    public AudioManager audioManager;
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded_OpenHUD;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded_OpenHUD;
+    }
+
+    private void OnSceneLoaded_OpenHUD(Scene scene, LoadSceneMode mode)
+    {
+        // 回到主選單：保險關閉遊戲內 UI / 解除暫停
+        if (scene.name == mainMenuSceneName)
+        {
+            if (PauseUI) PauseUI.SetActive(false);
+            if (inGameUI) inGameUI.SetActive(false);
+            Time.timeScale = 1f;
+            return;
+        }
+
+        // 進入關卡場景：下一幀強制切到 InGame_UI（壓過先前的關閉狀態）
+        if (Array.Exists(gameplaySceneNames, n => n == scene.name))
+            StartCoroutine(OpenHudNextFrame());
+    }
+
+    private IEnumerator OpenHudNextFrame()
+    {
+        yield return null;            // 等一幀，避免被其他 Start/OnEnable 又關掉
+        SwitchTo(inGameUI);           // 你的既有方法：會自動關其他 UI、開 inGameUI、並取消暫停
+    }
+
+
 
     private void Awake()
     {
@@ -43,7 +81,10 @@ public class UI : MonoBehaviour, ISaveable
     void Start()
     {
         SwitchTo(inGameUI);
+        if (SceneManager.GetActiveScene().name != mainMenuSceneName)
+            SwitchWithKeyTo(inGameUI);
     }
+
 
     // Update is called once per frame
     void Update()
@@ -54,7 +95,13 @@ public class UI : MonoBehaviour, ISaveable
             SwitchWithKeyTo(inGameUI);
 
         if (Input.GetKeyDown(KeyCode.Escape))
-            SwitchWithKeyTo(PauseUI);
+        {
+            // 主選單禁止開 PauseUI
+            if (SceneManager.GetActiveScene().name != mainMenuSceneName)
+            {
+                SwitchWithKeyTo(PauseUI);
+            }
+        }
     }
 
     public UI_FadeScreen GetFadeScreen()
@@ -97,11 +144,23 @@ public class UI : MonoBehaviour, ISaveable
         if (_menu != null && _menu.activeSelf)
         {
             _menu.SetActive(false);
+            if (audioManager != null)
+            {
+                // 關閉 BGM 旗標，並立即停止所有 BGM
+                audioManager.playBgm = true;
+            }
             CheckForInGameUI();
+
             return;
         }
-
+        
         SwitchTo(_menu);
+        if (audioManager != null)
+        {
+            // 關閉 BGM 旗標，並立即停止所有 BGM
+            audioManager.playBgm = false;
+            audioManager.StopAllBGM();
+        }
     }
 
     private void CheckForInGameUI()

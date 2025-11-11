@@ -34,6 +34,7 @@ public class PlayerMoveState : PlayerGroundedState
         // 進入移動狀態 → 播放煙霧
         player.PlayMoveDust();
 
+        //AudioManager.instance.PlaySFX(8, null);
 
         if (xInput == 0 || player.IsWallDetected())
             stateMachine.ChangeState(player.idleState);

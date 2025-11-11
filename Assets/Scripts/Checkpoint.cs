@@ -57,7 +57,7 @@ public class Checkpoint : MonoBehaviour
     {
         if (!activationStatus)
         {
-            AudioManager.instance.PlaySFX(4, transform);
+            //AudioManager.instance.PlaySFX(4, transform);
         }
 
         activationStatus = true;

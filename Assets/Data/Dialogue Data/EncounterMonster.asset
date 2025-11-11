@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f275a1f5791e5dc4eba71f991f59e38c, type: 3}
+  m_Name: EncounterMonster
+  m_EditorClassIdentifier: 
+  dialogueGroupName: "\u8389\u8389\u7D72"
+  speaker: {fileID: 11400000, guid: 2d00eeb8dd668cb46b4c4d8bf77c0bf8, type: 2}
+  textLine:
+  - "\u300C\u660E\u660E\u4E0A\u9031\u624D\u6E05\u7406\u904E\u5468\u570D\uFF0C\u600E\u9EBC\u53C8\u6709\u602A\u7269\u2026\u2026\u300D"
+  - "\u300C\u8D95\u7DCA\u89E3\u6C7A\u5427\uFF0C\u9084\u8981\u53BB\u57CE\u93AE\u901B\u901B\u5462\u3002\u300D"

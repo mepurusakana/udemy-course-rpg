@@ -94,8 +94,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 1.0399414, y: -0.10399474}
-  m_Size: {x: 4.8078656, y: 1.2080175}
+  m_Offset: {x: 9.670483, y: 0.048453733}
+  m_Size: {x: 7.753724, y: 3.9521878}
   m_Direction: 1
 --- !u!114 &4886751599393732854
 MonoBehaviour:
@@ -114,6 +114,7 @@ MonoBehaviour:
   damage: 20
   introTime: 0.3
   outroTime: 0.3
+  player: {fileID: 0}
 --- !u!1 &8611979761029308216
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,9 +188,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1285100665
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1181858226, guid: b2ee290bd8f6b1e4baf9667063664fe4, type: 3}
+  m_Sprite: {fileID: -1385065364, guid: a859d05203fe6c246af35ab76775cf35, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[DefaultExecutionOrder(-900)]
 public class UI_Manager : MonoBehaviour
 {
     // ========== 單例（Singleton：全域唯一） ==========
     public static UI_Manager Instance { get; private set; }
+
+    
 
     [Header("主 UI")]
     [SerializeField] private GameObject pauseMenuUI;
@@ -28,6 +31,9 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] private UI_Dialogue uiDialogue;
     [Tooltip("對話期間是否暫停 Time.timeScale")]
     [SerializeField] private bool pauseDuringDialogue = true;
+
+    [Header("AudioManager")]
+    public AudioManager audioManager;
 
     [Header("（可選）互動提示 UI")]
     [Tooltip("例如『按 E 開啟技能』之類的小提示；沒有可留空")]
@@ -76,6 +82,10 @@ public class UI_Manager : MonoBehaviour
     [Tooltip("執行 HideAll() 時是否一併關閉 bgstart Canvas")]
     [SerializeField] private bool includeBGStartInHideAll = false;
 
+    [Header("場景分類")]
+    [SerializeField] private string mainMenuSceneName = "MainMenu"; // 主選單場景名稱
+    [SerializeField] private string[] gameplaySceneNames = { "A001", "B001" }; // 關卡場景清單
+
     // 內部狀態
     private GameObject _bgStartCanvasCached;  // 快取找到的 Canvas
     private bool _isLoadingBGStart = false;   // 正在載入保護旗標
@@ -97,13 +107,29 @@ public class UI_Manager : MonoBehaviour
         if (enableLogs) Debug.Log("[UI_Manager] Awake OK.", this);
     }
 
+    private void Start()
+    {
+        TryBindAudioManager();   // 預先快取；若之後場景換了，行為方法裡還會再自動重綁
+    }
+
+
     // ========== 主/子選單控制 ==========
     public void ShowPauseMenu()
     {
         if (enableLogs) Debug.Log("[UI_Manager] ShowPauseMenu", this);
+
         HideAll();
         SetActiveSafe(pauseMenuUI, true);
         Time.timeScale = 0f;
+
+        // === 音樂 ===
+        TryBindAudioManager();
+        if (audioManager != null)
+        {
+            // 關閉 BGM 旗標，並立即停止所有 BGM
+            audioManager.playBgm = false;
+            audioManager.StopAllBGM();
+        }
     }
 
     public void ShowSetting()
@@ -143,9 +169,19 @@ public class UI_Manager : MonoBehaviour
     public void ContinueGame()
     {
         if (enableLogs) Debug.Log("[UI_Manager] ContinueGame", this);
+
         HideAll();
         Time.timeScale = 1f;
         SetActiveSafe(inGameUI, true);
+
+        // === 音樂 ===
+        TryBindAudioManager();
+        if (audioManager != null)
+        {
+            // 打開 BGM 旗標即可；AudioManager.Update() 會自動續播目前曲目
+            audioManager.playBgm = true;
+            // 不額外挑曲，避免換歌；若你想每次續玩都換曲，可加：am.PlayRandomBGM();
+        }
     }
 
     public void LoadTargetScene()
@@ -204,6 +240,7 @@ public class UI_Manager : MonoBehaviour
 
         uiSkills.SetActive(true);
         if (enableLogs) Debug.Log("[UI_Manager] ShowSkillsUI", this);
+
     }
 
     public void HideSkillsUI()
@@ -456,6 +493,24 @@ public class UI_Manager : MonoBehaviour
             foreach (var go in sc.GetRootGameObjects()) yield return go;
         }
     }
+
+    // === 加在方法區 ===
+    private void TryBindAudioManager()
+    {
+        if (audioManager != null) return;
+
+        // 依序嘗試：單例 / 場景查找 (含 inactive)
+        audioManager = AudioManager.instance
+             ?? AudioManager.InstanceInScene
+#if UNITY_2022_1_OR_NEWER
+             ?? UnityEngine.Object.FindFirstObjectByType<AudioManager>(FindObjectsInactive.Include);
+#else
+         ?? UnityEngine.Object.FindObjectOfType<AudioManager>(true);
+#endif
+
+        if (enableLogs) Debug.Log(audioManager ? "[UI_Manager] AudioManager 綁定完成" : "[UI_Manager] 場景中找不到 AudioManager", this);
+    }
+
 
     private void HideAll()
     {

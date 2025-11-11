@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float respawnInvincibilityDuration = 2f;
     [SerializeField] private Checkpoint[] checkpoints;
 
+    [SerializeField] private bool forceStartPositionThisScene = false;
+    [SerializeField] private Vector3 forcedStartPosition = Vector3.zero;
+
     private bool pasuedGame;
     public bool isRespawning = false; // 新增:防止重複重生
 
@@ -123,7 +126,7 @@ public class GameManager : MonoBehaviour
         }
     }
     public void RestartScene()
-    {   
+    {
         //SaveManager.instance.SaveGame();
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
@@ -183,7 +186,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log($"Need to load scene: {lastCheckpointSceneName}");
 
-            
+
             // 2. 載入存檔點所在場景
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(lastCheckpointSceneName);
 
@@ -411,5 +414,81 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0;
         else
             Time.timeScale = 1;
+    }
+
+
+
+
+    // ===== 小工具：依 id 找場景內的檢查點 =====
+    private Checkpoint FindCheckpointById(string id)
+    {
+        if (string.IsNullOrEmpty(id) || checkpoints == null) return null;
+        foreach (var cp in checkpoints)
+            if (cp != null && cp.id == id)
+                return cp;
+        return null;
+    }
+
+    // ===== 核心：在場景開始時決定玩家位置（支援三種來源）=====
+    private void PlacePlayerAtSceneStartIfNeeded()
+    {
+        // 1) 只有在玩家存在 & 非重生流程時才處理
+        if (isRespawning) return;
+        if (PlayerManager.instance == null || PlayerManager.instance.player == null) return;
+
+        var p = PlayerManager.instance.player.transform;
+        var sceneName = SceneManager.GetActiveScene().name;
+
+        Vector3 spawnPos = p.position; // 預設維持原位
+
+        // 2) 若勾選「本場景強制座標」，直接使用
+        if (forceStartPositionThisScene)
+        {
+            spawnPos = forcedStartPosition;
+        }
+        else
+        {
+            // 3) 同場景且有「最後檢查點」→ 用最後檢查點座標
+            if (!string.IsNullOrEmpty(lastCheckpointId) &&
+                !string.IsNullOrEmpty(lastCheckpointSceneName) &&
+                lastCheckpointSceneName == sceneName)
+            {
+                // 確保有位置（若你有從別處 SetLastCheckpoint，此處會有值）
+                if (lastCheckpointPosition != Vector3.zero)
+                {
+                    spawnPos = lastCheckpointPosition;
+                }
+                else
+                {
+                    var cp = FindCheckpointById(lastCheckpointId);
+                    if (cp != null) spawnPos = cp.transform.position;
+                }
+            }
+            else
+            {
+                // 4) 沒有可用的「最後檢查點」→ 嘗試用「預設檢查點」
+                var defaultCp = FindCheckpointById(defaultCheckpointId);
+                if (defaultCp != null)
+                {
+                    spawnPos = defaultCp.transform.position;
+
+                    // 補齊內部紀錄（之後重生/跨場景會更穩）
+                    lastCheckpointSceneName = sceneName;
+                    lastCheckpointId = defaultCheckpointId;
+                    lastCheckpointPosition = spawnPos;
+                }
+                else
+                {
+                    // 5) 最後保底：若場景沒有對應 id，就用 (0,0,0) 或你自己指定
+                    // spawnPos = Vector3.zero;
+                }
+            }
+        }
+
+        // 套用座標
+        p.position = spawnPos;
+
+        // 讓 CineMachine 立即跟上（避免一禎的拉扯）
+        SetupCameraAfterRespawn();
     }
 }

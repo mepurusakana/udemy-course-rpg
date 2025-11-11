@@ -13,6 +13,10 @@ public class FlyingSwordController : MonoBehaviour
     private bool isStuck = false;
     private SpriteRenderer spriteRenderer;
 
+    public float enemyEmbedDepthMin = 0.12f;   // 最小嵌入距離（世界單位）
+    public float enemyEmbedBySpriteWidth = 0.3f; // 依刀寬度比例（0.3~0.5可試）
+    public float enemyEmbedJitter = 0.03f;
+
     public void Setup(int _damage, float _direction)
     {
         damage = _damage;
@@ -66,7 +70,7 @@ public class FlyingSwordController : MonoBehaviour
         isStuck = true;
         rb.velocity = Vector2.zero;
         rb.isKinematic = true;
-        transform.SetParent(target);
+        transform.SetParent(target, true);
 
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
@@ -85,6 +89,18 @@ public class FlyingSwordController : MonoBehaviour
                 {
                     sr.sortingLayerID = enemySR.sortingLayerID;
                     sr.sortingOrder = enemySR.sortingOrder - 1;
+
+                    // === 新增：沿著飛行方向再「插」進去一點 ===
+                    Vector2 fwd =
+                        (rb != null && rb.velocity.sqrMagnitude > 0.001f)
+                        ? (Vector2)rb.velocity.normalized
+                        : new Vector2(direction, 0f).normalized;
+
+                    float depthByWidth = (sr.bounds.extents.x) * enemyEmbedBySpriteWidth;
+                    float depth = Mathf.Max(enemyEmbedDepthMin, depthByWidth) + Random.Range(-enemyEmbedJitter, enemyEmbedJitter);
+
+                    transform.position += (Vector3)(fwd * depth);
+
                 }
             }
         }

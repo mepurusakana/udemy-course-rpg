@@ -43,7 +43,20 @@ public class UI_MainMenu : MonoBehaviour
     private Scene _settingsScene;
 
     // ====== 你原本就有的功能 ======
-    public void ContinueGame() { StartCoroutine(LoadSceneWithFadeEffect(1.5f)); }
+    public void ContinueGame()
+    {
+        if (pauseWhenOpenSettings) Time.timeScale = 1f;
+        StartCoroutine(FadeThenSwitchRoutine(1.5f));
+
+    }
+
+    private IEnumerator FadeThenSwitchRoutine(float delay)
+    {
+        if (fadeScreen) fadeScreen.FadeOut();
+        yield return new WaitForSeconds(delay);
+        SwitchScene(); // 透過既有的切場景流程
+    }
+
     public void NewGame() { StartCoroutine(LoadSceneWithFadeEffect(1.5f)); }
     public void ExitGame() { Debug.Log("Exit game"); Application.Quit(); }
 

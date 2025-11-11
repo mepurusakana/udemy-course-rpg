@@ -12,6 +12,7 @@ TagManager:
   - Ground
   - UI
   - UI_Skill
+  - AudioManager
   layers:
   - Default
   - TransparentFX
@@ -55,17 +56,17 @@ TagManager:
   - name: Checkpoint
     uniqueID: 1082012881
     locked: 0
-  - name: Skill
-    uniqueID: 3009866631
-    locked: 0
-  - name: Ground
-    uniqueID: 4101806473
-    locked: 0
   - name: Item
     uniqueID: 348656065
     locked: 0
   - name: Enemy
     uniqueID: 2526798035
+    locked: 0
+  - name: Ground
+    uniqueID: 4101806473
+    locked: 0
+  - name: Skill
+    uniqueID: 3009866631
     locked: 0
   - name: Projectile
     uniqueID: 516246769

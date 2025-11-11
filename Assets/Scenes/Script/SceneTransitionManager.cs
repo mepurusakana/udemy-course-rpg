@@ -16,7 +16,7 @@ public class SceneTransitionManager : MonoBehaviour
     [SerializeField] private AnimationCurve fadeCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     [Header("是否淡化整體音量（AudioListener.volume）")]
-    [SerializeField] private bool fadeAudio = true;
+    //[SerializeField] private bool fadeAudio = true;
 
     [Header("（可選）顯示簡易載入中文字")]
     [SerializeField] private bool showLoadingHint = false;
@@ -180,7 +180,7 @@ public class SceneTransitionManager : MonoBehaviour
         float start = fader.alpha;
         float t = 0f;
 
-        if (fadeAudio) originalAudioVol = AudioListener.volume;
+        //if (fadeAudio) originalAudioVol = AudioListener.volume;
 
         while (t < duration)
         {
@@ -189,11 +189,11 @@ public class SceneTransitionManager : MonoBehaviour
             float k = fadeCurve.Evaluate(p);
             fader.alpha = Mathf.Lerp(start, targetAlpha, k);
 
-            if (fadeAudio)
-            {
-                float targetVol = (targetAlpha >= 0.5f) ? 0f : originalAudioVol;
-                AudioListener.volume = Mathf.Lerp(AudioListener.volume, targetVol, k);
-            }
+            //if (fadeAudio)
+            //{
+            //    float targetVol = (targetAlpha >= 0.5f) ? 0f : originalAudioVol;
+            //    AudioListener.volume = Mathf.Lerp(AudioListener.volume, targetVol, k);
+            //}
 
             yield return null;
         }
@@ -201,7 +201,7 @@ public class SceneTransitionManager : MonoBehaviour
         fader.alpha = targetAlpha;
         fader.blocksRaycasts = targetAlpha > 0.001f;
 
-        if (fadeAudio)
-            AudioListener.volume = (targetAlpha <= 0.001f) ? originalAudioVol : 0f;
+        //if (fadeAudio)
+        //    AudioListener.volume = (targetAlpha <= 0.001f) ? originalAudioVol : 0f;
     }
 }

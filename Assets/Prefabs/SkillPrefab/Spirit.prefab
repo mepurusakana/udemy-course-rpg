@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectionRadius: 30
   attackInterval: 1.5
-  lifeTime: 60
+  lifeTime: 15
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -228,8 +228,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 516246769
-  m_SortingLayer: 7
+  m_SortingLayerID: -1285100665
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: -1697236760, guid: b1bd346459d3e6542988279317b0c5c0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
