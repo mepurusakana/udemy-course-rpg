@@ -15,14 +15,15 @@ MonoBehaviour:
   skillName: Summon Spirit
   activationKey: 52
   cooldown: 2
-  mpCost: 35
+  mpCost: 20
   spawnPoint: {fileID: 0}
   skillPrefab: {fileID: 1701850246773537926, guid: 539d0ce0e89bf9a408710d3e69f1ea08, type: 3}
   animationBoolName: SkillSommon
-  damageAmount: 20
+  damageAmount: 10
   skillDuration: 1
   requiresAirborne: 0
   requiresGrounded: 0
+  isHitGround: 0
   isProjectile: 0
   isClone: 0
   isSummon: 1

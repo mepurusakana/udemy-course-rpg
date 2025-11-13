@@ -15,11 +15,11 @@ MonoBehaviour:
   skillName: 
   activationKey: 101
   cooldown: 3
-  mpCost: 30
+  mpCost: 50
   spawnPoint: {fileID: 0}
   skillPrefab: {fileID: 1125033659123340007, guid: bead0ac7f52ce8b4baae255dc0a41e27, type: 3}
   animationBoolName: SkillFall
-  damageAmount: 40
+  damageAmount: 50
   skillDuration: 1
   requiresAirborne: 0
   requiresGrounded: 1
