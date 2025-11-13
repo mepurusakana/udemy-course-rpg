@@ -55,17 +55,6 @@ public class Enemy_Slime : Enemy
         //    CreateSlimes(slimesToCreate, slimePrefab);
     }
 
-    public override bool CanBeStunned()
-    {
-        if (base.CanBeStunned())
-        {
-            stateMachine.ChangeState(stunnedState);
-            return true;
-        }
-
-        return false;
-    }
-
   
 
     public override void Die()

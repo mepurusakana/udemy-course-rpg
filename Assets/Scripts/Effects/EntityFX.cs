@@ -18,6 +18,7 @@ public class EntityFX : MonoBehaviour
     [SerializeField] private float flashDuration;
     [SerializeField] private Material hitMat;
     private Material originalMat;
+    private Coroutine blinkCoroutine;
 
     [Header("Hit FX")]
     [SerializeField] private GameObject hitFx;
@@ -34,6 +35,7 @@ public class EntityFX : MonoBehaviour
     // ======================================== //
 
     private GameObject myHealthBar;
+
 
     protected virtual void Start()
     {
@@ -85,6 +87,31 @@ public class EntityFX : MonoBehaviour
         sr.color = currentColor;
         sr.material = originalMat;
     }
+
+    public void StartBlink(float interval = 0.1f)
+    {
+        StopBlink(); // 確保不重複啟動
+        blinkCoroutine = StartCoroutine(BlinkCoroutine(interval));
+    }
+
+    public void StopBlink()
+    {
+        if (blinkCoroutine != null)
+            StopCoroutine(blinkCoroutine);
+
+        blinkCoroutine = null;
+        sr.color = Color.white; // 保證顏色恢復
+    }
+
+    private IEnumerator BlinkCoroutine(float interval)
+    {
+        while (true)
+        {
+            sr.color = (sr.color == Color.white) ? Color.red : Color.white;
+            yield return new WaitForSeconds(interval);
+        }
+    }
+
 
     private void RedColorBlink()
     {

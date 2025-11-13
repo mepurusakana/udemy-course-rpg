@@ -44,17 +44,6 @@ public class Enemy_Shady : Enemy
         stateMachine.Initialize(idleState);
     }
 
-    
-    public override bool CanBeStunned()
-    {
-        if (base.CanBeStunned())
-        {
-            stateMachine.ChangeState(stunnedState);
-            return true;
-        }
-
-        return false;
-    }
 
     public override void Die()
     {

@@ -18,6 +18,8 @@ public class DeathFallStunnedState : EnemyState
     {
         base.Enter();
 
+        enemy.fx.StopBlink();
+
         player = PlayerManager.instance.player.transform;
 
         // 面向玩家
@@ -26,7 +28,7 @@ public class DeathFallStunnedState : EnemyState
             enemy.Flip();
 
         // 開始閃爍
-        enemy.fx.InvokeRepeating("RedColorBlink", 0, 0.1f);
+        enemy.fx.StartBlink(0.1f);
 
         stateTimer = enemy.stunDuration;
 
@@ -37,7 +39,7 @@ public class DeathFallStunnedState : EnemyState
     public override void Exit()
     {
         base.Exit();
-        enemy.fx.Invoke("CancelColorChange", 0);
+        enemy.fx.StopBlink();
     }
 
     public override void Update()

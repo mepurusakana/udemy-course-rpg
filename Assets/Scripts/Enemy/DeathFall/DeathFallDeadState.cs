@@ -16,7 +16,8 @@ public class DeathFallDeadState : EnemyState
     {
         base.Enter();
 
-        enemy.anim.SetBool(enemy.lastAnimBoolName, true);
+        //enemy.anim.SetBool(enemy.lastAnimBoolName, true);
+        enemy.anim.SetBool("Stunned", true);
         enemy.anim.speed = 0;
         enemy.cd.enabled = false;
 

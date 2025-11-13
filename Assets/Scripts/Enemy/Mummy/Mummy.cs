@@ -43,16 +43,6 @@ public class Mummy : Enemy
         //}
     }
 
-    public override bool CanBeStunned()
-    {
-        if (base.CanBeStunned())
-        {
-            //stateMachine.ChangeState(stunnedState);
-            return true;
-        }
-
-        return false;
-    }
 
 
     public override void Die()

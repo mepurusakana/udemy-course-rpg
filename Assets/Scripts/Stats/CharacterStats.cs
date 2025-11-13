@@ -79,7 +79,16 @@ public class CharacterStats : MonoBehaviour
             player.lastAttacker = _attacker;
 
         _targetStats.TakeDamage(totalDamage, _attacker);
+
+        // 新增：如果這個角色是玩家，造成傷害後恢復5點MP
+        Player attackerPlayer = GetComponent<Player>();
+        if (attackerPlayer != null)
+        {
+            AddMP(5); // 回復5點MP
+        }
     }
+
+
 
     public virtual void TakeDamage(int _damage, Transform _attacker)
     {

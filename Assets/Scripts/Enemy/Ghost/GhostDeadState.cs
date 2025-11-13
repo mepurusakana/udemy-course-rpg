@@ -15,6 +15,6 @@ public class GhostDeadState : EnemyState
         base.Enter();
         enemy.cd.enabled = false;
         enemy.rb.gravityScale = 2;
-        GameObject.Destroy(enemy.gameObject, 2f);
+        GameObject.Destroy(enemy.gameObject, 5f);
     }
 }

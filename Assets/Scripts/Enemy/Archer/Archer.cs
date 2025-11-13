@@ -46,15 +46,6 @@ public class Archer : Enemy
         //}
     }
 
-    public override bool CanBeStunned()
-    {
-        if (base.CanBeStunned())
-        {
-            return true;
-        }
-
-        return false;
-    }
 
 
     public override void Die()

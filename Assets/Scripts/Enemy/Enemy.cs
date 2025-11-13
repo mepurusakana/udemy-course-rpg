@@ -127,16 +127,6 @@ public class Enemy : Entity
     }
     #endregion
 
-    public virtual bool CanBeStunned()
-    {
-        if (canBeStunned)
-        {
-            CloseCounterAttackWindow();
-            return true;
-        }
-
-        return false;
-    }
     public virtual void OnTakeDamage(Transform attacker)
     {
         // 預設敵人什麼都不做，由子類去覆寫

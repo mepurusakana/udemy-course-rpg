@@ -24,7 +24,7 @@ public class DeathFall : Enemy
         battleState = new DeathFallBattleState(this, stateMachine, "Move", this);
         attackState = new DeathFallAttackState(this, stateMachine, "Attack", this);
         stunnedState = new DeathFallStunnedState(this, stateMachine, "Stunned", this);
-        deadState = new DeathFallDeadState(this, stateMachine, "Idle", this);
+        deadState = new DeathFallDeadState(this, stateMachine, "Stunned", this);
     }
 
     protected override void Start()
@@ -43,23 +43,13 @@ public class DeathFall : Enemy
         //}
     }
 
-    public override bool CanBeStunned()
-    {
-        if (base.CanBeStunned())
-        {
-            //stateMachine.ChangeState(stunnedState);
-            return true;
-        }
-
-        return false;
-    }
 
     public override void OnTakeDamage(Transform attacker)
     {
         base.OnTakeDamage(attacker);
 
-        // 如果敵人已經死亡或當前狀態是 Stunned，不重複進入
-        if (stats.isDead || stateMachine.currentState == stunnedState)
+        // 如果敵人已經死亡，不進入
+        if (stats.isDead)
             return;
 
         // 面向玩家
