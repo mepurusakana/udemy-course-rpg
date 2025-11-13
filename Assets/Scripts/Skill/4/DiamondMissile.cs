@@ -90,7 +90,7 @@ public class DiamondMissile : MonoBehaviour
 
         // 在進場動畫期間，飛彈慢速移動
         float elapsedTime = 0f;
-        Vector2 introVelocity = direction * (speed * 0.3f); // 進場時速度較慢
+        Vector2 introVelocity = direction * (speed * 0f); // 進場時無速度
 
         while (elapsedTime < introAnimationDuration)
         {

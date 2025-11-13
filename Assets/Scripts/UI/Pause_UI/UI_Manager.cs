@@ -9,8 +9,8 @@ public class UI_Manager : MonoBehaviour
 {
     // ========== 單例（Singleton：全域唯一） ==========
     public static UI_Manager Instance { get; private set; }
+    [SerializeField] private UI_FadeScreen fadeScreen;
 
-    
 
     [Header("主 UI")]
     [SerializeField] private GameObject pauseMenuUI;
@@ -192,11 +192,18 @@ public class UI_Manager : MonoBehaviour
             HideAll();
             Time.timeScale = 1f;
             SceneManager.LoadScene(targetSceneName);
+            //StartCoroutine(LoadSceneWithFadeEffect(1.5f));
         }
         else
         {
             Debug.LogError("[UI_Manager] 請在 Inspector 設定 targetSceneName！", this);
         }
+    }
+
+    private IEnumerator LoadSceneWithFadeEffect(float delay)
+    {
+        if (fadeScreen) fadeScreen.FadeIn();
+        yield return new WaitForSeconds(delay);
     }
 
     // ========== 對話入口 ==========

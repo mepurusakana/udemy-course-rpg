@@ -15,7 +15,7 @@ public class FlyingSwordController : MonoBehaviour
 
     public float enemyEmbedDepthMin = 0.12f;   // 最小嵌入距離（世界單位）
     public float enemyEmbedBySpriteWidth = 0.3f; // 依刀寬度比例（0.3~0.5可試）
-    public float enemyEmbedJitter = 0.03f;
+    public float enemyEmbedJitter = 0f;
 
     public void Setup(int _damage, float _direction)
     {

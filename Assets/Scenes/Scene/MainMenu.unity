@@ -401,9 +401,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 431194450518658967, guid: 1aff6befd01b7084c8b14f4b28e8ce39, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2067090850984907514, guid: 1aff6befd01b7084c8b14f4b28e8ce39, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4336996256514682366, guid: 1aff6befd01b7084c8b14f4b28e8ce39, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4693817753801274761, guid: 1aff6befd01b7084c8b14f4b28e8ce39, type: 3}
       propertyPath: m_Name
       value: MainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 5035357407074415137, guid: 1aff6befd01b7084c8b14f4b28e8ce39, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6432363425355506851, guid: 1aff6befd01b7084c8b14f4b28e8ce39, type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6433587262559026006, guid: 1aff6befd01b7084c8b14f4b28e8ce39, type: 3}
       propertyPath: m_text

@@ -127,7 +127,7 @@ MonoBehaviour:
   player: {fileID: 0}
   enemyEmbedDepthMin: 1.2
   enemyEmbedBySpriteWidth: 0.15
-  enemyEmbedJitter: 0.3
+  enemyEmbedJitter: 0
 --- !u!114 &4212620894243333239
 MonoBehaviour:
   m_ObjectHideFlags: 0

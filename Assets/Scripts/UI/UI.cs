@@ -13,6 +13,7 @@ public class UI : MonoBehaviour, ISaveable
 
     [Header("End screen")]
     [SerializeField] private UI_FadeScreen fadeScreen;
+    [SerializeField] private UI_Manager manager;
     [SerializeField] private GameObject endText;
     [SerializeField] private GameObject restartButton;
     [Space]

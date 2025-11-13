@@ -9,8 +9,13 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [Header("=== 預覽內容設定 ===")]
     [Space(5)]
     [TextArea(3, 10)]
-    [Tooltip("滑鼠指向時要顯示的描述文字")]
+    [Tooltip("第一個文字區域的內容")]
     public string description = "在這裡輸入描述文字";
+
+    [Space(5)]
+    [TextArea(3, 10)]
+    [Tooltip("第二個文字區域的內容")]
+    public string secondaryDescription = "在這裡輸入第二段文字";
 
     [Space(5)]
     [Tooltip("要播放的影片素材")]
@@ -35,10 +40,16 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public Image staticImage;
 
 
-    [Header("=== 文字顯示元件 ===")]
+    [Header("=== 第一個文字顯示元件 ===")]
     [Space(5)]
-    [Tooltip("顯示文字的 TextMeshProUGUI 元件")]
+    [Tooltip("第一個文字的 TextMeshProUGUI 元件")]
     public TextMeshProUGUI textDisplay;
+
+
+    [Header("=== 第二個文字顯示元件 ===")]
+    [Space(5)]
+    [Tooltip("第二個文字的 TextMeshProUGUI 元件")]
+    public TextMeshProUGUI secondaryTextDisplay;
 
 
     [Header("=== 顯示控制 ===")]
@@ -47,31 +58,58 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public bool showVideoOnHover = true;
 
     [Space(5)]
-    [Tooltip("滑鼠進入時是否顯示文字元件")]
+    [Tooltip("滑鼠進入時是否顯示第一個文字元件")]
     public bool showTextOnHover = true;
 
-
-    [Header("=== 文字樣式設定 ===")]
     [Space(5)]
-    [Tooltip("文字使用的 TMP 字型資產")]
+    [Tooltip("滑鼠進入時是否顯示第二個文字元件")]
+    public bool showSecondaryTextOnHover = true;
+
+
+    [Header("=== 第一個文字樣式設定 ===")]
+    [Space(5)]
+    [Tooltip("第一個文字使用的 TMP 字型資產")]
     public TMP_FontAsset textFont;
 
     [Space(5)]
-    [Tooltip("文字大小")]
+    [Tooltip("第一個文字大小")]
     [Range(10, 50)]
-    public float fontSize = 16f;
+    public float fontSize=50f;
 
     [Space(5)]
-    [Tooltip("文字顏色")]
+    [Tooltip("第一個文字顏色")]
     public Color textColor = Color.white;
 
     [Space(5)]
-    [Tooltip("文字對齊方式")]
+    [Tooltip("第一個文字對齊方式")]
     public TextAlignmentOptions textAlignment = TextAlignmentOptions.TopLeft;
 
     [Space(5)]
-    [Tooltip("使用富文本標籤包裝字型名稱")]
+    [Tooltip("第一個文字使用富文本標籤包裝字型名稱")]
     public bool useRichTextFontTag = true;
+
+
+    [Header("=== 第二個文字樣式設定 ===")]
+    [Space(5)]
+    [Tooltip("第二個文字使用的 TMP 字型資產")]
+    public TMP_FontAsset secondaryTextFont;
+
+    [Space(5)]
+    [Tooltip("第二個文字大小")]
+    [Range(10, 50)]
+    public float secondaryFontSize=40f;
+
+    [Space(5)]
+    [Tooltip("第二個文字顏色")]
+    public Color secondaryTextColor = Color.gray;
+
+    [Space(5)]
+    [Tooltip("第二個文字對齊方式")]
+    public TextAlignmentOptions secondaryTextAlignment = TextAlignmentOptions.TopLeft;
+
+    [Space(5)]
+    [Tooltip("第二個文字使用富文本標籤包裝字型名稱")]
+    public bool useSecondaryRichTextFontTag = true;
 
 
     [Header("=== 進階設定 ===")]
@@ -95,6 +133,7 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         // 設定文字樣式
         SetupTextStyle();
+        SetupSecondaryTextStyle();
 
         Debug.Log($"[UI_PreviewTarget] 初始化完成: {gameObject.name}");
     }
@@ -115,10 +154,16 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private void ShowPreview()
     {
-        // 顯示文字
+        // 顯示第一個文字
         if (showTextOnHover)
         {
             ShowText();
+        }
+
+        // 顯示第二個文字
+        if (showSecondaryTextOnHover)
+        {
+            ShowSecondaryText();
         }
 
         // 顯示影片或圖片
@@ -159,6 +204,27 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
         }
 
         textDisplay.text = finalText;
+    }
+
+    private void ShowSecondaryText()
+    {
+        if (secondaryTextDisplay == null)
+        {
+            Debug.LogWarning("[UI_PreviewTarget] Secondary Text Display 未設定!");
+            return;
+        }
+
+        // 顯示第二個文字元件
+        secondaryTextDisplay.gameObject.SetActive(true);
+
+        // 設定第二個文字內容
+        string finalText = secondaryDescription;
+        if (useSecondaryRichTextFontTag && secondaryTextFont != null)
+        {
+            finalText = $"<font=\"{secondaryTextFont.name}\">{secondaryDescription}</font>";
+        }
+
+        secondaryTextDisplay.text = finalText;
     }
 
     private void ShowVideo()
@@ -218,10 +284,16 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
             staticImage.gameObject.SetActive(false);
         }
 
-        // 隱藏文字元件
+        // 隱藏第一個文字元件
         if (textDisplay != null)
         {
             textDisplay.gameObject.SetActive(false);
+        }
+
+        // 隱藏第二個文字元件
+        if (secondaryTextDisplay != null)
+        {
+            secondaryTextDisplay.gameObject.SetActive(false);
         }
 
         // 停止影片播放
@@ -286,6 +358,20 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
         textDisplay.alignment = textAlignment;
     }
 
+    private void SetupSecondaryTextStyle()
+    {
+        if (secondaryTextDisplay == null) return;
+
+        if (secondaryTextFont != null)
+        {
+            secondaryTextDisplay.font = secondaryTextFont;
+        }
+
+        secondaryTextDisplay.fontSize = secondaryFontSize;
+        secondaryTextDisplay.color = secondaryTextColor;
+        secondaryTextDisplay.alignment = secondaryTextAlignment;
+    }
+
     private void OnDisable()
     {
         if (isHovering)
@@ -310,15 +396,16 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
     /// <summary>
     /// 動態設定預覽內容
     /// </summary>
-    public void SetPreviewContent(string text, VideoClip video = null, Sprite image = null)
+    public void SetPreviewContent(string text, string secondaryText, VideoClip video = null, Sprite image = null)
     {
         description = text;
+        secondaryDescription = secondaryText;
         previewVideo = video;
         previewImage = image;
     }
 
     /// <summary>
-    /// 動態設定文字樣式
+    /// 動態設定第一個文字樣式
     /// </summary>
     public void SetTextStyle(TMP_FontAsset font, float size, Color color, TextAlignmentOptions alignment)
     {
@@ -330,12 +417,25 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
     }
 
     /// <summary>
+    /// 動態設定第二個文字樣式
+    /// </summary>
+    public void SetSecondaryTextStyle(TMP_FontAsset font, float size, Color color, TextAlignmentOptions alignment)
+    {
+        secondaryTextFont = font;
+        secondaryFontSize = size;
+        secondaryTextColor = color;
+        secondaryTextAlignment = alignment;
+        SetupSecondaryTextStyle();
+    }
+
+    /// <summary>
     /// 動態設定是否顯示影片和文字
     /// </summary>
-    public void SetShowOptions(bool showVideo, bool showText)
+    public void SetShowOptions(bool showVideo, bool showText, bool showSecondaryText)
     {
         showVideoOnHover = showVideo;
         showTextOnHover = showText;
+        showSecondaryTextOnHover = showSecondaryText;
     }
 
     /// <summary>
