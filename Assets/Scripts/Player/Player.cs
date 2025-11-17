@@ -5,6 +5,8 @@ using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+
 
 public class Player : Entity, ISaveable
 {
@@ -353,15 +355,6 @@ public class Player : Entity, ISaveable
     }
 
 
-    public void LoadData(GameData data)
-    {
-        transform.position = data.savedCheckpoint;
-    }
-
-    public void SaveData(ref GameData data)
-    {
-        data.savedCheckpoint = transform.position;
-    }
 
     public override bool IsWallDetected()
     {
@@ -437,6 +430,41 @@ public class Player : Entity, ISaveable
             return;
 
         stateMachine.ChangeState(hurtState);
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.activeSceneChanged += OnSceneChanged;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.activeSceneChanged -= OnSceneChanged;
+    }
+
+    private void OnSceneChanged(Scene oldScene, Scene newScene)
+    {
+        // 主選單場景名稱（改成你自己的）
+        if (newScene.name == "MainMenu")
+        {
+            isBusy = true;
+            rb.velocity = Vector2.zero; // 停止動作（可加可不加）
+        }
+        else
+        {
+            isBusy = false;
+        }
+    }
+
+
+    public void LoadData(GameData data)
+    {
+        //transform.position = data.savedCheckpoint;
+    }
+
+    public void SaveData(ref GameData data)
+    {
+        //data.savedCheckpoint = transform.position;
     }
 
     // 保留原有的 Die() 方法(現在不會被呼叫)
