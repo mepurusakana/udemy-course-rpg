@@ -42,34 +42,68 @@ public class UI_MainMenu : MonoBehaviour
     // 內部：記錄附加載入的場景
     private Scene _settingsScene;
 
+    void Awake()
+    {
+        // 如果沒有在 Inspector 中指定 fadeScreen，嘗試自動尋找
+        if (fadeScreen == null)
+        {
+            fadeScreen = FindObjectOfType<UI_FadeScreen>();
+            if (fadeScreen == null && enableLogs)
+            {
+                Debug.LogWarning("[UI_MainMenu] 找不到 UI_FadeScreen，場景切換將不會有淡入淡出效果");
+            }
+        }
+    }
+
     // ====== 你原本就有的功能 ======
     public void ContinueGame()
     {
         if (pauseWhenOpenSettings) Time.timeScale = 1f;
         StartCoroutine(FadeThenSwitchRoutine(1.5f));
-
     }
 
     private IEnumerator FadeThenSwitchRoutine(float delay)
     {
-        if (fadeScreen) fadeScreen.FadeOut();
+        if (fadeScreen)
+        {
+            fadeScreen.FadeOut();
+            if (enableLogs) Debug.Log("[UI_MainMenu] 執行 FadeOut，準備切換場景");
+        }
         yield return new WaitForSeconds(delay);
         SwitchScene(); // 透過既有的切場景流程
     }
 
-    public void NewGame() { StartCoroutine(LoadSceneWithFadeEffect(1.5f)); }
-    public void ExitGame() { Debug.Log("Exit game"); Application.Quit(); }
+    public void NewGame()
+    {
+        StartCoroutine(LoadSceneWithFadeEffect(1.5f));
+    }
+
+    public void ExitGame()
+    {
+        Debug.Log("Exit game");
+        Application.Quit();
+    }
 
     public void SwitchScene()
     {
         if (!string.IsNullOrEmpty(targetSceneName))
-        { SceneManager.LoadScene(targetSceneName); Debug.Log($"切換到場景：{targetSceneName}"); }
-        else Debug.LogError("目標場景名稱未設定!");
+        {
+            SceneManager.LoadScene(targetSceneName);
+            if (enableLogs) Debug.Log($"[UI_MainMenu] 切換到場景：{targetSceneName}");
+        }
+        else
+        {
+            Debug.LogError("[UI_MainMenu] 目標場景名稱未設定!");
+        }
     }
 
     private IEnumerator LoadSceneWithFadeEffect(float delay)
     {
-        if (fadeScreen) fadeScreen.FadeOut();
+        if (fadeScreen)
+        {
+            fadeScreen.FadeOut();
+            if (enableLogs) Debug.Log("[UI_MainMenu] 執行 FadeOut，準備載入新遊戲");
+        }
         yield return new WaitForSeconds(delay);
         SceneManager.LoadScene(sceneName);
     }

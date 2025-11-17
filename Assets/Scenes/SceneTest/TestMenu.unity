@@ -358,11 +358,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameData:
-    savedCheckpoint: {x: 0, y: 0, z: 0}
+    savedCheckpoint:
+      x: 0
+      y: 0
+      z: 0
     playerHealth: 100
     lastCheckpointSceneName: 
     lastCheckpointId: 
-    lastCheckpointPosition: {x: 0, y: 0, z: 0}
+    lastCheckpointPosition:
+      x: 0
+      y: 0
+      z: 0
   currentSlotIndex: 0
   encryptData: 1
 --- !u!4 &907900829
@@ -5227,6 +5233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dea3df7d21d4c854d88c1f2793c8ce24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  anim: {fileID: 0}
 --- !u!82 &6339164396973711982
 AudioSource:
   m_ObjectHideFlags: 0

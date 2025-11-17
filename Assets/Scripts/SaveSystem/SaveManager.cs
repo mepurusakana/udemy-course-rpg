@@ -42,11 +42,9 @@ public class SaveManager : MonoBehaviour
             dataHandler.SaveData(data);
         }
     }
-
     public void LoadGame()
     {
         gameData = dataHandler.LoadData();
-
         if (gameData == null)
         {
             Debug.Log($"No save data found in slot {currentSlotIndex}, creating new save!");
@@ -62,8 +60,7 @@ public class SaveManager : MonoBehaviour
         var player = FindFirstObjectByType<Player>();
         if (player != null)
         {
-            player.TeleportPlayer(gameData.savedCheckpoint);
-
+            player.TeleportPlayer(gameData.savedCheckpoint.ToVector3());  //  ­×§ï³o¸Ì
             var stats = player.GetComponent<PlayerStats>();
             if (stats != null)
                 stats.SetHealth(gameData.playerHealth);
@@ -71,7 +68,6 @@ public class SaveManager : MonoBehaviour
 
         allSaveables = FindISaveables().Where(s => s != null).ToList();
     }
-
     public void SaveGame()
     {
         allSaveables = FindISaveables().Where(s => s != null).ToList();
