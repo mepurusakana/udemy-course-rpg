@@ -181,7 +181,7 @@ public class Player : Entity, ISaveable
         UpdateChantUI();
 
         if (SaveManager.instance != null && SaveManager.instance.gameData != null)
-            transform.position = SaveManager.instance.gameData.savedCheckpoint;
+            //transform.position = SaveManager.instance.gameData.savedCheckpoint;
 
         if (attackLight != null)
         {
