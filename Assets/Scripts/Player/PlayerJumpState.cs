@@ -12,7 +12,7 @@ public class PlayerJumpState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        
+
 
         player.SetVelocity(rb.velocity.x, player.jumpForce);
         jumpTimeCounter = player.jumpTimer;
@@ -78,4 +78,6 @@ public class PlayerJumpState : PlayerState
             stateMachine.ChangeState(player.airState);
         }
     }
+
+
 }

@@ -1852,11 +1852,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728ac5751deb2a54db20ded9f7b6d2cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainMenuSceneName: MainMenu
+  gameplaySceneNames:
+  - A001
+  - B001
   fadeScreen: {fileID: 2976721781353914602}
+  manager: {fileID: 0}
   endText: {fileID: 0}
   restartButton: {fileID: 0}
   PauseUI: {fileID: 8256524315276946630}
   inGameUI: {fileID: 4707774754829097518}
+  UI_Skill: {fileID: 0}
+  audioManager: {fileID: 0}
 --- !u!1 &1306758498811225056
 GameObject:
   m_ObjectHideFlags: 0
@@ -4030,10 +4037,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   description: 15546
-  previewClip: {fileID: 32900000, guid: 8151010047e16304d954985cfb117fde, type: 3}
-  videoOnTop: 1
-  descriptionFont: {fileID: 0}
-  wrapWithRichTextFontTag: 1
+  secondaryDescription: "\u5728\u9019\u88E1\u8F38\u5165\u7B2C\u4E8C\u6BB5\u6587\u5B57"
+  previewVideo: {fileID: 0}
+  previewImage: {fileID: 0}
+  videoRawImage: {fileID: 0}
+  videoPlayer: {fileID: 0}
+  staticImage: {fileID: 0}
+  textDisplay: {fileID: 0}
+  secondaryTextDisplay: {fileID: 0}
+  showVideoOnHover: 1
+  showTextOnHover: 1
+  showSecondaryTextOnHover: 1
+  textFont: {fileID: 0}
+  fontSize: 50
+  textColor: {r: 1, g: 1, b: 1, a: 1}
+  textAlignment: 257
+  useRichTextFontTag: 1
+  secondaryTextFont: {fileID: 0}
+  secondaryFontSize: 40
+  secondaryTextColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  secondaryTextAlignment: 257
+  useSecondaryRichTextFontTag: 1
+  loopVideo: 1
+  muteVideo: 1
 --- !u!1 &2980801679371437019
 GameObject:
   m_ObjectHideFlags: 0
@@ -4968,6 +4994,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d9a6e8ce0fb1842a6c280433d9c52b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeScreen: {fileID: 0}
   pauseMenuUI: {fileID: 8256524315276946630}
   settingUI: {fileID: 8735405539647395045}
   audioSettingUI: {fileID: 5790766640739677803}
@@ -4977,6 +5004,7 @@ MonoBehaviour:
   inGameUI: {fileID: 4707774754829097518}
   uiDialogue: {fileID: 6162514610370585944}
   pauseDuringDialogue: 1
+  audioManager: {fileID: 0}
   skillsHintUI: {fileID: 0}
   uiSkills: {fileID: 4530998867111317799}
   pauseDuringSkills: 1
@@ -4993,6 +5021,10 @@ MonoBehaviour:
   bgStartCanvasName: bgstart
   unloadBgStartSceneWhenHidden: 1
   includeBGStartInHideAll: 0
+  mainMenuSceneName: MainMenu
+  gameplaySceneNames:
+  - A001
+  - B001
 --- !u!1 &4046724017095117516
 GameObject:
   m_ObjectHideFlags: 0
@@ -6341,6 +6373,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sliderHp: {fileID: 8914462421955222097}
   sliderMp: {fileID: 2679139046202152505}
+  displayImage: {fileID: 0}
+  optionSprites: []
 --- !u!1 &4826228913123323095
 GameObject:
   m_ObjectHideFlags: 0
@@ -9282,10 +9316,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   description: 15546
-  previewClip: {fileID: 32900000, guid: 8151010047e16304d954985cfb117fde, type: 3}
-  videoOnTop: 1
-  descriptionFont: {fileID: 0}
-  wrapWithRichTextFontTag: 1
+  secondaryDescription: "\u5728\u9019\u88E1\u8F38\u5165\u7B2C\u4E8C\u6BB5\u6587\u5B57"
+  previewVideo: {fileID: 0}
+  previewImage: {fileID: 0}
+  videoRawImage: {fileID: 0}
+  videoPlayer: {fileID: 0}
+  staticImage: {fileID: 0}
+  textDisplay: {fileID: 0}
+  secondaryTextDisplay: {fileID: 0}
+  showVideoOnHover: 1
+  showTextOnHover: 1
+  showSecondaryTextOnHover: 1
+  textFont: {fileID: 0}
+  fontSize: 50
+  textColor: {r: 1, g: 1, b: 1, a: 1}
+  textAlignment: 257
+  useRichTextFontTag: 1
+  secondaryTextFont: {fileID: 0}
+  secondaryFontSize: 40
+  secondaryTextColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  secondaryTextAlignment: 257
+  useSecondaryRichTextFontTag: 1
+  loopVideo: 1
+  muteVideo: 1
 --- !u!1 &6168393818076848403
 GameObject:
   m_ObjectHideFlags: 0
@@ -9654,6 +9707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dea3df7d21d4c854d88c1f2793c8ce24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  anim: {fileID: 0}
 --- !u!1 &6282147607292298637
 GameObject:
   m_ObjectHideFlags: 0

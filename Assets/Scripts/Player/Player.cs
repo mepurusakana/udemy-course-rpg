@@ -73,6 +73,7 @@ public class Player : Entity, ISaveable
     [Header("Physics")]
     public float defaultGravity = 20f;
 
+    public MovingPlatform currentPlatform;
     [HideInInspector] public Transform lastAttacker; // 記錄最近攻擊你的敵人
 
 
@@ -236,6 +237,23 @@ public class Player : Entity, ISaveable
         stateMachine.currentState.Update();
 
         CheckForDashInput();
+
+        CheckMovingPlatform();
+    }
+
+    private void CheckMovingPlatform()
+    {
+        currentPlatform = null;
+
+        Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, 0.1f, whatIsGround);
+        if (hit != null)
+        {
+            MovingPlatform platform = hit.GetComponent<MovingPlatform>();
+            if (platform != null)
+            {
+                currentPlatform = platform;
+            }
+        }
     }
 
 

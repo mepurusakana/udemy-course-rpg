@@ -49,6 +49,10 @@ public class UI_Dialogue : MonoBehaviour
     // 打開並顯示第一句
     public void Open(DialogueLineSO line, Action onClosedCallback = null)
     {
+        AudioManager.instance.muteFootsteps = true;
+        AudioManager.instance.StopSFX(8);
+
+
         currentLine = line;
         currentIndex = 0;
         onClosed = onClosedCallback;
@@ -132,6 +136,8 @@ public class UI_Dialogue : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+
+        AudioManager.instance.muteFootsteps = false;
 
         IsOpen = false;
         onClosed?.Invoke();

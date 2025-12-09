@@ -7,6 +7,9 @@ public class AudioManager : MonoBehaviour
 {
     // ===== 場景範圍單例（Scene-scoped）=====
     private static AudioManager _instance;
+
+    public bool muteFootsteps = false;
+
     public static AudioManager instance
     {
         get
@@ -117,6 +120,19 @@ public class AudioManager : MonoBehaviour
 
         a.pitch = Random.Range(0.85f, 1.10f);
         a.Play();
+    }
+
+
+    public void PlayLoopSFX(int index)
+    {
+        if (muteFootsteps) return;   // 對話期間直接禁止
+        if (sfx == null || index < 0 || index >= sfx.Length) return;
+
+        var a = sfx[index];
+        if (!a) return;
+
+        if (!a.isPlaying)
+            a.Play();
     }
 
     public void StopSFX(int index)

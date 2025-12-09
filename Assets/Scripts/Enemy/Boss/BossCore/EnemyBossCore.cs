@@ -1,0 +1,69 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class EnemyBossCore : Enemy
+{
+
+    #region States
+
+    public EnemyBossCoreIdleState idleState { get; private set; }
+    //public DeathFallMoveState moveState { get; private set; }
+    //public DeathFallBattleState battleState { get; private set; }
+    //public DeathFallAttackState attackState { get; private set; }
+    //public DeathFallStunnedState stunnedState { get; private set; }
+    public EnemyBossCoreDeadState deadState { get; private set; }
+    #endregion
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        idleState = new EnemyBossCoreIdleState(this, stateMachine, "Idle", this);
+        //moveState = new DeathFallMoveState(this, stateMachine, "Move", this);
+        //battleState = new DeathFallBattleState(this, stateMachine, "Move", this);
+        //attackState = new DeathFallAttackState(this, stateMachine, "Attack", this);
+        //stunnedState = new DeathFallStunnedState(this, stateMachine, "Stunned", this);
+        deadState = new EnemyBossCoreDeadState(this, stateMachine, "Stunned", this);
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        stateMachine.Initialize(idleState);
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        //if (Input.GetKeyDown(KeyCode.U))
+        //{
+        //    stateMachine.ChangeState(stunnedState);
+        //}
+    }
+
+
+    public override void OnTakeDamage(Transform attacker)
+    {
+        base.OnTakeDamage(attacker);
+
+        // 如果敵人已經死亡，不進入
+        if (stats.isDead)
+            return;
+
+        // 面向玩家
+        int playerDir = attacker.position.x > transform.position.x ? 1 : -1;
+        if (facingDir != playerDir)
+            Flip();
+
+        // 進入暈眩狀態
+        //stateMachine.ChangeState(stunnedState);
+    }
+
+    public override void Die()
+    {
+        base.Die();
+        stateMachine.ChangeState(deadState);
+    }
+}

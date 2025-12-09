@@ -148,6 +148,10 @@ public class Entity : MonoBehaviour
 
     public virtual void FlipController(float _x)
     {
+
+        if (Mathf.Abs(_x) < 0.1f)   // 避免因為微小速度翻面
+            return;
+
         if (_x > 0 && !facingRight)
             Flip();
         else if (_x < 0 && facingRight)

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class PlayerPrimaryAttackState : PlayerState
@@ -102,8 +103,6 @@ public class PlayerPrimaryAttackState : PlayerState
         base.Update();
 
         // 攻擊結束後歸零速度
-        if (stateTimer < 0)
-            player.SetZeroVelocity();
 
         if (triggerCalled)
             stateMachine.ChangeState(player.airState);
@@ -131,6 +130,16 @@ public class PlayerPrimaryAttackState : PlayerState
 
                 }
             }
+        }
+
+        if (player.currentPlatform != null)
+        {
+            return;
+        }
+        else
+        {
+            if (stateTimer < 0)
+                player.SetZeroVelocity();
         }
     }
 }

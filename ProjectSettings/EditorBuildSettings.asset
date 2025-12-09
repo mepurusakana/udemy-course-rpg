@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Scene/B001.unity
     guid: 75f1eba5279d57945a3d5a0a9c27f07e
   - enabled: 1
+    path: Assets/Scenes/Scene/B002.unity
+    guid: 94ec070a06009b74ab6519240b75adda
+  - enabled: 1
     path: Assets/Scenes/SceneTest/TestMenu.unity
     guid: fec3a684854bf3e419ee8530df86ded0
   - enabled: 1

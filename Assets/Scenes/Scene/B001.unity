@@ -19248,10 +19248,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 312042755553818545, guid: 607c5d686db46ad4a91083f2e04780e7, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 16.9
-      objectReference: {fileID: 0}
     - target: {fileID: 873932619018063180, guid: 607c5d686db46ad4a91083f2e04780e7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 68.7
@@ -19295,26 +19291,6 @@ PrefabInstance:
     - target: {fileID: 1007203445328212994, guid: 607c5d686db46ad4a91083f2e04780e7, type: 3}
       propertyPath: m_Name
       value: BG_JumpDash
-      objectReference: {fileID: 0}
-    - target: {fileID: 2954948812977732883, guid: 607c5d686db46ad4a91083f2e04780e7, type: 3}
-      propertyPath: m_TargetTexture
-      value: 
-      objectReference: {fileID: 8400000, guid: d9f1edec6c74a404cb85705a3653e46a, type: 2}
-    - target: {fileID: 3973517271343753209, guid: 607c5d686db46ad4a91083f2e04780e7, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 17.0167
-      objectReference: {fileID: 0}
-    - target: {fileID: 3973517271343753209, guid: 607c5d686db46ad4a91083f2e04780e7, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -5.31
-      objectReference: {fileID: 0}
-    - target: {fileID: 4730900133104239225, guid: 607c5d686db46ad4a91083f2e04780e7, type: 3}
-      propertyPath: m_Texture
-      value: 
-      objectReference: {fileID: 8400000, guid: d9f1edec6c74a404cb85705a3653e46a, type: 2}
-    - target: {fileID: 6929476361955576954, guid: 607c5d686db46ad4a91083f2e04780e7, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 18.4667
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -21231,6 +21207,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5344450957299155476, guid: 54cfe1e86e5d7a845af65ececa4d0a92, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+    - target: {fileID: 5344450957299155476, guid: 54cfe1e86e5d7a845af65ececa4d0a92, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -2838357698598763653, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+    - target: {fileID: 5344450957299155476, guid: 54cfe1e86e5d7a845af65ececa4d0a92, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6180968374967885747, guid: 54cfe1e86e5d7a845af65ececa4d0a92, type: 3}
       propertyPath: m_LocalPosition.x
       value: 368.5

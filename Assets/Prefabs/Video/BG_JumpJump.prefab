@@ -500,10 +500,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u7A7A\u767D\u9375              \u7A7A\u767D\u9375"
+  m_text: "\u7A7A\u767D\u9375                       \u7A7A\u767D\u9375"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6e7e007e8768550469589bf93c0920ce, type: 2}
-  m_sharedMaterial: {fileID: 4668504659278785779, guid: 6e7e007e8768550469589bf93c0920ce, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+  m_sharedMaterial: {fileID: -2838357698598763653, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -527,8 +527,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 2.5
-  m_fontSizeBase: 2.5
+  m_fontSize: 2.3
+  m_fontSizeBase: 2.3
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
