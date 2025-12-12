@@ -1,17 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyBossCore : Enemy
 {
+    [Header("Core Settings")]
+    public EnemyBoss parentBoss; // 父Boss引用
+    public int coreHealth = 3; // Core的血量
+    private int currentCoreHealth;
 
     #region States
-
     public EnemyBossCoreIdleState idleState { get; private set; }
-    //public DeathFallMoveState moveState { get; private set; }
-    //public DeathFallBattleState battleState { get; private set; }
-    //public DeathFallAttackState attackState { get; private set; }
-    //public DeathFallStunnedState stunnedState { get; private set; }
     public EnemyBossCoreDeadState deadState { get; private set; }
     #endregion
 
@@ -20,50 +17,65 @@ public class EnemyBossCore : Enemy
         base.Awake();
 
         idleState = new EnemyBossCoreIdleState(this, stateMachine, "Idle", this);
-        //moveState = new DeathFallMoveState(this, stateMachine, "Move", this);
-        //battleState = new DeathFallBattleState(this, stateMachine, "Move", this);
-        //attackState = new DeathFallAttackState(this, stateMachine, "Attack", this);
-        //stunnedState = new DeathFallStunnedState(this, stateMachine, "Stunned", this);
-        deadState = new EnemyBossCoreDeadState(this, stateMachine, "Stunned", this);
+        deadState = new EnemyBossCoreDeadState(this, stateMachine, "Death", this);
     }
 
     protected override void Start()
     {
         base.Start();
         stateMachine.Initialize(idleState);
+        ResetCore();
     }
 
-    protected override void Update()
+    public void ResetCore()
     {
-        base.Update();
+        currentCoreHealth = coreHealth;
+        isDead = false;
 
-        //if (Input.GetKeyDown(KeyCode.U))
-        //{
-        //    stateMachine.ChangeState(stunnedState);
-        //}
+        // 重置碰撞體
+        if (cd != null)
+            cd.enabled = true;
     }
-
 
     public override void OnTakeDamage(Transform attacker)
     {
         base.OnTakeDamage(attacker);
 
-        // 如果敵人已經死亡，不進入
-        if (stats.isDead)
+        if (isDead)
             return;
 
-        // 面向玩家
-        int playerDir = attacker.position.x > transform.position.x ? 1 : -1;
-        if (facingDir != playerDir)
-            Flip();
+        currentCoreHealth--;
 
-        // 進入暈眩狀態
-        //stateMachine.ChangeState(stunnedState);
+        Debug.Log($"Core HP: {currentCoreHealth}/{coreHealth}");
+
+        // 可以添加受傷特效
+        if (fx != null)
+            fx.StartBlink(0.1f);
+
+        if (currentCoreHealth <= 0)
+        {
+            Die();
+        }
     }
 
     public override void Die()
     {
+        if (isDead)
+            return;
+
         base.Die();
         stateMachine.ChangeState(deadState);
+
+        // 通知父Boss
+        if (parentBoss != null)
+        {
+            parentBoss.OnCoreDestroyed();
+        }
+
+        Debug.Log("Core被破壞！");
     }
+
+    // Core不會被擊退
+    public override void DamageImpact() { }
+    public override void SetupKnockbackDir(Transform _damageDirection) { }
 }
