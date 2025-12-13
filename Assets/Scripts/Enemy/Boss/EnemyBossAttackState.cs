@@ -1,34 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyBossAttackState : EnemyState
 {
-    private EnemyBoss enemy;
-    public EnemyBossAttackState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animBoolName, EnemyBoss _enemy) : base(_enemyBase, _stateMachine, _animBoolName)
+    private EnemyBoss boss;
+    private float attackInterval = 1.5f;
+    private float nextAttackTime = 0f;
+
+    public EnemyBossAttackState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animBoolName, EnemyBoss _boss)
+        : base(_enemyBase, _stateMachine, _animBoolName)
     {
-        this.enemy = _enemy;
+        this.boss = _boss;
     }
 
     public override void Enter()
     {
         base.Enter();
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
-
-        enemy.lastAttackTime = Time.time;
+        nextAttackTime = 0f;
     }
 
     public override void Update()
     {
         base.Update();
 
-        enemy.SetZeroVelocity();
+        boss.SetZeroVelocity();
 
-        if (triggerCalled)
-            stateMachine.ChangeState(enemy.battleState);
+        // 定期執行攻擊
+        if (Time.time >= nextAttackTime)
+        {
+            boss.PerformRandomAttack();
+            nextAttackTime = Time.time + attackInterval;
+        }
+
+        // 注意：攻擊時間由 EnemyBoss.Update() 中的 attackTimer 控制
+        // 達到 attackDuration 後會自動調用 EnterTiredState()
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
     }
 }

@@ -1,232 +1,392 @@
 using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyBoss : Enemy
 {
-    [Header("Boss Settings")]
-    public EnemyBossCore bossCore; // 核心引用
-    public Transform leftHand;
-    public Transform rightHand;
-    public int maxHealth = 100;
-    private int currentHealth;
+    [Header("Boss Components")]
+    public Transform bossHead;
+    public Transform bossBody;
+    public BossCore bossCore;
+    public BossHand leftHand;
+    public BossHand rightHand;
 
-    [Header("Attack Settings")]
-    public int attacksBeforeTired = 4; // 攻擊4次後進入Tired
-    private int currentAttackCount = 0;
-
-    [Header("Hand Attack Settings")]
-    public float handAttackCooldown = 2f;
-    private float lastHandAttackTime;
-
-    [Header("Core Settings")]
-    public Transform coreSpawnPosition; // Core出現的位置
-    public float coreAppearDuration = 10f; // Core出現持續時間
-
-    [Header("Platform Settings")]
-    public GameObject movingPlatformPrefab;
-    public Transform leftSpawnPoint;
-    public Transform rightSpawnPoint;
-    public float platformSpawnInterval = 3f;
-    private Coroutine platformSpawnCoroutine;
-
-    #region States
+    #region State
     public EnemyBossIdleState idleState { get; private set; }
-    public EnemyBossBattleState battleState { get; private set; }
     public EnemyBossAttackState attackState { get; private set; }
     public EnemyBossTiredState tiredState { get; private set; }
-    public EnemyBossStunnedState stunnedState { get; private set; }
-    public EnemyBossDeadState deadState { get; private set; }
+    public EnemyBossDefeatedState defeatedState { get; private set; }
     #endregion
+
+    [Header("Attack Settings")]
+    //public float attackCooldown = 2f;
+    public float attackDuration;
+    public float tiredDuration;
+    //[HideInInspector] public float lastAttackTime;
+
+    [Header("Independent Cooldowns")]
+    public float handAttackIntervalMin = 2f;
+    public float handAttackIntervalMax = 4f;
+    public float ultimateCooldown = 10f; // 大招冷卻時間
+
+    private float leftHandTimer;
+    private float rightHandTimer;
+    private float ultimateTimer;
+
+    // 狀態標記
+    private bool isUsingSkill = false;      // 正在施放大招中 (鎖定所有行動)
+    private bool isUltimatePending = false; // 大招準備就緒，正在等待雙手空閒
+
+    private float totalAttackPhaseTimer = 0f;
+
+    [Header("Default Positions")]
+    private Vector3 headDefaultPos;
+    private Vector3 bodyDefaultPos;
+    private Vector3 coreDefaultPos;
+    private Vector3 leftHandDefaultPos;
+    private Vector3 rightHandDefaultPos;
+
+    [Header("Attack Prefabs")]
+    public GameObject swordPrefab;
+    public GameObject energyBallPrefab;
+
+    private bool isInTired = false;
+    private float attackTimer = 0f;
+
 
     protected override void Awake()
     {
         base.Awake();
 
+        // 初始化狀態
         idleState = new EnemyBossIdleState(this, stateMachine, "Idle", this);
-        battleState = new EnemyBossBattleState(this, stateMachine, "Idle", this);
         attackState = new EnemyBossAttackState(this, stateMachine, "Attack", this);
         tiredState = new EnemyBossTiredState(this, stateMachine, "Tired", this);
-        stunnedState = new EnemyBossStunnedState(this, stateMachine, "Stunned", this);
-        deadState = new EnemyBossDeadState(this, stateMachine, "Death", this);
+        defeatedState = new EnemyBossDefeatedState(this, stateMachine, "Defeated", this);
     }
 
     protected override void Start()
     {
         base.Start();
-        currentHealth = maxHealth;
+
+        // 記錄所有部位的初始位置
+        SaveDefaultPositions();
+
+        // 設置初始狀態
         stateMachine.Initialize(idleState);
 
-        // 初始隱藏Core
-        if (bossCore != null)
-            bossCore.gameObject.SetActive(false);
+        // --- 修改重點 1: 初始設為 Kinematic (完全不受力，不會被手帶動) ---
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        // rb.gravityScale = 0; // Kinematic 不需要設重力，它本身就不受重力
+        rb.velocity = Vector2.zero;
+
+        // 初始化計時器，給予一點隨機錯開，避免開場左右手同時攻擊太生硬
+        ResetAttackTimers();
+    }
+
+    // 每次進入 Attack State 時重置計時器
+    public void ResetAttackTimers()
+    {
+        leftHandTimer = Random.Range(1f, 2f);
+        rightHandTimer = Random.Range(2.5f, 3.5f);
+        ultimateTimer = ultimateCooldown;
+
+        isUsingSkill = false;
+        isUltimatePending = false;
+        totalAttackPhaseTimer = 0f;
     }
 
     protected override void Update()
     {
         base.Update();
+
+        // 攻擊計時器
+        if (stateMachine.currentState == attackState)
+        {
+            {
+                HandleAttackLogic();
+                CheckPhaseDuration();
+            }
+        }
     }
 
-    // 手部攻擊（左右手輪流）
-    public void PerformHandAttack()
+    private void CheckPhaseDuration()
     {
-        currentAttackCount++;
+        // 只有當沒有在大招且沒有在準備大招時，才計算疲勞時間
+        // 這樣可以避免大招放到一半突然進入疲勞
+        if (!isUsingSkill && !isUltimatePending)
+        {
+            totalAttackPhaseTimer += Time.deltaTime;
+            if (totalAttackPhaseTimer >= attackDuration)
+            {
+                totalAttackPhaseTimer = 0f;
+                EnterTiredState();
+            }
+        }
+    }
 
-        // 隨機選擇左手或右手攻擊
-        bool useLeftHand = Random.value > 0.5f;
+    private void HandleAttackLogic()
+    {
+        // 1. 如果正在「施放大招中」，完全鎖死，什麼都不做
+        if (isUsingSkill) return;
 
-        if (useLeftHand)
-            TriggerLeftHandAttack();
+        // 2. 如果「大招等待中 (Pending)」，只檢查是否可以發動
+        if (isUltimatePending)
+        {
+            // 檢查條件：左右手都不在攻擊狀態
+            if (!leftHand.isAttacking && !rightHand.isAttacking)
+            {
+                // 發動大招
+                StartCoroutine(EnergyBallAttackRoutine());
+                isUltimatePending = false; // 清除等待標記
+            }
+            return; // 等待期間，不執行下面的左右手計時器
+        }
+
+        // 3. 正常階段：分別計算三個計時器
+
+        // --- 左手計時器 ---
+        leftHandTimer -= Time.deltaTime;
+        if (leftHandTimer <= 0)
+        {
+            // 只有手有空才發動
+            if (!leftHand.isAttacking)
+            {
+                PerformHandAction(leftHand);
+                leftHandTimer = Random.Range(handAttackIntervalMin, handAttackIntervalMax);
+            }
+        }
+
+        // --- 右手計時器 ---
+        rightHandTimer -= Time.deltaTime;
+        if (rightHandTimer <= 0)
+        {
+            // 只有手有空才發動
+            if (!rightHand.isAttacking)
+            {
+                PerformHandAction(rightHand);
+                rightHandTimer = Random.Range(handAttackIntervalMin, handAttackIntervalMax);
+            }
+        }
+
+        // --- 大招計時器 ---
+        ultimateTimer -= Time.deltaTime;
+        if (ultimateTimer <= 0)
+        {
+            // 時間到，標記為「準備發動」，這會暫停上面的左右手計時器邏輯
+            isUltimatePending = true;
+            ultimateTimer = ultimateCooldown; // 重置
+        }
+    }
+
+    // 隨機選擇手的動作 (劍 或 橫掃)
+    private void PerformHandAction(BossHand hand)
+    {
+        int action = Random.Range(0, 2); // 0 or 1
+        if (action == 0)
+            hand.PerformSwordAttack();
         else
-            TriggerRightHandAttack();
-
-        // 檢查是否達到Tired條件
-        if (currentAttackCount >= attacksBeforeTired)
-        {
-            currentAttackCount = 0;
-            stateMachine.ChangeState(tiredState);
-        }
+            hand.PerformSweepAttack();
     }
 
-    private void TriggerLeftHandAttack()
+
+    private IEnumerator EnergyBallAttackRoutine()
     {
-        // 隨機選擇劍或投射物
-        bool useSword = Random.value > 0.5f;
+        isUsingSkill = true; // 鎖定狀態
 
-        if (leftHand != null)
+        // ... (這裡是你原本的能量球邏輯，移動到中間生成球) ...
+        // 手掌移動到較高位置
+        Vector3 leftTargetPos = new Vector3(30f, 10f, 0f);
+        Vector3 rightTargetPos = new Vector3(-30f, 10f, 0f);
+
+        float moveDuration = 1f;
+        float elapsed = 0f;
+        Vector3 leftStart = leftHand.transform.localPosition;
+        Vector3 rightStart = rightHand.transform.localPosition;
+
+        while (elapsed < moveDuration)
         {
-            Animator handAnim = leftHand.GetComponent<Animator>();
-            if (handAnim != null)
-            {
-                handAnim.SetTrigger(useSword ? "LeftSword" : "LeftProjectile");
-            }
+            elapsed += Time.deltaTime;
+            float t = elapsed / moveDuration;
+            leftHand.transform.localPosition = Vector3.Lerp(leftStart, leftTargetPos, t);
+            rightHand.transform.localPosition = Vector3.Lerp(rightStart, rightTargetPos, t);
+            yield return null;
         }
+
+        Vector3 centerPos = (leftHand.transform.position + rightHand.transform.position) / 2f;
+        GameObject energyBall = Instantiate(energyBallPrefab, centerPos, Quaternion.identity);
+
+        yield return new WaitForSeconds(3f);
+        if (energyBall != null) Destroy(energyBall);
+
+        // 結束後復位
+        ResetToDefaultPositions();
+        yield return new WaitForSeconds(1f);
+
+        isUsingSkill = false; // 解除鎖定
     }
 
-    private void TriggerRightHandAttack()
+    private void SaveDefaultPositions()
+{
+    if (bossHead != null) headDefaultPos = bossHead.localPosition;
+    if (bossBody != null) bodyDefaultPos = bossBody.localPosition;
+    if (bossCore != null) coreDefaultPos = bossCore.transform.localPosition;
+    if (leftHand != null) leftHandDefaultPos = leftHand.transform.localPosition;
+    if (rightHand != null) rightHandDefaultPos = rightHand.transform.localPosition;
+
+    // 同步回手（如果你在 BossHand 新增了 defaultLocalPos）
+    if (leftHand != null) leftHand.defaultLocalPos = leftHandDefaultPos;
+    if (rightHand != null) rightHand.defaultLocalPos = rightHandDefaultPos;
+}
+
+    public void ResetToDefaultPositions()
     {
-        bool useSword = Random.value > 0.5f;
+        StartCoroutine(MoveToDefaultPositions());
+    }
 
-        if (rightHand != null)
+    private IEnumerator MoveToDefaultPositions()
+    {
+        float duration = 1f;
+        float elapsed = 0f;
+
+        Vector3 headStart = bossHead.localPosition;
+        Vector3 bodyStart = bossBody.localPosition;
+        Vector3 coreStart = bossCore.transform.localPosition;
+        Vector3 leftStart = leftHand.transform.localPosition;
+        Vector3 rightStart = rightHand.transform.localPosition;
+
+        while (elapsed < duration)
         {
-            Animator handAnim = rightHand.GetComponent<Animator>();
-            if (handAnim != null)
-            {
-                handAnim.SetTrigger(useSword ? "RightSword" : "RightProjectile");
-            }
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            if (bossHead != null) bossHead.localPosition = Vector3.Lerp(headStart, headDefaultPos, t);
+            if (bossBody != null) bossBody.localPosition = Vector3.Lerp(bodyStart, bodyDefaultPos, t);
+            if (bossCore != null) bossCore.transform.localPosition = Vector3.Lerp(coreStart, coreDefaultPos, t);
+            if (leftHand != null) leftHand.transform.localPosition = Vector3.Lerp(leftStart, leftHandDefaultPos, t);
+            if (rightHand != null) rightHand.transform.localPosition = Vector3.Lerp(rightStart, rightHandDefaultPos, t);
+
+            yield return null;
         }
     }
 
-    // 進入Tired狀態，召喚Core
     public void EnterTiredState()
     {
-        if (bossCore != null)
-        {
-            bossCore.transform.position = coreSpawnPosition.position;
-            bossCore.gameObject.SetActive(true);
-            bossCore.ResetCore();
-        }
+        isInTired = true;
 
-        // 開始生成移動平台
-        if (platformSpawnCoroutine != null)
-            StopCoroutine(platformSpawnCoroutine);
-        platformSpawnCoroutine = StartCoroutine(SpawnPlatformsRoutine());
+        // --- 修改重點 2: 疲憊時切換回 Dynamic (受重力影響掉落) ---
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.gravityScale = 2f;
 
-        // 設置計時器
-        Invoke(nameof(ExitTiredState), coreAppearDuration);
+        bossCore.SetVulnerable(true); // 核心可被攻擊
+        stateMachine.ChangeState(tiredState);
     }
 
-    // 退出Tired狀態
     public void ExitTiredState()
     {
-        // 停止生成平台
-        if (platformSpawnCoroutine != null)
-        {
-            StopCoroutine(platformSpawnCoroutine);
-            platformSpawnCoroutine = null;
-        }
+        isInTired = false;
 
-        // 隱藏Core
-        if (bossCore != null && bossCore.gameObject.activeSelf)
-        {
-            bossCore.gameObject.SetActive(false);
-            // 如果Core沒被破壞，進入Stunned
-            stateMachine.ChangeState(stunnedState);
-        }
+        // --- 修改重點 3: 恢復時切換回 Kinematic (鎖定位置) ---
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.velocity = Vector2.zero; // 確保沒有殘留速度
+        rb.angularVelocity = 0f;    // 確保沒有旋轉
+
+        bossCore.SetVulnerable(false); // 核心不可被攻擊
+        ResetToDefaultPositions();
+
+        // 等待位置重置完成後回到 Idle
+        StartCoroutine(WaitAndReturnToIdle());
     }
 
-    // Core被破壞時調用
-    public void OnCoreDestroyed()
+    private IEnumerator WaitAndReturnToIdle()
     {
-        CancelInvoke(nameof(ExitTiredState));
-
-        // 停止生成平台
-        if (platformSpawnCoroutine != null)
-        {
-            StopCoroutine(platformSpawnCoroutine);
-            platformSpawnCoroutine = null;
-        }
-
-        // 扣除一半血量
-        TakeDamage(maxHealth / 2);
-
-        // 隱藏Core
-        if (bossCore != null)
-            bossCore.gameObject.SetActive(false);
-
-        // 檢查是否死亡
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-        else
-        {
-            stateMachine.ChangeState(battleState);
-        }
+        yield return new WaitForSeconds(1f);
+        stateMachine.ChangeState(idleState);
     }
 
-    public void TakeDamage(int damage)
+    // 隨機選擇攻擊
+    public void PerformRandomAttack()
     {
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(currentHealth, 0);
+        // 1. 如果正在施放技能（能量球），直接退出，不執行新攻擊
+        if (isUsingSkill) return;
 
-        // 可以在這裡添加受傷特效
-        Debug.Log($"Boss HP: {currentHealth}/{maxHealth}");
-    }
+        // 2. (選用優化) 如果手正在單獨攻擊，也不要強行施放能量球，避免手瞬間瞬移
+        if (leftHand.isAttacking || rightHand.isAttacking) return;
 
-    // 生成移動平台
-    private IEnumerator SpawnPlatformsRoutine()
-    {
-        while (true)
+        int attackType = Random.Range(0, 5);
+
+        switch (attackType)
         {
-            yield return new WaitForSeconds(platformSpawnInterval);
-
-            // 隨機從左邊或右邊生成
-            bool fromLeft = Random.value > 0.5f;
-            Transform spawnPoint = fromLeft ? leftSpawnPoint : rightSpawnPoint;
-
-            if (movingPlatformPrefab != null && spawnPoint != null)
-            {
-                GameObject platform = Instantiate(movingPlatformPrefab, spawnPoint.position, Quaternion.identity);
-
-                // 設置平台移動方向
-                BossMovingPlatform platformScript = platform.GetComponent<BossMovingPlatform>();
-                if (platformScript != null)
-                {
-                    platformScript.SetDirection(fromLeft ? Vector2.right : Vector2.left);
-                }
-            }
+            case 0:
+                leftHand.PerformSwordAttack();
+                break;
+            case 1:
+                leftHand.PerformSweepAttack();
+                break;
+            case 2:
+                rightHand.PerformSwordAttack();
+                break;
+            case 3:
+                rightHand.PerformSweepAttack();
+                break;
+            case 4:
+                PerformDoubleHandEnergyBall();
+                break;
         }
     }
+
+    private void PerformDoubleHandEnergyBall()
+    {
+        StartCoroutine(EnergyBallAttackRoutine());
+    }
+
+    //private IEnumerator EnergyBallAttackRoutine()
+    //{
+    //    isUsingSkill = true;
+    //    // 手掌移動到較高位置
+    //    Vector3 leftTargetPos = new Vector3(30f, 30f, 0f);
+    //    Vector3 rightTargetPos = new Vector3(-30f, 30f, 0f);
+
+    //    float moveDuration = 1f;
+    //    float elapsed = 0f;
+
+    //    Vector3 leftStart = leftHand.transform.localPosition;
+    //    Vector3 rightStart = rightHand.transform.localPosition;
+
+    //    while (elapsed < moveDuration)
+    //    {
+    //        elapsed += Time.deltaTime;
+    //        float t = elapsed / moveDuration;
+
+    //        leftHand.transform.localPosition = Vector3.Lerp(leftStart, leftTargetPos, t);
+    //        rightHand.transform.localPosition = Vector3.Lerp(rightStart, rightTargetPos, t);
+
+    //        yield return null;
+    //    }
+
+    //    // 在兩手中間生成能量球
+    //    Vector3 centerPos = (leftHand.transform.position + rightHand.transform.position) / 2f;
+    //    GameObject energyBall = Instantiate(energyBallPrefab, centerPos, Quaternion.identity);
+
+    //    // 持續發射 3 秒
+    //    yield return new WaitForSeconds(3f);
+
+    //    if (energyBall != null) Destroy(energyBall);
+
+    //    // 手部歸位 (建議加這段，讓手平滑回到原位，而不是瞬間跳回)
+    //    ResetToDefaultPositions();
+    //    yield return new WaitForSeconds(1f); // 等待歸位
+
+    //    // --- 步驟 B: 解鎖 ---
+    //    isUsingSkill = false;
+    //}
 
     public override void Die()
     {
         base.Die();
-        stateMachine.ChangeState(deadState);
+        // --- 修改重點 4: 死亡時切換回 Dynamic (掉落) ---
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.gravityScale = 2f;
+        stateMachine.ChangeState(defeatedState);
     }
-
-    // Boss本體不受傷害
-    public override void DamageImpact() { }
-    public override void SetupKnockbackDir(Transform _damageDirection) { }
-    public override void SlowEntityBy(float a, float b) { }
 }

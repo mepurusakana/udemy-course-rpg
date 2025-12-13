@@ -62,9 +62,6 @@ TagManager:
   - name: Enemy
     uniqueID: 2526798035
     locked: 0
-  - name: Ground
-    uniqueID: 4101806473
-    locked: 0
   - name: Player
     uniqueID: 4033654217
     locked: 0
@@ -73,6 +70,9 @@ TagManager:
     locked: 0
   - name: Projectile
     uniqueID: 516246769
+    locked: 0
+  - name: Ground
+    uniqueID: 4101806473
     locked: 0
   - name: MovingPlatform
     uniqueID: 2903809967

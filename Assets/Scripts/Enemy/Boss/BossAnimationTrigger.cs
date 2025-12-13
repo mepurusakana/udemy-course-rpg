@@ -2,17 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossAnimationTrigger : MonoBehaviour
+public class BossAnimationTriggers : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private EnemyBoss enemy => GetComponentInParent<EnemyBoss>();
+
+    private void AnimationTrigger()
     {
-        
+        enemy.AnimationFinishTrigger();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void AttackTrigger()
     {
-        
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(enemy.attackCheck.position, enemy.attackCheckRadius);
+
+        foreach (var hit in colliders)
+        {
+            if (hit.TryGetComponent(out PlayerStats target))
+            {
+                enemy.stats.DoDamage(target, enemy.transform);
+            }
+        }
     }
+
+    private void OpenCounterWindow() => enemy.OpenCounterAttackWindow();
+    private void CloseCounterWindow() => enemy.CloseCounterAttackWindow();
 }
