@@ -14792,7 +14792,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1560428347
-  m_SortingLayer: 9
+  m_SortingLayer: 10
   m_SortingOrder: 2
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.22000003, y: 0.22001475, z: 0}
@@ -20116,7 +20116,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -193160823
-  m_SortingLayer: 5
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.22000003, y: 0.22001475, z: 0}
@@ -45968,8 +45968,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6457540579539469678}
-  - {fileID: 2731137993967709458}
   - {fileID: 2751584103656087049}
+  - {fileID: 2731137993967709458}
   - {fileID: 507616598172713742}
   - {fileID: 7411775419955863434}
   m_Father: {fileID: 8880381712456444577}
@@ -46929,7 +46929,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 13
+  m_SortingLayer: 14
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -51648,7 +51648,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 13
+  m_SortingLayer: 14
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -63178,7 +63178,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 8
+  m_SortingLayer: 5
   m_SortingOrder: 1
   m_Sprite: {fileID: 990703528, guid: d187eb1c02753154897ff36aa36c5c26, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -74771,7 +74771,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8506947618163761328
 RectTransform:
   m_ObjectHideFlags: 0
@@ -75011,7 +75011,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 13
+  m_SortingLayer: 14
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -75111,7 +75111,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 8
+  m_SortingLayer: 5
   m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0

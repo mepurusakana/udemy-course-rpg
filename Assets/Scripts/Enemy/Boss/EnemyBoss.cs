@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnemyBoss : Enemy
 {
+    [Header("Boss Root Default")]
+    private Vector3 bossDefaultWorldPos;
     [Header("Boss Components")]
     public Transform bossHead;
     public Transform bossBody;
@@ -227,17 +229,19 @@ public class EnemyBoss : Enemy
     }
 
     private void SaveDefaultPositions()
-{
-    if (bossHead != null) headDefaultPos = bossHead.localPosition;
-    if (bossBody != null) bodyDefaultPos = bossBody.localPosition;
-    if (bossCore != null) coreDefaultPos = bossCore.transform.localPosition;
-    if (leftHand != null) leftHandDefaultPos = leftHand.transform.localPosition;
-    if (rightHand != null) rightHandDefaultPos = rightHand.transform.localPosition;
+    {
+        bossDefaultWorldPos = transform.position;
 
-    // 同步回手（如果你在 BossHand 新增了 defaultLocalPos）
-    if (leftHand != null) leftHand.defaultLocalPos = leftHandDefaultPos;
-    if (rightHand != null) rightHand.defaultLocalPos = rightHandDefaultPos;
-}
+        if (bossHead != null) headDefaultPos = bossHead.localPosition;
+        if (bossBody != null) bodyDefaultPos = bossBody.localPosition;
+        if (bossCore != null) coreDefaultPos = bossCore.transform.localPosition;
+        if (leftHand != null) leftHandDefaultPos = leftHand.transform.localPosition;
+        if (rightHand != null) rightHandDefaultPos = rightHand.transform.localPosition;
+
+        // 同步回手（如果你在 BossHand 新增了 defaultLocalPos）
+        if (leftHand != null) leftHand.defaultLocalPos = leftHandDefaultPos;
+        if (rightHand != null) rightHand.defaultLocalPos = rightHandDefaultPos;
+    }
 
     public void ResetToDefaultPositions()
     {
@@ -286,10 +290,12 @@ public class EnemyBoss : Enemy
     {
         isInTired = false;
 
-        // --- 修改重點 3: 恢復時切換回 Kinematic (鎖定位置) ---
+        
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.velocity = Vector2.zero; // 確保沒有殘留速度
         rb.angularVelocity = 0f;    // 確保沒有旋轉
+
+        StartCoroutine(MoveBossBackToAir(0.8f));
 
         bossCore.SetVulnerable(false); // 核心不可被攻擊
         ResetToDefaultPositions();
@@ -297,6 +303,22 @@ public class EnemyBoss : Enemy
         // 等待位置重置完成後回到 Idle
         StartCoroutine(WaitAndReturnToIdle());
     }
+
+    private IEnumerator MoveBossBackToAir(float duration)
+    {
+        Vector3 start = transform.position;
+        float t = 0f;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            transform.position = Vector3.Lerp(start, bossDefaultWorldPos, t / duration);
+            yield return null;
+        }
+
+        transform.position = bossDefaultWorldPos;
+    }
+
 
     private IEnumerator WaitAndReturnToIdle()
     {

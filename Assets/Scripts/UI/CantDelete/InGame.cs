@@ -58,8 +58,8 @@ public class InGame : MonoBehaviour
         sliderHp.value = currentHp / maxHp;
         sliderMp.value = mp;
 
-        Debug.Log(mp);
-        Debug.Log(currentMp);
+        //Debug.Log(mp);
+        //Debug.Log(currentMp);
     }
 
     public void OnOptionSelected(int index)

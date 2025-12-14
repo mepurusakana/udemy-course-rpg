@@ -1,18 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossProjectile : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private float speed;
+    private float lifeTime;
+    private float selfRotation;
+
+    public void Initialize(float speed, float lifeTime, float selfRotation)
     {
-        
+        this.speed = speed;
+        this.lifeTime = lifeTime;
+        this.selfRotation = selfRotation;
+
+        Destroy(gameObject, lifeTime);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        transform.position += transform.right * speed * Time.deltaTime;
+
+        if (selfRotation != 0)
+        {
+            transform.Rotate(0, 0, selfRotation * Time.deltaTime);
+        }
     }
 }

@@ -19,6 +19,7 @@ public class ProjectileData : ScriptableObject
     public float Distance = 0;              //相粌子彈間的距離
     public float CenterDis = 0;             //與發射點的距離
     public float SelfRotation = 0;          //每幀自轉角度增量
+    public float RotationSpeed = 0f;        //每幀初始旋轉的偏移量增量
 
     public GameObject Prefab;               //子彈的預制體
 }
