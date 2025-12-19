@@ -4,7 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class UI_FadeScreen : MonoBehaviour
 {
-    [SerializeField] private Animator anim;  // ← 改成可在 Inspector 中指定
+    [SerializeField] private Animator anim;
+    [SerializeField] private float fadeDuration = 1f;  // 淡入淡出持續時間（需與動畫時長一致）
+
     private static UI_FadeScreen instance;
 
     void Awake()
@@ -20,7 +22,6 @@ public class UI_FadeScreen : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         // 初始化 Animator
         InitializeAnimator();
     }
@@ -56,13 +57,11 @@ public class UI_FadeScreen : MonoBehaviour
         {
             anim = GetComponent<Animator>();
         }
-
         // 如果還是找不到，檢查子物件
         if (anim == null)
         {
             anim = GetComponentInChildren<Animator>();
         }
-
         // 最終檢查
         if (anim == null)
         {
@@ -85,10 +84,9 @@ public class UI_FadeScreen : MonoBehaviour
             Debug.LogWarning("[UI_FadeScreen] Animator 是 null，嘗試重新初始化...");
             InitializeAnimator();
         }
-
         if (anim != null)
         {
-            anim.SetTrigger("fadeOut");
+            StartCoroutine(FadeCoroutine("fadeOut"));
             Debug.Log("[UI_FadeScreen] 執行 FadeOut");
         }
         else
@@ -105,15 +103,42 @@ public class UI_FadeScreen : MonoBehaviour
             Debug.LogWarning("[UI_FadeScreen] Animator 是 null，嘗試重新初始化...");
             InitializeAnimator();
         }
-
         if (anim != null)
         {
-            anim.SetTrigger("fadeIn");
+            StartCoroutine(FadeCoroutine("fadeIn"));
             Debug.Log("[UI_FadeScreen] 執行 FadeIn");
         }
         else
         {
             Debug.LogError("[UI_FadeScreen] Animator 是 null，無法執行 FadeIn");
         }
+    }
+
+    // 淡入淡出協程：控制對話觸發器的啟用狀態
+    private IEnumerator FadeCoroutine(string triggerName)
+    {
+        // 淡入淡出開始時，禁用所有對話觸發器
+        DialogueStarter[] allStarters = FindObjectsOfType<DialogueStarter>();
+        foreach (var starter in allStarters)
+        {
+            starter.enabled = false;
+        }
+        Debug.Log($"[UI_FadeScreen] 開始 {triggerName}，已禁用 {allStarters.Length} 個 DialogueStarter");
+
+        // 觸發動畫
+        anim.SetTrigger(triggerName);
+
+        // 等待動畫完成
+        yield return new WaitForSeconds(fadeDuration);
+
+        // 淡入淡出結束時，重新啟用所有對話觸發器
+        foreach (var starter in allStarters)
+        {
+            if (starter != null)  // 防止場景切換時物件已被銷毀
+            {
+                starter.enabled = true;
+            }
+        }
+        Debug.Log($"[UI_FadeScreen] {triggerName} 完成，已重新啟用所有 DialogueStarter");
     }
 }

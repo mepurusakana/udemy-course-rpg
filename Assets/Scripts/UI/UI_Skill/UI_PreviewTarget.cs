@@ -28,6 +28,10 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     [Header("=== 影片顯示元件 ===")]
     [Space(5)]
+    [Tooltip("整個預覽容器(例如 SkillInfo)，包含所有顯示元件的父物件")]
+    public GameObject previewContainer;
+
+    [Space(5)]
     [Tooltip("顯示影片的 RawImage 元件")]
     public RawImage videoRawImage;
 
@@ -74,7 +78,7 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [Space(5)]
     [Tooltip("第一個文字大小")]
     [Range(10, 50)]
-    public float fontSize=50f;
+    public float fontSize = 16f;
 
     [Space(5)]
     [Tooltip("第一個文字顏色")]
@@ -97,7 +101,7 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [Space(5)]
     [Tooltip("第二個文字大小")]
     [Range(10, 50)]
-    public float secondaryFontSize=40f;
+    public float secondaryFontSize = 14f;
 
     [Space(5)]
     [Tooltip("第二個文字顏色")]
@@ -128,8 +132,16 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private void Start()
     {
-        // 初始化時隱藏所有元件
-        HideAllElements();
+        // 初始化時隱藏預覽容器
+        if (previewContainer != null)
+        {
+            previewContainer.SetActive(false);
+        }
+        else
+        {
+            // 如果沒有設定容器，則分別隱藏各個元件
+            HideAllElements();
+        }
 
         // 設定文字樣式
         SetupTextStyle();
@@ -154,6 +166,12 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private void ShowPreview()
     {
+        // 如果有設定容器，先顯示整個容器
+        if (previewContainer != null)
+        {
+            previewContainer.SetActive(true);
+        }
+
         // 顯示第一個文字
         if (showTextOnHover)
         {
@@ -182,7 +200,22 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private void HidePreview()
     {
-        HideAllElements();
+        // 如果有設定容器，直接隱藏整個容器
+        if (previewContainer != null)
+        {
+            previewContainer.SetActive(false);
+        }
+        else
+        {
+            // 如果沒有容器，則分別隱藏各個元件
+            HideAllElements();
+        }
+
+        // 停止影片播放
+        if (videoPlayer != null && videoPlayer.isPlaying)
+        {
+            videoPlayer.Stop();
+        }
     }
 
     private void ShowText()
@@ -192,6 +225,9 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
             Debug.LogWarning("[UI_PreviewTarget] Text Display 未設定!");
             return;
         }
+
+        // 每次顯示時都重新設定樣式（確保即時更新）
+        SetupTextStyle();
 
         // 顯示文字元件
         textDisplay.gameObject.SetActive(true);
@@ -213,6 +249,9 @@ public class UI_PreviewTarget : MonoBehaviour, IPointerEnterHandler, IPointerExi
             Debug.LogWarning("[UI_PreviewTarget] Secondary Text Display 未設定!");
             return;
         }
+
+        // 每次顯示時都重新設定樣式（確保即時更新）
+        SetupSecondaryTextStyle();
 
         // 顯示第二個文字元件
         secondaryTextDisplay.gameObject.SetActive(true);
