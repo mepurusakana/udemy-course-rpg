@@ -27,7 +27,7 @@ TagManager:
   - MovindGround
   - OneWayPlatform
   - Projectile
-  - 
+  - Target
   - 
   - 
   - 
@@ -79,6 +79,9 @@ TagManager:
     locked: 0
   - name: Grass
     uniqueID: 2734538949
+    locked: 0
+  - name: Foreground
+    uniqueID: 3227124997
     locked: 0
   - name: ScreenFlash
     uniqueID: 2064641169

@@ -9,8 +9,8 @@ public class BossCore : MonoBehaviour
 
     [Header("Visual Feedback")]
     public SpriteRenderer coreSprite;
-    public Color vulnerableColor = Color.red;
-    public Color invulnerableColor = Color.gray;
+    //public Color vulnerableColor = Color.red;
+    //public Color invulnerableColor = Color.gray;
 
     private void Awake()
     {
@@ -31,9 +31,6 @@ public class BossCore : MonoBehaviour
         if (coreCollider != null)
             coreCollider.enabled = vulnerable;
 
-        // µøÄ±¦^õX
-        if (coreSprite != null)
-            coreSprite.color = vulnerable ? vulnerableColor : invulnerableColor;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

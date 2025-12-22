@@ -6,12 +6,19 @@ public class EnemyBoss : Enemy
 {
     [Header("Boss Root Default")]
     private Vector3 bossDefaultWorldPos;
+
     [Header("Boss Components")]
     public Transform bossHead;
     public Transform bossBody;
     public BossCore bossCore;
     public BossHand leftHand;
     public BossHand rightHand;
+
+    [Header("Animators")]
+    private Animator headAnimator;
+    private Animator bodyAnimator;
+    private Animator coreAnimator;
+
 
     #region State
     public EnemyBossIdleState idleState { get; private set; }
@@ -36,7 +43,11 @@ public class EnemyBoss : Enemy
     private float ultimateTimer;
 
     // 狀態標記
-    private bool isUsingSkill = false;      // 正在施放大招中 (鎖定所有行動)
+    public bool isSweepLocked {  get; private set; }
+    public bool isPreparingTired = false;
+
+
+    public bool isUsingSkill = false;      // 正在施放大招中 (鎖定所有行動)
     private bool isUltimatePending = false; // 大招準備就緒，正在等待雙手空閒
 
     private float totalAttackPhaseTimer = 0f;
@@ -49,7 +60,6 @@ public class EnemyBoss : Enemy
     private Vector3 rightHandDefaultPos;
 
     [Header("Attack Prefabs")]
-    public GameObject swordPrefab;
     public GameObject energyBallPrefab;
 
     private bool isInTired = false;
@@ -59,6 +69,11 @@ public class EnemyBoss : Enemy
     protected override void Awake()
     {
         base.Awake();
+
+        if (bossHead != null) headAnimator = bossHead.GetComponent<Animator>();
+        if (bossBody != null) bodyAnimator = bossBody.GetComponent<Animator>();
+        if (bossCore != null) coreAnimator = bossCore.GetComponent<Animator>();
+
 
         // 初始化狀態
         idleState = new EnemyBossIdleState(this, stateMachine, "Idle", this);
@@ -114,21 +129,30 @@ public class EnemyBoss : Enemy
 
     private void CheckPhaseDuration()
     {
-        // 只有當沒有在大招且沒有在準備大招時，才計算疲勞時間
-        // 這樣可以避免大招放到一半突然進入疲勞
+        if (isPreparingTired || isInTired)
+            return;
+
         if (!isUsingSkill && !isUltimatePending)
         {
             totalAttackPhaseTimer += Time.deltaTime;
+
             if (totalAttackPhaseTimer >= attackDuration)
             {
                 totalAttackPhaseTimer = 0f;
-                EnterTiredState();
+
+                //  不馬上進 Tired
+                isPreparingTired = true;
             }
         }
     }
 
     private void HandleAttackLogic()
     {
+        //準備進入 Tired，不再發送任何攻擊
+        if (isPreparingTired)
+            return;
+
+
         // 1. 如果正在「施放大招中」，完全鎖死，什麼都不做
         if (isUsingSkill) return;
 
@@ -191,6 +215,16 @@ public class EnemyBoss : Enemy
             hand.PerformSweepAttack();
     }
 
+    public void LockSweep()
+    {
+        isSweepLocked = true;
+    }
+
+    public void UnlockSweep()
+    {
+        isSweepLocked = false;
+    }
+
 
     private IEnumerator EnergyBallAttackRoutine()
     {
@@ -215,7 +249,9 @@ public class EnemyBoss : Enemy
             yield return null;
         }
 
-        Vector3 centerPos = (leftHand.transform.position + rightHand.transform.position) / 2f;
+        float centerX = (leftHand.transform.position.x + rightHand.transform.position.x) * 0.5f;
+        float centerY = 8f; // 你想要的高度（世界座標）
+        Vector3 centerPos = new Vector3(centerX, centerY, 0f);
         GameObject energyBall = Instantiate(energyBallPrefab, centerPos, Quaternion.identity);
 
         yield return new WaitForSeconds(3f);
@@ -250,7 +286,7 @@ public class EnemyBoss : Enemy
 
     private IEnumerator MoveToDefaultPositions()
     {
-        float duration = 1f;
+        float duration = 2.5f;
         float elapsed = 0f;
 
         Vector3 headStart = bossHead.localPosition;
@@ -274,13 +310,47 @@ public class EnemyBoss : Enemy
         }
     }
 
+    public void PlayIntoTiredAnimation()
+    {
+        if (headAnimator != null) headAnimator.SetTrigger("IntoTired");
+        if (bodyAnimator != null) bodyAnimator.SetTrigger("IntoTired");
+        if (coreAnimator != null) coreAnimator.SetTrigger("IntoTired");
+
+        // 左右手的動畫由 BossHand 自己觸發
+        if (leftHand != null) leftHand.PlayIntoTiredAnimation();
+        if (rightHand != null) rightHand.PlayIntoTiredAnimation();
+    }
+
+    public void PlaySwitchFromTiredAnimation()
+    {
+        if (headAnimator != null) headAnimator.SetTrigger("SwitchFromTired");
+        if (bodyAnimator != null) bodyAnimator.SetTrigger("SwitchFromTired");
+        if (coreAnimator != null) coreAnimator.SetTrigger("SwitchFromTired");
+
+        if (leftHand != null) leftHand.PlaySwitchFromTiredAnimation();
+        if (rightHand != null) rightHand.PlaySwitchFromTiredAnimation();
+    }
+
     public void EnterTiredState()
     {
-        isInTired = true;
+        if (isInTired) return;
 
-        // --- 修改重點 2: 疲憊時切換回 Dynamic (受重力影響掉落) ---
-        rb.bodyType = RigidbodyType2D.Dynamic;
-        rb.gravityScale = 2f;
+        isInTired = true;
+        isPreparingTired = false;
+
+        //  停止發送任何攻擊命令
+        isUsingSkill = true;
+        isUltimatePending = false;
+
+        // 播放進入疲勞動畫
+        PlayIntoTiredAnimation();
+
+        // --- 修改重點 2: Rigidbody 還在，但 不參與碰撞 / 重力 / 解算
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.simulated = false;
+
+        //  子物件開始掉落
+        SetBossPartsPhysics(true);
 
         bossCore.SetVulnerable(true); // 核心可被攻擊
         stateMachine.ChangeState(tiredState);
@@ -288,20 +358,64 @@ public class EnemyBoss : Enemy
 
     public void ExitTiredState()
     {
-        isInTired = false;
 
-        
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.velocity = Vector2.zero; // 確保沒有殘留速度
-        rb.angularVelocity = 0f;    // 確保沒有旋轉
+        isInTired = false;
+        isUsingSkill = false;
+
+        // 播放離開疲勞動畫
+        PlaySwitchFromTiredAnimation();
+
+        //rb.simulated = true;
+        //rb.bodyType = RigidbodyType2D.Kinematic;
 
         StartCoroutine(MoveBossBackToAir(0.8f));
+
+        StopBossPartsPhysics(true);
 
         bossCore.SetVulnerable(false); // 核心不可被攻擊
         ResetToDefaultPositions();
 
         // 等待位置重置完成後回到 Idle
         StartCoroutine(WaitAndReturnToIdle());
+    }
+
+    private void SetBossPartsPhysics(bool enable)
+    {
+        SetPart(bossHead, enable);
+        SetPart(bossBody, enable);
+        SetPart(bossCore.transform, enable);
+        SetPart(leftHand.transform, enable);
+        SetPart(rightHand.transform, enable);
+    }
+
+    private void StopBossPartsPhysics(bool enable)
+    {
+        SetPart(bossHead, !enable);
+        SetPart(bossBody, !enable);
+        SetPart(bossCore.transform, !enable);
+        SetPart(leftHand.transform, !enable);
+        SetPart(rightHand.transform, !enable);
+    }
+
+    private void SetPart(Transform part, bool enable)
+    {
+        if (part == null) return;
+
+        Rigidbody2D rb = part.GetComponent<Rigidbody2D>();
+        if (rb == null) return;
+
+        if (enable)
+        {
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.gravityScale = 6f;
+            rb.velocity = Vector2.zero;
+        }
+        else
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.gravityScale = 0f;
+            rb.velocity = Vector2.zero;
+        }
     }
 
     private IEnumerator MoveBossBackToAir(float duration)

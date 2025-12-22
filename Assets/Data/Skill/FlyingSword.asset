@@ -22,7 +22,7 @@ MonoBehaviour:
   damageAmount: 10
   skillDuration: 1
   requiresAirborne: 0
-  requiresGrounded: 1
+  requiresGrounded: 0
   isHitGround: 0
   isProjectile: 0
   isClone: 0

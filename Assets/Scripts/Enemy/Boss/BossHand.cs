@@ -9,15 +9,21 @@ public class BossHand : MonoBehaviour
     public float swordStabSpeed;
     public int damage;
 
+
     [Header("References")]
     public EnemyBoss boss;
-    public GameObject swordPrefab;
-    public Transform groundCheck;
+    public Transform swordGroundCheck;
+    public Transform handGroundCheck;
     public LayerMask groundLayer;
 
     [Header("Sweep Settings")]
-    public Vector3 sweepStartPos; // 橫掃開始位置
+    public Vector3 sweepActPos; //橫掃發起攻擊位置
+    public Vector3 sweepStartPos; //橫掃進入前搖位置
     public float sweepDistance; // 橫掃距離
+
+    [Header("Sweep Smoke Effect")]
+    public GameObject sweepSmokePrefab;
+    public Transform sweepSmokeSpawnPoint; // 通常在手掌前緣
 
     [Header("Impact Effect")]
     public GameObject groundImpactPrefab; // 地面衝擊特效
@@ -25,15 +31,23 @@ public class BossHand : MonoBehaviour
     [Header("Default (local)")]
     public Vector3 defaultLocalPos = Vector3.zero; // 可在 Inspector 設定
 
-    private PolygonCollider2D handCollider;
+    private PolygonCollider2D groundCollider;
+    private BoxCollider2D attackCollider;
+    private Animator handAnimator;
+
     public bool isAttacking { get; private set; } = false;
 
+    // 用於動畫系統
+    private GameObject currentSword; // 當前生成的劍
 
     private void Awake()
     {
-        handCollider = GetComponent<PolygonCollider2D>();
-        if (handCollider != null)
-            handCollider.enabled = false; // 初始關閉碰撞
+        attackCollider = GetComponentInChildren<BoxCollider2D>();
+        groundCollider = GetComponent<PolygonCollider2D>();
+        handAnimator = GetComponentInChildren<Animator>();
+
+        if (groundCollider != null)
+            groundCollider.enabled = true; // 初始開啟碰撞
     }
 
     private void Start()
@@ -41,6 +55,19 @@ public class BossHand : MonoBehaviour
         if (defaultLocalPos == Vector3.zero)
             defaultLocalPos = transform.localPosition;
     }
+
+    public void PlayIntoTiredAnimation()
+    {
+        if (handAnimator != null)
+            handAnimator.SetTrigger("IntoTired");
+    }
+
+    public void PlaySwitchFromTiredAnimation()
+    {
+        if (handAnimator != null)
+            handAnimator.SetTrigger("SwitchFromTired");
+    }
+
 
     // 劍攻擊
     public void PerformSwordAttack()
@@ -51,30 +78,45 @@ public class BossHand : MonoBehaviour
 
     private IEnumerator SwordAttackRoutine()
     {
+        float currentSpeed = 0f;
+        float acceleration = swordStabSpeed * 3f;
+        float maxSpeed = swordStabSpeed;
+
+
         isAttacking = true; // 鎖定
 
-        // 1. 移動到空中位置（你可以改成從 boss anchor 讀取）
-        Vector3 airPosition = new Vector3(isLeftHand ? 3f : -3f, 5f, 0f);
+
+        // 1. 移動到空中位置
+        Vector3 airPosition = new Vector3(isLeftHand ? 20f : -20f, 16f, 0f);
         yield return StartCoroutine(MoveToPosition(airPosition, 1f));
 
-        // 2. 生成劍
-        GameObject sword = Instantiate(swordPrefab, transform);
-        sword.transform.localPosition = Vector3.zero;
+        // 2. 觸發動畫
+        if (handAnimator != null)
+            handAnimator.SetTrigger("SwordAttack");
 
-        yield return new WaitForSeconds(0.5f);
+        // 3. 生成劍
+        //yield return new WaitForSeconds(1.2f); // 根據你的動畫長度調整
+        Vector3 precastPosition = new Vector3(isLeftHand ? 20f : -20f, 18f, 0f);
+        yield return StartCoroutine(MoveToPosition(precastPosition, 1.2f));
+        //yield return new WaitForSeconds(1.2f); // 根據你的動畫長度調整
 
-        // 3. 向下刺（使用 localPosition）
+        // 4. 向下刺（使用 localPosition）
         bool hitGround = false;
         float stabDistance = 0f;
         float maxStabDistance = 100f;
 
         while (!hitGround && stabDistance < maxStabDistance)
         {
-            transform.localPosition += Vector3.down * swordStabSpeed * Time.deltaTime;
-            stabDistance += swordStabSpeed * Time.deltaTime;
+            currentSpeed += acceleration * Time.deltaTime;
+            currentSpeed = Mathf.Min(currentSpeed, maxSpeed);
 
-            Vector2 worldPos = transform.position;
-            if (Physics2D.Raycast(worldPos, Vector2.down, 0.5f, groundLayer))
+            float move = currentSpeed * Time.deltaTime;
+            transform.localPosition += Vector3.down * move;
+            stabDistance += move;
+
+            Vector2 checkPos = swordGroundCheck.position;
+
+            if (Physics2D.Raycast(checkPos, Vector2.down, 0.5f, groundLayer))
             {
                 hitGround = true;
             }
@@ -82,17 +124,19 @@ public class BossHand : MonoBehaviour
             yield return null;
         }
 
-        // 4. 釋放地面衝擊
+        // 5. 釋放地面衝擊
         if (groundImpactPrefab != null)
         {
-            Vector3 impactPos = transform.position + Vector3.down * 1f;
+            Vector3 impactPos = swordGroundCheck.position;
+            impactPos.z = 0f;
+
+            //Instantiate(groundImpactPrefab, impactPos, Quaternion.identity);
             GameObject impact = Instantiate(groundImpactPrefab, impactPos, Quaternion.identity);
             Destroy(impact, 2f);
         }
 
-        // 5. 銷毀劍
-        Destroy(sword);
-        yield return new WaitForSeconds(0.2f);
+        // 6. 收回劍
+        yield return new WaitForSeconds(1.4f); // 根據你的動畫長度調整
 
         // 回到預設位置
         yield return StartCoroutine(MoveToPosition(defaultLocalPos, 0.6f));
@@ -104,40 +148,129 @@ public class BossHand : MonoBehaviour
     public void PerformSweepAttack()
     {
         if (isAttacking) return;
+        if (boss.isSweepLocked) return; // 關鍵：Boss 已被 Sweep 鎖定
+
         StartCoroutine(SweepAttackRoutine());
     }
 
     private IEnumerator SweepAttackRoutine()
     {
+        //Vector3 pos = transform.localPosition;
+        //pos.y =handGroundCheck.localPosition.y;
+        //transform.localPosition = pos;
+
+        float currentSpeed = 0f;
+        float acceleration = sweepSpeed * 4f; // 橫掃通常更爆
+        float maxSpeed = sweepSpeed;
+
         isAttacking = true;
+        boss.LockSweep();
 
-        // 1. 移動到起始位置（對角）
-        Vector3 startPos = new Vector3(isLeftHand ? 6f : -6f, -6f, 0f);
-        yield return StartCoroutine(MoveToPosition(sweepStartPos, 0.6f));
+        Vector3 precastPos = new Vector3(isLeftHand ? 4.5f : -4.5f, 0f, 0f);
+        yield return StartCoroutine(MoveToPosition(sweepStartPos, 0.4f));
 
-        // 2. 啟用碰撞
-        if (handCollider != null) handCollider.enabled = true;
+        // 1. 觸發動畫
+        if (handAnimator != null)
+            handAnimator.SetTrigger("SweepAttack");
 
-        // 3. 快速橫掃（使用 localPosition）
+        // 2. 移動到起始位置（對角）
+        Vector3 actPos = new Vector3(isLeftHand ? 6f : -6f, 0.5f, 0f);
+        yield return StartCoroutine(MoveToPosition(sweepActPos, 0.6f));
+
+        // 3. 等待 PrecastDelay 動畫播放完成
+        yield return new WaitForSeconds(0.5f);
+
+        // 4. 啟用碰撞
+        if (attackCollider != null) attackCollider.enabled = true;
+
+        // 5. 快速橫掃
         float sweepDir = isLeftHand ? -1f : 1f;
         float sweptDistance = 0f;
 
         while (sweptDistance < sweepDistance)
         {
-            float moveAmount = sweepSpeed * Time.deltaTime;
+            currentSpeed += acceleration * Time.deltaTime;
+            currentSpeed = Mathf.Min(currentSpeed, maxSpeed);
+
+            float moveAmount = currentSpeed * Time.deltaTime;
             transform.localPosition += new Vector3(sweepDir * moveAmount, 0f, 0f);
             sweptDistance += Mathf.Abs(moveAmount);
+
             yield return null;
         }
 
-        // 4. 關閉碰撞
-        if (handCollider != null) handCollider.enabled = false;
+        // 6. 關閉碰撞
+        if (attackCollider != null) attackCollider.enabled = false;
 
         // 回到預設位置
-        yield return StartCoroutine(MoveToPosition(defaultLocalPos, 0.4f));
+        Vector3 endAttackPos = new Vector3(isLeftHand ? 60f : -60f, 12f, 0f);
+        yield return StartCoroutine(MoveToPosition(endAttackPos, 0f));
+        yield return StartCoroutine(MoveToPosition(defaultLocalPos, 0.8f));
 
+        boss.UnlockSweep();
         isAttacking = false;
     }
+
+    public void SpawnSweepSmoke()
+    {
+        if (sweepSmokePrefab == null) return;
+
+        Transform parent = sweepSmokeSpawnPoint != null
+            ? sweepSmokeSpawnPoint
+            : transform;
+
+        GameObject smoke = Instantiate(
+            sweepSmokePrefab,
+            parent.position,
+            Quaternion.identity,
+            parent   // 關鍵：設為子物件
+        );
+
+        // 重設 localPosition，避免 Prefab 偏移
+        smoke.transform.localPosition = Vector3.zero;
+
+        // --- 左右手 Flip ---
+        SpriteRenderer sr = smoke.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.flipX = !isLeftHand;
+        }
+
+        Destroy(smoke, 0.5f);
+    }
+
+
+    // 在 GenerateSword 動畫的某一幀調用此方法
+    public void OnSwordGenerated()
+    {
+        currentSword.transform.localPosition = Vector3.zero;
+        currentSword.transform.localRotation = Quaternion.identity;
+    }
+
+    // 在 SwordAttackExit 動畫結束時調用（如果需要）
+    public void OnSwordAttackComplete()
+    {
+        // 可以在這裡處理劍攻擊完成的邏輯
+        Debug.Log($"{gameObject.name} 劍攻擊完成");
+    }
+
+    // 在 SweepAttack 動畫的關鍵幀調用（啟動橫掃碰撞）
+    public void OnSweepAttackStart()
+    {
+        if (attackCollider != null)
+            attackCollider.enabled = true;
+    }
+
+    // 在 SweepAttack 動畫結束前調用（關閉橫掃碰撞）
+    public void OnSweepAttackEnd()
+    {
+        if (attackCollider != null)
+            attackCollider.enabled = false;
+    }
+
+
+
+
 
     // MoveToPosition (local)
     private IEnumerator MoveToPosition(Vector3 targetLocalPos, float duration)

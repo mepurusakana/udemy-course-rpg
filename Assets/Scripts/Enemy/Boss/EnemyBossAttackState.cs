@@ -31,6 +31,14 @@ public class EnemyBossAttackState : EnemyState
             nextAttackTime = Time.time + attackInterval;
         }
 
+        if (boss.isPreparingTired)
+        {
+            if (!boss.leftHand.isAttacking && !boss.rightHand.isAttacking && !boss.isUsingSkill)
+            {
+                boss.EnterTiredState();
+            }
+        }
+
         // 注意：攻擊時間由 EnemyBoss.Update() 中的 attackTimer 控制
         // 達到 attackDuration 後會自動調用 EnterTiredState()
     }

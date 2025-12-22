@@ -7,6 +7,8 @@ public class PlayerSkillState : PlayerState
     private SkillData skillData;
     private int skillIndex;
 
+    protected bool lockMovement = true;
+
     public PlayerSkillState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
         : base(_player, _stateMachine, _animBoolName)
     {
@@ -25,6 +27,8 @@ public class PlayerSkillState : PlayerState
         if (skillData != null)
         {
             stateTimer = skillData.skillDuration;
+            lockMovement = true;
+
             player.SetZeroVelocity();
             player.isBusy = true; // 同步忙碌
         }
@@ -40,11 +44,17 @@ public class PlayerSkillState : PlayerState
     {
         base.Update();
 
-        player.SetZeroVelocity();
+        if (lockMovement)
+            player.SetZeroVelocity(); // 只有鎖定時才清速度
 
         if (stateTimer < 0 || triggerCalled)
         {
             stateMachine.ChangeState(player.idleState);
         }
+    }
+
+    public void UnlockMovement()
+    {
+        lockMovement = false;
     }
 }

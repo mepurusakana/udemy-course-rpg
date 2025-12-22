@@ -44,39 +44,39 @@ public class FileDataHandler
     {
         GameData loadData = null;
         //1.確認存檔存在
-        if(File.Exists(fullPath))
-        {
-            try
-            {
-                string dataToLoad = "";
-                //2.開啟檔案
-                using (FileStream stream = new FileStream(fullPath, FileMode.Open))
-                using (StreamReader reader = new StreamReader(stream))
-                    //3.閱讀檔案內容
-                    {
-                        dataToLoad = reader.ReadToEnd();
-                    }
+        //if(File.Exists(fullPath))
+        //{
+        //    try
+        //    {
+        //        string dataToLoad = "";
+        //        //2.開啟檔案
+        //        using (FileStream stream = new FileStream(fullPath, FileMode.Open))
+        //        using (StreamReader reader = new StreamReader(stream))
+        //            //3.閱讀檔案內容
+        //            {
+        //                dataToLoad = reader.ReadToEnd();
+        //            }
 
-                if(string.IsNullOrWhiteSpace(dataToLoad))
-                {
-                    Debug.LogWarning($"存檔檔案是空的：{fullPath}");
-                    return null;
-                }
+        //        if(string.IsNullOrWhiteSpace(dataToLoad))
+        //        {
+        //            Debug.LogWarning($"存檔檔案是空的：{fullPath}");
+        //            return null;
+        //        }
 
-                if(encryptData)
-                    dataToLoad =EncryptDecrypt(dataToLoad);
+        //        if(encryptData)
+        //            dataToLoad =EncryptDecrypt(dataToLoad);
 
-                Debug.Log($"讀取到的JSON:\n{dataToLoad}");
+        //        Debug.Log($"讀取到的JSON:\n{dataToLoad}");
 
-                //4.將Json檔回傳進GameData物件
-                loadData = JsonUtility.FromJson<GameData>(dataToLoad);
-            }
+        //        //4.將Json檔回傳進GameData物件
+        //        loadData = JsonUtility.FromJson<GameData>(dataToLoad);
+        //    }
 
-            catch (Exception e)
-            {
-                Debug.LogError("Error on trying to load data from file:" + fullPath + "\n" + e);
-            }
-        }
+        //    catch (Exception e)
+        //    {
+        //        Debug.LogError("Error on trying to load data from file:" + fullPath + "\n" + e);
+        //    }
+        //}
         return loadData;
     }
 

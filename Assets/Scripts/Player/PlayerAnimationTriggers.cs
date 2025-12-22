@@ -12,6 +12,11 @@ public class PlayerAnimationTriggers : MonoBehaviour
         player.AnimationTrigger();
     }
 
+    private void CloseZeroVelocity()
+    {
+        player.SkillMovement();
+    }
+
     private void AttackTrigger()
     {
         AudioManager.instance.PlaySFX(2, null);

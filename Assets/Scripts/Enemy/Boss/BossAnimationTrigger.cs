@@ -5,6 +5,7 @@ using UnityEngine;
 public class BossAnimationTriggers : MonoBehaviour
 {
     private EnemyBoss enemy => GetComponentInParent<EnemyBoss>();
+    private BossHand hand => GetComponentInParent<BossHand>();
 
     private void AnimationTrigger()
     {
@@ -22,6 +23,21 @@ public class BossAnimationTriggers : MonoBehaviour
                 enemy.stats.DoDamage(target, enemy.transform);
             }
         }
+    }
+    private void OnSweepAttackStart()
+    {
+        hand.OnSweepAttackStart();
+    }
+
+    // 在 SweepAttack 動畫結束前調用（關閉橫掃碰撞）
+    public void OnSweepAttackEnd()
+    {
+        hand.OnSweepAttackEnd();
+    }
+
+    public void SpawnSweepSmoke()
+    {
+        hand.SpawnSweepSmoke();
     }
 
     private void OpenCounterWindow() => enemy.OpenCounterAttackWindow();

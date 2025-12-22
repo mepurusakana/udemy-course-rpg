@@ -421,6 +421,14 @@ public class Player : Entity, ISaveable
             moveDustEffect.Stop();
     }
 
+    public void SkillMovement()
+    {
+        if (stateMachine.currentState is PlayerSkillState skillState)
+        {
+            skillState.UnlockMovement();
+        }
+    }
+
     private IEnumerator InvincibilityFlashEffect(float duration)
     {
         float elapsed = 0f;
