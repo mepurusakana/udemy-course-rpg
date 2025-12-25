@@ -29,7 +29,9 @@ public class CharacterStats : MonoBehaviour
 
     private SpikeTrapWithRespawn trap;
 
-    
+    [SerializeField] private ParticleSystem damageParticles;
+
+    private ParticleSystem damageParticlesInstance;
 
     public System.Action onHealthChanged;
     // 事件：当MP改变时触发
@@ -48,6 +50,28 @@ public class CharacterStats : MonoBehaviour
     {
         RegenerateMP();
     }
+
+    private void SpawnDamageParticles(Transform _attacker)
+    {
+        if (_attacker == null || damageParticles == null)
+            return;
+
+        // 計算「從自己 → 攻擊者」的方向
+        Vector3 direction = (transform.position - _attacker.position).normalized;
+
+        // 用方向來算旋轉
+        Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.right, direction);
+
+        damageParticlesInstance = Instantiate(
+            damageParticles,
+            transform.position,
+            spawnRotation
+        );
+    }
+
+
+
+
 
     // 提升屬性暫時性 buff
     public virtual void IncreaseStatBy(int _modifier, float _duration, Stat _statToModify)
@@ -96,6 +120,8 @@ public class CharacterStats : MonoBehaviour
             return;
 
         DecreaseHealthBy(_damage);
+
+        SpawnDamageParticles(_attacker);
 
         GetComponent<Entity>().DamageImpact();
         fx.CallDamageFlash();

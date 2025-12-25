@@ -14,6 +14,10 @@ public class EnemyStats : CharacterStats
     [Range(0f, 1f)]
     [SerializeField] private float percantageModifier = .4f;
 
+    
+
+    
+
     protected override void Start()
     {
         soulsDropAmount.SetDefaultValue(100);
@@ -45,12 +49,16 @@ public class EnemyStats : CharacterStats
     {
         base.TakeDamage(_damage, _attacker);
 
+        
+
         if (isDead) return;
 
         Enemy enemy = GetComponent<Enemy>();
         if (enemy != null)
             enemy.OnTakeDamage(_attacker);
     }
+
+    
 
 
     protected override void Die()

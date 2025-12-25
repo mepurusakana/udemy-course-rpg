@@ -22,6 +22,8 @@ public class EntityFX : MonoBehaviour
     protected Player player;
     protected SpriteRenderer[] sr;
 
+
+
     [Header("Pop Up Text")]
     [SerializeField] private GameObject popUpTextPrefab;
 
@@ -110,6 +112,8 @@ public class EntityFX : MonoBehaviour
         }
     }
 
+
+    
     // ========== 原有的方法保持不變 ========== //
 
     public void CreatePopUpText(string _text)
