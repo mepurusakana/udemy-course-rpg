@@ -1788,8 +1788,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
-  m_fontSizeBase: 80
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1897,8 +1897,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u64CD\u4F5C\u8AAA\u660E"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d73b359153776694fbce274730417130, type: 2}
-  m_sharedMaterial: {fileID: 3745510698883377052, guid: d73b359153776694fbce274730417130, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+  m_sharedMaterial: {fileID: -2838357698598763653, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3759,7 +3759,7 @@ TilemapRenderer:
   m_SortingLayer: 8
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0.22000003, y: 0.22001475, z: 0}
+  m_ChunkCullingBounds: {x: 0.22000003, y: 0.22000003, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 0
@@ -25933,8 +25933,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u904A\u6232\u8A2D\u5B9A"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d73b359153776694fbce274730417130, type: 2}
-  m_sharedMaterial: {fileID: 3745510698883377052, guid: d73b359153776694fbce274730417130, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+  m_sharedMaterial: {fileID: -2838357698598763653, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -25958,8 +25958,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 85
-  m_fontSizeBase: 85
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -26553,7 +26553,7 @@ TilemapRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0.22000003, y: 0.22001475, z: 0}
+  m_ChunkCullingBounds: {x: 0.22000003, y: 0.22000003, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 0
@@ -27221,8 +27221,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "SE\u97F3\u91CF"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d73b359153776694fbce274730417130, type: 2}
-  m_sharedMaterial: {fileID: 3745510698883377052, guid: d73b359153776694fbce274730417130, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+  m_sharedMaterial: {fileID: -2838357698598763653, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -27441,7 +27441,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 14
+  m_SortingLayer: 15
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -33093,8 +33093,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u97F3\u8A0A"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d73b359153776694fbce274730417130, type: 2}
-  m_sharedMaterial: {fileID: 3745510698883377052, guid: d73b359153776694fbce274730417130, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+  m_sharedMaterial: {fileID: -2838357698598763653, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -35197,7 +35197,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 14
+  m_SortingLayer: 15
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -42628,8 +42628,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "BGM\u97F3\u91CF"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d73b359153776694fbce274730417130, type: 2}
-  m_sharedMaterial: {fileID: 3745510698883377052, guid: d73b359153776694fbce274730417130, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+  m_sharedMaterial: {fileID: -2838357698598763653, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -43937,7 +43937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!225 &815606158
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -44084,7 +44084,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &839584487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45378,8 +45378,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
-  m_fontSizeBase: 80
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -47413,8 +47413,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u7E3D\u97F3\u91CF\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d73b359153776694fbce274730417130, type: 2}
-  m_sharedMaterial: {fileID: 3745510698883377052, guid: d73b359153776694fbce274730417130, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+  m_sharedMaterial: {fileID: -2838357698598763653, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -49625,8 +49625,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
-  m_fontSizeBase: 80
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -57966,6 +57966,8 @@ GameObject:
   - component: {fileID: 1670538304}
   - component: {fileID: 1670538303}
   - component: {fileID: 1670538302}
+  - component: {fileID: 1670538307}
+  - component: {fileID: 1670538306}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -58125,6 +58127,72 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &1670538306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670538300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 2
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 0.2
+    m_ImpulseType: 0
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.7
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 100
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 100
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &1670538307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670538300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeb853cad98c99c429555f3a585feaa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  impulseSource: {fileID: 0}
 --- !u!1 &1673076730
 GameObject:
   m_ObjectHideFlags: 0
@@ -59571,6 +59639,16 @@ MonoBehaviour:
   hitMat: {fileID: 2100000, guid: 78758ed07969e5449922bd9487087aa7, type: 2}
   hitFx: {fileID: 4431538376159538090, guid: 2f387d67210ae6246b602d015d7b9968, type: 3}
   criticalHitFx: {fileID: 3347290265377545998, guid: b74d5da7ef04de04099c0144d41367ce, type: 3}
+  shakeOnHit:
+    source: {fileID: 1670538306}
+    force: 1
+    defaultX: 1
+    defaultY: 0.2
+  shakeHighDamage:
+    source: {fileID: 0}
+    force: 1
+    defaultX: 1
+    defaultY: 0.2
   invincibilityFlashSpeed: 0.1
   invincibilityColor: {r: 1, g: 1, b: 1, a: 0.5}
   useGlowEffect: 0
@@ -60687,8 +60765,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u8996\u8A0A"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d73b359153776694fbce274730417130, type: 2}
-  m_sharedMaterial: {fileID: 3745510698883377052, guid: d73b359153776694fbce274730417130, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
+  m_sharedMaterial: {fileID: -2838357698598763653, guid: 6c6e5a96c22efe04c99ea69a6d76e733, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -68472,7 +68550,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 14
+  m_SortingLayer: 15
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -74481,7 +74559,7 @@ TilemapRenderer:
   m_SortingLayer: 10
   m_SortingOrder: 2
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0.22000003, y: 0.22001475, z: 0}
+  m_ChunkCullingBounds: {x: 0.22000003, y: 0.22000003, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 0
@@ -87213,6 +87291,16 @@ MonoBehaviour:
   hitMat: {fileID: 2100000, guid: 78758ed07969e5449922bd9487087aa7, type: 2}
   hitFx: {fileID: 4431538376159538090, guid: 2f387d67210ae6246b602d015d7b9968, type: 3}
   criticalHitFx: {fileID: 3347290265377545998, guid: b74d5da7ef04de04099c0144d41367ce, type: 3}
+  shakeOnHit:
+    source: {fileID: 0}
+    force: 1
+    defaultX: 1
+    defaultY: 0.2
+  shakeHighDamage:
+    source: {fileID: 0}
+    force: 1
+    defaultX: 1
+    defaultY: 0.2
   invincibilityFlashSpeed: 0.1
   invincibilityColor: {r: 1, g: 1, b: 1, a: 0.5}
   useGlowEffect: 0
@@ -91090,6 +91178,16 @@ MonoBehaviour:
   hitMat: {fileID: 2100000, guid: 78758ed07969e5449922bd9487087aa7, type: 2}
   hitFx: {fileID: 4431538376159538090, guid: 2f387d67210ae6246b602d015d7b9968, type: 3}
   criticalHitFx: {fileID: 3347290265377545998, guid: b74d5da7ef04de04099c0144d41367ce, type: 3}
+  shakeOnHit:
+    source: {fileID: 1670538306}
+    force: 0.8
+    defaultX: 1
+    defaultY: 0.2
+  shakeHighDamage:
+    source: {fileID: 1670538306}
+    force: 1.5
+    defaultX: 1
+    defaultY: 0.2
   invincibilityFlashSpeed: 0.1
   invincibilityColor: {r: 1, g: 1, b: 1, a: 0.5}
   useGlowEffect: 0
