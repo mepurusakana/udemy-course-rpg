@@ -2,8 +2,24 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
+    public enum TriggerMode
+    {
+        Manual, // 手動按鍵觸發
+        Auto    // 進入範圍自動觸發
+    }
+
     [Header("對話內容")]
     public DialogueData[] dialogues;
+
+    [Header("觸發方式")]
+    public TriggerMode triggerMode = TriggerMode.Manual;
+
+    [Header("手動觸發設定（Manual 模式才會用到）")]
+    public KeyCode interactKey = KeyCode.E;
+
+    [Header("自動觸發設定（Auto 模式才會用到）")]
+    public bool triggerOnce = true;          // 進入一次後不再重複觸發
+    public bool autoTriggerOnEnter = true;   // 進入就觸發（一般都開）
 
     [Header("互動提示（可選）")]
     public GameObject interactHint;
@@ -11,6 +27,7 @@ public class DialogueTrigger : MonoBehaviour
     private DialogueSystem dialogueSystem;
     private bool playerInRange = false;
     private bool isDialogueActive = false;
+    private bool hasTriggered = false;
 
     private void Start()
     {
@@ -35,9 +52,10 @@ public class DialogueTrigger : MonoBehaviour
 
     private void Update()
     {
+        if (triggerMode != TriggerMode.Manual) return;
         if (!playerInRange || isDialogueActive) return;
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(interactKey))
             TriggerDialogue();
     }
 
@@ -46,7 +64,24 @@ public class DialogueTrigger : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         playerInRange = true;
-        if (interactHint != null) interactHint.SetActive(true);
+
+        // Manual：顯示提示
+        if (triggerMode == TriggerMode.Manual)
+        {
+            if (!isDialogueActive && interactHint != null)
+                interactHint.SetActive(true);
+        }
+        // Auto：進入就觸發（可一次性）
+        else
+        {
+            if (interactHint != null) interactHint.SetActive(false);
+
+            if (!autoTriggerOnEnter) return;
+            if (isDialogueActive) return;
+            if (triggerOnce && hasTriggered) return;
+
+            TriggerDialogue();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -54,15 +89,24 @@ public class DialogueTrigger : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         playerInRange = false;
-        if (interactHint != null) interactHint.SetActive(false);
+
+        if (interactHint != null)
+            interactHint.SetActive(false);
     }
 
     public void TriggerDialogue()
     {
         if (dialogues == null || dialogues.Length == 0) return;
+        if (dialogueSystem == null) return;
+
+        // 避免重複觸發
+        if (isDialogueActive) return;
 
         isDialogueActive = true;
-        if (interactHint != null) interactHint.SetActive(false);
+        hasTriggered = true;
+
+        if (interactHint != null)
+            interactHint.SetActive(false);
 
         dialogueSystem.StartDialogue(dialogues);
     }
@@ -70,6 +114,9 @@ public class DialogueTrigger : MonoBehaviour
     private void OnDialogueEnd()
     {
         isDialogueActive = false;
-        if (playerInRange && interactHint != null) interactHint.SetActive(true);
+
+        // Manual：對話結束後，如果玩家仍在範圍內就把提示再打開
+        if (triggerMode == TriggerMode.Manual && playerInRange && interactHint != null)
+            interactHint.SetActive(true);
     }
 }

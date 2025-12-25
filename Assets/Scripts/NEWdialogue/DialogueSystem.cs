@@ -65,8 +65,11 @@ public class DialogueSystem : MonoBehaviour
     private bool wasCanvasActive = false;
 
     public System.Action OnDialogueComplete;
+
     private Vector2 lastDialogueBoxTargetPos;
     private bool hasLastDialogueBoxTargetPos = false;
+
+    // 防止 MoveDialogueBox 疊加
     private Coroutine moveDialogueBoxCoroutine;
 
     private void Start()
@@ -124,6 +127,7 @@ public class DialogueSystem : MonoBehaviour
             Debug.LogWarning("沒有對話資料!");
             return;
         }
+
         if (dialogueBoxRectTransform != null)
         {
             lastDialogueBoxTargetPos = dialogueBoxRectTransform.anchoredPosition;
@@ -210,11 +214,16 @@ public class DialogueSystem : MonoBehaviour
         }
         else
         {
-            // 同角色：仍要依「每句對話」移動對話框（因為你要每句可獨立調）
             UpdateDialogueUI(nextDialogue);
 
             if (enableDialogueBoxMovement)
-                StartCoroutine(MoveDialogueBox(nextDialogue));
+            {
+                // 防止疊加
+                if (moveDialogueBoxCoroutine != null)
+                    StopCoroutine(moveDialogueBoxCoroutine);
+
+                moveDialogueBoxCoroutine = StartCoroutine(MoveDialogueBox(nextDialogue));
+            }
 
             StartTyping(nextDialogue.dialogueText);
         }
@@ -253,20 +262,17 @@ public class DialogueSystem : MonoBehaviour
     }
 
     /// <summary>
-    ///每句獨立控制對話框位置
+    /// 每句獨立控制對話框位置（Y 不動，起點=上一句的終點）
     /// </summary>
     private IEnumerator MoveDialogueBox(DialogueData dialogue)
     {
         if (dialogueBoxRectTransform == null) yield break;
 
-        // Keep：完全不移動（但也不更新 last target）
         if (dialogue.dialogueBoxPosition == DialogueBoxPosition.Keep)
             yield break;
 
-        // 目標位置（但我們會鎖住 y）
         Vector2 rawTarget = GetTargetDialogueBoxPosition(dialogue);
 
-        // 起點：一定用「上一個 target 終點」
         if (!hasLastDialogueBoxTargetPos)
         {
             lastDialogueBoxTargetPos = dialogueBoxRectTransform.anchoredPosition;
@@ -274,11 +280,8 @@ public class DialogueSystem : MonoBehaviour
         }
 
         Vector2 startPos = lastDialogueBoxTargetPos;
-
-        // Y 軸固定：只動 X
         Vector2 targetPos = new Vector2(rawTarget.x, startPos.y);
 
-        // 如果你想「瞬間」跳到起點再開始移動（避免被外力改位）
         dialogueBoxRectTransform.anchoredPosition = startPos;
 
         float elapsed = 0f;
@@ -288,16 +291,11 @@ public class DialogueSystem : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / dur);
-
-            dialogueBoxRectTransform.anchoredPosition =
-                Vector2.Lerp(startPos, targetPos, t);
-
+            dialogueBoxRectTransform.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
             yield return null;
         }
 
         dialogueBoxRectTransform.anchoredPosition = targetPos;
-
-        // 更新「這次的終點」給下一次當起點用
         lastDialogueBoxTargetPos = targetPos;
     }
 
