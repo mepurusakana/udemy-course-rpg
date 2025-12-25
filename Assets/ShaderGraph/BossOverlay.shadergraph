@@ -552,10 +552,10 @@
     "m_Guid": {
         "m_GuidSerialized": "4e1368eb-f5db-4ad7-9d81-0d0c03fc30e6"
     },
-    "m_Name": "BossOverlay",
+    "m_Name": "MainTex",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "BossOverlay",
-    "m_DefaultReferenceName": "_BossOverlay",
+    "m_RefNameGeneratedByDisplayName": "MainTex",
+    "m_DefaultReferenceName": "_MainTex",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
@@ -1294,7 +1294,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Texture2DMaterialSlot",
     "m_ObjectId": "fb6d7e21c2c34f9d8892960743171899",
     "m_Id": 0,
-    "m_DisplayName": "BossOverlay",
+    "m_DisplayName": "MainTex",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
