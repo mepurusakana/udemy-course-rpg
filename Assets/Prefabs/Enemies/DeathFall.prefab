@@ -147,7 +147,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 5d525bc5439299f43844dedc1e21b8a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -166,7 +166,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1768169261
-  m_SortingLayer: 6
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -546821641, guid: 73dc97f316adcbc429bef471a5602e61, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -319,7 +319,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1768169261
-  m_SortingLayer: 6
+  m_SortingLayer: 4
   m_SortingOrder: -10
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 0.6862745}
@@ -405,7 +405,7 @@ MonoBehaviour:
   stunDuration: 1
   stunDirection: {x: 10, y: 12}
   counterImage: {fileID: 4056868964907468853}
-  moveSpeed: 1.5
+  moveSpeed: 0
   idleTime: 2
   battleTime: 7
   agroDistance: 2
@@ -454,6 +454,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e8dc0df107b9164a88d50d6dd9e09a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _flashColor: {r: 0.7490196, g: 0, b: 0, a: 1}
+  _flashTime: 0.5
   popUpTextPrefab: {fileID: 2894285104381243520, guid: 4b0d5792d42704c4bb5071d4a04d11b2, type: 3}
   flashDuration: 0.2
   hitMat: {fileID: 2100000, guid: 78758ed07969e5449922bd9487087aa7, type: 2}
@@ -475,10 +477,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage:
-    baseValue: 25
+    baseValue: 10
     modifiers: 
   maxHealth:
-    baseValue: 250
+    baseValue: 1000
     modifiers: 
   maxMP:
     baseValue: 0
