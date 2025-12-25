@@ -7,7 +7,8 @@ public class BossHand : MonoBehaviour
     public bool isLeftHand = true;
     public float sweepSpeed;
     public float swordStabSpeed;
-    public int damage;
+    public int swordDamage = 40;
+    public int sweepDamage = 30;
 
 
     [Header("References")]
@@ -31,9 +32,9 @@ public class BossHand : MonoBehaviour
     [Header("Default (local)")]
     public Vector3 defaultLocalPos = Vector3.zero; // 可在 Inspector 設定
 
-    private PolygonCollider2D groundCollider;
-    private BoxCollider2D attackCollider;
-    private Animator handAnimator;
+    private PolygonCollider2D attackCollider;
+    private BoxCollider2D groundCollider;
+    public Animator handAnimator;
 
     public bool isAttacking { get; private set; } = false;
 
@@ -42,8 +43,8 @@ public class BossHand : MonoBehaviour
 
     private void Awake()
     {
-        attackCollider = GetComponentInChildren<BoxCollider2D>();
-        groundCollider = GetComponent<PolygonCollider2D>();
+        groundCollider = GetComponentInChildren<BoxCollider2D>();
+        attackCollider = GetComponent<PolygonCollider2D>();
         handAnimator = GetComponentInChildren<Animator>();
 
         if (groundCollider != null)
@@ -72,6 +73,7 @@ public class BossHand : MonoBehaviour
     // 劍攻擊
     public void PerformSwordAttack()
     {
+        if (boss.isUsingSkill) return;
         if (isAttacking) return;
         StartCoroutine(SwordAttackRoutine());
     }
@@ -147,6 +149,7 @@ public class BossHand : MonoBehaviour
     // 橫掃攻擊
     public void PerformSweepAttack()
     {
+        if (boss.isUsingSkill) return;
         if (isAttacking) return;
         if (boss.isSweepLocked) return; // 關鍵：Boss 已被 Sweep 鎖定
 
@@ -166,8 +169,8 @@ public class BossHand : MonoBehaviour
         isAttacking = true;
         boss.LockSweep();
 
-        Vector3 precastPos = new Vector3(isLeftHand ? 4.5f : -4.5f, 0f, 0f);
-        yield return StartCoroutine(MoveToPosition(sweepStartPos, 0.4f));
+        Vector3 precastPos = new Vector3(isLeftHand ? 5.5f : -5.5f, 0f, 0f);
+        yield return StartCoroutine(MoveToPosition(sweepStartPos, 1.2f));
 
         // 1. 觸發動畫
         if (handAnimator != null)
@@ -175,7 +178,7 @@ public class BossHand : MonoBehaviour
 
         // 2. 移動到起始位置（對角）
         Vector3 actPos = new Vector3(isLeftHand ? 6f : -6f, 0.5f, 0f);
-        yield return StartCoroutine(MoveToPosition(sweepActPos, 0.6f));
+        yield return StartCoroutine(MoveToPosition(sweepActPos, 0.4f));
 
         // 3. 等待 PrecastDelay 動畫播放完成
         yield return new WaitForSeconds(0.5f);
@@ -289,14 +292,35 @@ public class BossHand : MonoBehaviour
         transform.localPosition = targetLocalPos;
     }
 
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (!isAttacking) return;
+
+    //    PlayerStats player = collision.GetComponent<PlayerStats>();
+    //    if (player != null)
+    //    {
+    //        boss.stats.DoDamage(player, transform);
+    //    }
+    //}
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // 只在飛行時才能造成傷害
         if (!isAttacking) return;
 
-        PlayerStats player = collision.GetComponent<PlayerStats>();
-        if (player != null)
+        // 檢查是否碰到敵人
+        if (collision.CompareTag("Player"))
         {
-            boss.stats.DoDamage(player, transform);
+            PlayerStats playerStats = collision.GetComponent<PlayerStats>();
+            if (playerStats != null)
+            {
+                playerStats.TakeDamage(sweepDamage, this.transform);
+                Debug.Log($"長矛擊中敵人，造成 {sweepDamage} 點傷害！");
+            }
+
+            // 可選：擊中敵人後立即消失
+            // StartOutro();
         }
     }
 }

@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   P_Offset: {x: 0, y: 0, z: 0}
   R_Offset: {x: 0, y: 0, z: 0}
-  Count: 8
+  Count: 9
   LifeTime: 2
-  CdTime: 0.2
-  Speed: 30
-  Angle: 45
+  CdTime: 0.5
+  Speed: 40
+  Angle: 5
   Distance: 0
   CenterDis: 0
-  SelfRotation: 0
-  RotationSpeed: 45
+  SelfRotation: 45
+  RotationSpeed: 180
   Prefab: {fileID: 4674681484880693746, guid: 534c21bbd12a7e84bb39dc2ba503f3cb, type: 3}

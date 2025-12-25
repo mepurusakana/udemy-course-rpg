@@ -53,7 +53,7 @@ public class PlayerFX : EntityFX
         {
             afterImageCooldownTimer = afterImageCooldown;
             GameObject newAfterImage = Instantiate(afterImagePrefab, transform.position, transform.rotation);
-            newAfterImage.GetComponent<AfterImageFX>().SetupAfterImage(colorLooseRate, sr.sprite);
+            //newAfterImage.GetComponent<AfterImageFX>().SetupAfterImage(colorLooseRate, sr.sprite);
         }
     }
 
@@ -121,7 +121,7 @@ public class PlayerFX : EntityFX
         {
             // 創建殘影但忽略冷卻時間
             GameObject newAfterImage = Instantiate(afterImagePrefab, transform.position, transform.rotation);
-            newAfterImage.GetComponent<AfterImageFX>().SetupAfterImage(colorLooseRate * 1.5f, sr.sprite); // 更快消失
+            //newAfterImage.GetComponent<AfterImageFX>().SetupAfterImage(colorLooseRate * 1.5f, sr.sprite); // 更快消失
 
             yield return new WaitForSeconds(invincibilityAfterImageInterval);
         }

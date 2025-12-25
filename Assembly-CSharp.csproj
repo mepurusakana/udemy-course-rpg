@@ -116,6 +116,7 @@
     <Compile Include="Assets\Scripts\SaveSystem\SaveManager.cs" />
     <Compile Include="Assets\Scripts\UI\UI_HealthBar.cs" />
     <Compile Include="Assets\Scripts\Enemy\Archer\ArcherIdleState.cs" />
+    <Compile Include="Assets\Scripts\Timeline\BossIntroTimelineController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerBoundLimiter.cs" />
     <Compile Include="Assets\Scripts\Skill\3\Explosion.cs" />
     <Compile Include="Assets\Scripts\Enemy\Enemy.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="Assets\Scripts\Background\CloudSpawner.cs" />
     <Compile Include="Assets\Scripts\LostCurrencyController.cs" />
     <Compile Include="Assets\Scripts\Skill\6\CloneController.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Boss\BossWave.cs" />
     <Compile Include="Assets\Scripts\Effects\EntityFX.cs" />
     <Compile Include="Assets\Scripts\Effects\PopUpTextFx.cs" />
     <Compile Include="Assets\Scripts\UI\OpenLight2D.cs" />
@@ -291,6 +293,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\TextMesh Pro\Fonts\list_ext_taiwan.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />

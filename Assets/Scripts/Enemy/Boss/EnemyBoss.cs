@@ -53,11 +53,11 @@ public class EnemyBoss : Enemy
     private float totalAttackPhaseTimer = 0f;
 
     [Header("Default Positions")]
-    private Vector3 headDefaultPos;
-    private Vector3 bodyDefaultPos;
-    private Vector3 coreDefaultPos;
-    private Vector3 leftHandDefaultPos;
-    private Vector3 rightHandDefaultPos;
+    private Vector3 headDefaultPos = new Vector3(0,17.16f,0);
+    private Vector3 bodyDefaultPos = new Vector3(0, 1.29f, 0);
+    private Vector3 coreDefaultPos = new Vector3(0, -11.43f, 0);
+    private Vector3 leftHandDefaultPos = new Vector3(21, 5.7f, 0);
+    private Vector3 rightHandDefaultPos = new Vector3(-21, 5.7f, 0);
 
     [Header("Attack Prefabs")]
     public GameObject energyBallPrefab;
@@ -86,8 +86,9 @@ public class EnemyBoss : Enemy
     {
         base.Start();
 
+        bossDefaultWorldPos = transform.position;
         // 記錄所有部位的初始位置
-        SaveDefaultPositions();
+        //SaveDefaultPositions();
 
         // 設置初始狀態
         stateMachine.Initialize(idleState);
@@ -95,10 +96,12 @@ public class EnemyBoss : Enemy
         // --- 修改重點 1: 初始設為 Kinematic (完全不受力，不會被手帶動) ---
         rb.bodyType = RigidbodyType2D.Kinematic;
         // rb.gravityScale = 0; // Kinematic 不需要設重力，它本身就不受重力
-        rb.velocity = Vector2.zero;
+        //rb.velocity = Vector2.zero;
 
         // 初始化計時器，給予一點隨機錯開，避免開場左右手同時攻擊太生硬
         ResetAttackTimers();
+
+        EnterTiredState();
     }
 
     // 每次進入 Attack State 時重置計時器
@@ -230,6 +233,11 @@ public class EnemyBoss : Enemy
     {
         isUsingSkill = true; // 鎖定狀態
 
+        if (leftHand != null)
+            leftHand.handAnimator.SetTrigger("EnergyBallAttack");
+        if (rightHand != null)
+            rightHand.handAnimator.SetTrigger("EnergyBallAttack");
+
         // ... (這裡是你原本的能量球邏輯，移動到中間生成球) ...
         // 手掌移動到較高位置
         Vector3 leftTargetPos = new Vector3(30f, 10f, 0f);
@@ -254,14 +262,13 @@ public class EnemyBoss : Enemy
         Vector3 centerPos = new Vector3(centerX, centerY, 0f);
         GameObject energyBall = Instantiate(energyBallPrefab, centerPos, Quaternion.identity);
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         if (energyBall != null) Destroy(energyBall);
 
         // 結束後復位
         ResetToDefaultPositions();
         yield return new WaitForSeconds(1f);
 
-        isUsingSkill = false; // 解除鎖定
     }
 
     private void SaveDefaultPositions()
@@ -286,7 +293,7 @@ public class EnemyBoss : Enemy
 
     private IEnumerator MoveToDefaultPositions()
     {
-        float duration = 2.5f;
+        float duration = 1.2f;
         float elapsed = 0f;
 
         Vector3 headStart = bossHead.localPosition;
@@ -308,6 +315,9 @@ public class EnemyBoss : Enemy
 
             yield return null;
         }
+
+        isUsingSkill = false; // 解除鎖定
+
     }
 
     public void PlayIntoTiredAnimation()
@@ -368,7 +378,7 @@ public class EnemyBoss : Enemy
         //rb.simulated = true;
         //rb.bodyType = RigidbodyType2D.Kinematic;
 
-        StartCoroutine(MoveBossBackToAir(0.8f));
+        StartCoroutine(MoveBossBackToAir(0f));
 
         StopBossPartsPhysics(true);
 
@@ -436,7 +446,7 @@ public class EnemyBoss : Enemy
 
     private IEnumerator WaitAndReturnToIdle()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0);
         stateMachine.ChangeState(idleState);
     }
 

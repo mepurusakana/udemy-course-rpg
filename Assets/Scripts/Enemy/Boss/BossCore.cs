@@ -4,7 +4,7 @@ public class BossCore : MonoBehaviour
 {
     [Header("Core Settings")]
     public EnemyBoss boss;
-    private CircleCollider2D coreCollider;
+    private PolygonCollider2D coreCollider;
     private bool isVulnerable = false;
 
     [Header("Visual Feedback")]
@@ -14,7 +14,7 @@ public class BossCore : MonoBehaviour
 
     private void Awake()
     {
-        coreCollider = GetComponent<CircleCollider2D>();
+        coreCollider = GetComponent<PolygonCollider2D>();
         if (coreSprite == null)
             coreSprite = GetComponent<SpriteRenderer>();
     }
@@ -22,6 +22,20 @@ public class BossCore : MonoBehaviour
     private void Start()
     {
         SetVulnerable(false);
+    }
+
+    public void TakeCoreDamage(Player player)
+    {
+        if (!isVulnerable) return;
+        if (boss == null || boss.stats == null) return;
+
+        player.stats.DoDamage(boss.stats, player.transform);
+
+        EntityFX fx=GetComponent<EntityFX>();
+        if (fx != null)
+        {
+            fx.CreateHitFx(transform, false);
+        }
     }
 
     public void SetVulnerable(bool vulnerable)

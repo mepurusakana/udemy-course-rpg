@@ -12,9 +12,15 @@ public class PlayerAnimationTriggers : MonoBehaviour
         player.AnimationTrigger();
     }
 
-    private void CloseZeroVelocity()
+    private void CloseSkillZeroVelocity()
     {
         player.SkillMovement();
+    }
+
+    private void CloseAttackZeroVelocity()
+    {
+        player.rb.gravityScale = player.defaultGravity;
+        player.rb.velocity += Vector2.up * Physics2D.gravity.y * (player.fallMultiplier - 1) * Time.deltaTime;
     }
 
     private void AttackTrigger()
@@ -27,12 +33,21 @@ public class PlayerAnimationTriggers : MonoBehaviour
         {
             if (hit == null) continue;
 
-            if (hit.GetComponent<Enemy>() != null)
+            if (hit.GetComponent<Enemy>() != null || hit.GetComponent<BossCore>() != null)
             {
                 EnemyStats _target = hit.GetComponent<EnemyStats>();
 
                 if (_target != null)
+                {
                     player.stats.DoDamage(_target, this.transform);
+                    continue;
+                }
+
+                BossCore bossCore = hit.GetComponent<BossCore>();
+                if (bossCore != null)
+                {
+                    bossCore.TakeCoreDamage(player);
+                }
             }
 
             if (hit.TryGetComponent(out SpriteShatter2D shatter))

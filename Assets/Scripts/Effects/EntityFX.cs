@@ -8,8 +8,19 @@ using UnityEngine.Rendering;
 
 public class EntityFX : MonoBehaviour
 {
+    [ColorUsage(true, true)]
+    [SerializeField] private Color _flashColor = Color.white;
+    [SerializeField] private float _flashTime = 0.25f;
+
+    //private SpriteRenderer[] _spriteRenderers;
+    private Material[] _materials;
+
+    private Coroutine _damageFlashCoroutine;
+
+
+
     protected Player player;
-    protected SpriteRenderer sr;
+    protected SpriteRenderer[] sr;
 
     [Header("Pop Up Text")]
     [SerializeField] private GameObject popUpTextPrefab;
@@ -39,13 +50,64 @@ public class EntityFX : MonoBehaviour
 
     protected virtual void Start()
     {
-        sr = GetComponentInChildren<SpriteRenderer>();
+        sr = GetComponentsInChildren<SpriteRenderer>();
         player = PlayerManager.instance.player;
 
-        originalMat = sr.material;
-        originalColor = sr.color; // 儲存原始顏色
+        //originalMat = sr.material;
+        //originalColor = sr.color; // 儲存原始顏色
 
         myHealthBar = GetComponentInChildren<UI_HealthBar>(true).gameObject;
+
+        Init();
+    }
+
+    private void Init()
+    {
+        _materials=new Material[sr.Length];
+
+        for (int i = 0; i < sr.Length; i++)
+        {
+            _materials[i] = sr[i].material;
+        }
+    }
+
+    public void CallDamageFlash()
+    {
+        _damageFlashCoroutine = StartCoroutine(DamageFlasher());
+    }
+
+    private IEnumerator DamageFlasher()
+    {
+        SetFlashColor();
+
+        float currentFlashAmount = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < _flashTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            currentFlashAmount = Mathf.Lerp(1f, 0f, (elapsedTime / _flashTime));
+            SetFlashAmount(currentFlashAmount);
+            yield return null;
+        }
+
+    }
+
+    private void SetFlashColor()
+    {
+        for (int i = 0; i < _materials.Length; i++)
+        {
+            _materials[i].SetColor("_FlashColor", _flashColor);
+        }
+    }
+
+    private void SetFlashAmount(float amount)
+    {
+        for (int i = 0; i < _materials.Length; i++)
+        {
+            _materials[i].SetFloat("_FlashAmount", amount);
+        }
     }
 
     // ========== 原有的方法保持不變 ========== //
@@ -67,25 +129,25 @@ public class EntityFX : MonoBehaviour
         if (_transprent)
         {
             myHealthBar.SetActive(false);
-            sr.color = Color.clear;
+            //sr.color = Color.clear;
         }
         else
         {
             myHealthBar.SetActive(true);
-            sr.color = Color.white;
+            //sr.color = Color.white;
         }
     }
 
     private IEnumerator FlashFX()
     {
-        sr.material = hitMat;
-        Color currentColor = sr.color;
-        sr.color = Color.white;
+        //sr.material = hitMat;
+        //Color currentColor = sr.color;
+        //sr.color = Color.white;
 
         yield return new WaitForSeconds(flashDuration);
 
-        sr.color = currentColor;
-        sr.material = originalMat;
+        //sr.color = currentColor;
+        //sr.material = originalMat;
     }
 
     public void StartBlink(float interval = 0.1f)
@@ -100,14 +162,14 @@ public class EntityFX : MonoBehaviour
             StopCoroutine(blinkCoroutine);
 
         blinkCoroutine = null;
-        sr.color = Color.white; // 保證顏色恢復
+        //sr.color = Color.white; // 保證顏色恢復
     }
 
     private IEnumerator BlinkCoroutine(float interval)
     {
         while (true)
         {
-            sr.color = (sr.color == Color.white) ? Color.red : Color.white;
+            //sr.color = (sr.color == Color.white) ? Color.red : Color.white;
             yield return new WaitForSeconds(interval);
         }
     }
@@ -115,16 +177,16 @@ public class EntityFX : MonoBehaviour
 
     private void RedColorBlink()
     {
-        if (sr.color != Color.white)
-            sr.color = Color.white;
-        else
-            sr.color = Color.red;
+        //if (sr.color != Color.white)
+        //    sr.color = Color.white;
+        //else
+            //sr.color = Color.red;
     }
 
     private void CancelColorChange()
     {
         CancelInvoke();
-        sr.color = Color.white;
+        //sr.color = Color.white;
     }
 
 
@@ -195,7 +257,7 @@ public class EntityFX : MonoBehaviour
         // 恢復原本的顏色
         if (sr != null)
         {
-            sr.color = originalColor;
+            //sr.color = originalColor;
         }
     }
 
@@ -207,11 +269,11 @@ public class EntityFX : MonoBehaviour
         while (true)
         {
             // 變成半透明
-            sr.color = invincibilityColor;
+            //sr.color = invincibilityColor;
             yield return new WaitForSeconds(invincibilityFlashSpeed);
 
             // 恢復正常
-            sr.color = originalColor;
+            //sr.color = originalColor;
             yield return new WaitForSeconds(invincibilityFlashSpeed);
         }
     }
@@ -247,7 +309,7 @@ public class EntityFX : MonoBehaviour
             }
 
             // 在原始顏色和白色之間插值
-            sr.color = Color.Lerp(originalColor, Color.white, glowIntensity * 0.6f);
+            //sr.color = Color.Lerp(originalColor, Color.white, glowIntensity * 0.6f);
 
             yield return null;
         }
@@ -268,16 +330,16 @@ public class EntityFX : MonoBehaviour
 
         while (elapsed < duration)
         {
-            sr.color = invincibilityColor;
+            //sr.color = invincibilityColor;
             yield return new WaitForSeconds(fastFlashSpeed);
 
-            sr.color = originalColor;
+            //sr.color = originalColor;
             yield return new WaitForSeconds(fastFlashSpeed);
 
             elapsed += fastFlashSpeed * 2;
         }
 
-        sr.color = originalColor;
+        //sr.color = originalColor;
     }
 
     // ======================================== //
