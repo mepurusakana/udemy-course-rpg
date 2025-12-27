@@ -22,6 +22,11 @@ public class DialogueSystem : MonoBehaviour
     public float dialogueBoxSlideSpeed = 0.3f;
     public float textSpeed = 0.05f;
 
+    [Header("對話框移動時淡入淡出（只有移動時才用）")]
+    public bool enableMoveFade = true;
+    [Range(0f, 1f)]
+    public float moveFadeMinAlpha = 0f;
+
     [Header("控制設定")]
     public KeyCode nextDialogueKey = KeyCode.E;
 
@@ -69,7 +74,6 @@ public class DialogueSystem : MonoBehaviour
     private Vector2 lastDialogueBoxTargetPos;
     private bool hasLastDialogueBoxTargetPos = false;
 
-    // 防止 MoveDialogueBox 疊加
     private Coroutine moveDialogueBoxCoroutine;
 
     private void Start()
@@ -105,7 +109,7 @@ public class DialogueSystem : MonoBehaviour
             characterRectTransform = characterImageUI.GetComponent<RectTransform>();
         }
 
-        if (dialogueBoxCanvasGroup != null) dialogueBoxCanvasGroup.alpha = 0f;
+        //if (dialogueBoxCanvasGroup != null) dialogueBoxCanvasGroup.alpha = 0f;
         if (characterCanvasGroup != null) characterCanvasGroup.alpha = 0f;
 
         if (continueIndicator != null) continueIndicator.SetActive(false);
@@ -128,16 +132,21 @@ public class DialogueSystem : MonoBehaviour
             return;
         }
 
+        currentDialogues = dialogues;
+        currentDialogueIndex = 0;
+        currentCharacterName = "";
+        currentCharacterImage = null;
+
+        // 先記住目前位置（即使物件還沒啟用也可以讀到 RectTransform）
         if (dialogueBoxRectTransform != null)
         {
             lastDialogueBoxTargetPos = dialogueBoxRectTransform.anchoredPosition;
             hasLastDialogueBoxTargetPos = true;
         }
 
-        currentDialogues = dialogues;
-        currentDialogueIndex = 0;
-        currentCharacterName = "";
-        currentCharacterImage = null;
+        // 關鍵：先把 alpha 設成 0（避免 SetActive 那一幀閃一下）
+        if (dialogueBoxCanvasGroup != null)
+            dialogueBoxCanvasGroup.alpha = 0f;
 
         if (dialogueCanvas != null) dialogueCanvas.gameObject.SetActive(true);
         if (dialogueBox != null) dialogueBox.SetActive(true);
@@ -149,17 +158,12 @@ public class DialogueSystem : MonoBehaviour
     {
         isAnimating = true;
 
-        if (dialogueBoxCanvasGroup != null)
-        {
-            while (dialogueBoxCanvasGroup.alpha < 1f)
-            {
-                dialogueBoxCanvasGroup.alpha += Time.deltaTime * fadeSpeed;
-                yield return null;
-            }
-            dialogueBoxCanvasGroup.alpha = 1f;
-        }
+        // 開場：淡入，且若第一句需要換位置，移動會和淡入同步進行
+        yield return StartCoroutine(OpenDialogueBoxSequence(currentDialogues[currentDialogueIndex]));
 
+        // 進入第一句（MoveDialogueBox 會因為已經到位而不再移動/不干擾 alpha）
         yield return StartCoroutine(ShowCharacterAndDialogue(currentDialogues[currentDialogueIndex]));
+
         isAnimating = false;
     }
 
@@ -170,14 +174,7 @@ public class DialogueSystem : MonoBehaviour
         yield return StartCoroutine(CharacterExit(currentCharacterPosition));
 
         if (dialogueBoxCanvasGroup != null)
-        {
-            while (dialogueBoxCanvasGroup.alpha > 0f)
-            {
-                dialogueBoxCanvasGroup.alpha -= Time.deltaTime * fadeSpeed;
-                yield return null;
-            }
-            dialogueBoxCanvasGroup.alpha = 0f;
-        }
+            yield return StartCoroutine(FadeToBySpeed(dialogueBoxCanvasGroup, 0f, fadeSpeed));
 
         if (dialogueBox != null) dialogueBox.SetActive(false);
         if (dialogueCanvas != null && !wasCanvasActive) dialogueCanvas.gameObject.SetActive(false);
@@ -214,19 +211,27 @@ public class DialogueSystem : MonoBehaviour
         }
         else
         {
-            UpdateDialogueUI(nextDialogue);
-
-            if (enableDialogueBoxMovement)
-            {
-                // 防止疊加
-                if (moveDialogueBoxCoroutine != null)
-                    StopCoroutine(moveDialogueBoxCoroutine);
-
-                moveDialogueBoxCoroutine = StartCoroutine(MoveDialogueBox(nextDialogue));
-            }
-
-            StartTyping(nextDialogue.dialogueText);
+            StartCoroutine(PlayLineSameCharacter(nextDialogue));
         }
+    }
+
+    private IEnumerator PlayLineSameCharacter(DialogueData nextDialogue)
+    {
+        isAnimating = true;
+
+        UpdateDialogueUI(nextDialogue);
+
+        if (enableDialogueBoxMovement)
+        {
+            if (moveDialogueBoxCoroutine != null)
+                StopCoroutine(moveDialogueBoxCoroutine);
+
+            moveDialogueBoxCoroutine = StartCoroutine(MoveDialogueBox(nextDialogue));
+            yield return moveDialogueBoxCoroutine;
+        }
+
+        isAnimating = false;
+        StartTyping(nextDialogue.dialogueText);
     }
 
     private bool IsCharacterChanged(DialogueData dialogue)
@@ -261,17 +266,9 @@ public class DialogueSystem : MonoBehaviour
         if (nameTagBackground != null) nameTagBackground.color = dialogue.nameTagColor;
     }
 
-    /// <summary>
-    /// 每句獨立控制對話框位置（Y 不動，起點=上一句的終點）
-    /// </summary>
     private IEnumerator MoveDialogueBox(DialogueData dialogue)
     {
         if (dialogueBoxRectTransform == null) yield break;
-
-        if (dialogue.dialogueBoxPosition == DialogueBoxPosition.Keep)
-            yield break;
-
-        Vector2 rawTarget = GetTargetDialogueBoxPosition(dialogue);
 
         if (!hasLastDialogueBoxTargetPos)
         {
@@ -279,24 +276,68 @@ public class DialogueSystem : MonoBehaviour
             hasLastDialogueBoxTargetPos = true;
         }
 
+        if (dialogue.dialogueBoxPosition == DialogueBoxPosition.Keep)
+            yield break;
+
+        Vector2 rawTarget = GetTargetDialogueBoxPosition(dialogue);
+
         Vector2 startPos = lastDialogueBoxTargetPos;
         Vector2 targetPos = new Vector2(rawTarget.x, startPos.y);
 
-        dialogueBoxRectTransform.anchoredPosition = startPos;
+        bool willMove = Mathf.Abs(targetPos.x - startPos.x) > 0.01f;
+
+        if (!willMove)
+        {
+            dialogueBoxRectTransform.anchoredPosition = targetPos;
+            lastDialogueBoxTargetPos = targetPos;
+            if (dialogueBoxCanvasGroup != null) dialogueBoxCanvasGroup.alpha = 1f;
+            yield break;
+        }
 
         float elapsed = 0f;
         float dur = Mathf.Max(0.0001f, dialogueBoxSlideSpeed);
+
+        dialogueBoxRectTransform.anchoredPosition = startPos;
 
         while (elapsed < dur)
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / dur);
+
             dialogueBoxRectTransform.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
+
+            if (enableMoveFade && dialogueBoxCanvasGroup != null)
+            {
+                float a;
+                if (t < 0.5f)
+                    a = Mathf.Lerp(1f, moveFadeMinAlpha, t * 2f);
+                else
+                    a = Mathf.Lerp(moveFadeMinAlpha, 1f, (t - 0.5f) * 2f);
+
+                dialogueBoxCanvasGroup.alpha = a;
+            }
+
             yield return null;
         }
 
         dialogueBoxRectTransform.anchoredPosition = targetPos;
         lastDialogueBoxTargetPos = targetPos;
+
+        if (dialogueBoxCanvasGroup != null)
+            dialogueBoxCanvasGroup.alpha = 1f;
+    }
+
+    private IEnumerator FadeToBySpeed(CanvasGroup cg, float targetAlpha, float speed)
+    {
+        if (cg == null) yield break;
+
+        float spd = Mathf.Max(0.0001f, speed);
+        while (!Mathf.Approximately(cg.alpha, targetAlpha))
+        {
+            cg.alpha = Mathf.MoveTowards(cg.alpha, targetAlpha, Time.deltaTime * spd);
+            yield return null;
+        }
+        cg.alpha = targetAlpha;
     }
 
     private Vector2 GetTargetDialogueBoxPosition(DialogueData dialogue)
@@ -453,5 +494,70 @@ public class DialogueSystem : MonoBehaviour
     private void DebugLog(string msg)
     {
         if (debugMode) Debug.Log("[DialogueSystem] " + msg);
+    }
+
+    private IEnumerator OpenDialogueBoxSequence(DialogueData firstDialogue)
+    {
+        if (dialogueBoxCanvasGroup == null)
+            yield break;
+
+        // 再保險一次，確保開場從 0 開始
+        dialogueBoxCanvasGroup.alpha = 0f;
+
+        // 如果沒有 RectTransform，就只做淡入
+        if (dialogueBoxRectTransform == null)
+        {
+            yield return StartCoroutine(FadeToBySpeed(dialogueBoxCanvasGroup, 1f, fadeSpeed));
+            yield break;
+        }
+
+        // 起點：目前位置
+        Vector2 startPos = dialogueBoxRectTransform.anchoredPosition;
+
+        // 先把 last target 設好，避免第一句 MoveDialogueBox 用到舊資料
+        lastDialogueBoxTargetPos = startPos;
+        hasLastDialogueBoxTargetPos = true;
+
+        // 如果沒開啟移動、或 Keep，就只淡入（位置不動）
+        if (!enableDialogueBoxMovement || firstDialogue.dialogueBoxPosition == DialogueBoxPosition.Keep)
+        {
+            yield return StartCoroutine(FadeToBySpeed(dialogueBoxCanvasGroup, 1f, fadeSpeed));
+            yield break;
+        }
+
+        // 計算第一句目標位置（只動 X，Y 固定）
+        Vector2 rawTarget = GetTargetDialogueBoxPosition(firstDialogue);
+        Vector2 targetPos = new Vector2(rawTarget.x, startPos.y);
+
+        bool willMove = Mathf.Abs(targetPos.x - startPos.x) > 0.01f;
+
+        // 第一句不需要移動：只淡入
+        if (!willMove)
+        {
+            yield return StartCoroutine(FadeToBySpeed(dialogueBoxCanvasGroup, 1f, fadeSpeed));
+            lastDialogueBoxTargetPos = startPos;
+            yield break;
+        }
+
+        // 第一句需要移動：移動期間同步淡入（0 -> 1）
+        float elapsed = 0f;
+        float dur = Mathf.Max(0.0001f, dialogueBoxSlideSpeed);
+
+        while (elapsed < dur)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / dur);
+
+            dialogueBoxRectTransform.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
+            dialogueBoxCanvasGroup.alpha = t;
+
+            yield return null;
+        }
+
+        dialogueBoxRectTransform.anchoredPosition = targetPos;
+        dialogueBoxCanvasGroup.alpha = 1f;
+
+        // 更新 last target，讓後續 MoveDialogueBox 起點正確
+        lastDialogueBoxTargetPos = targetPos;
     }
 }
