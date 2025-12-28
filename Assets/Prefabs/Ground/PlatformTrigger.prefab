@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -193160823
-  m_SortingLayer: 8
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 90420c504722e894fb67157472439b52, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -131,6 +131,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookTarget: {fileID: 5903290395665811344}
   followDamping: 10
+  TargetSoftZoneWidth: 3
+  TargetSoftZoneHeight: 1.7
+  TargetDeadZoneWidth: 0
+  TargetDeadZoneHeight: 0
+  TargetBiasX: 0
+  TargetBiasY: 0
 --- !u!61 &8231509315703481973
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -548,7 +554,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1560428347
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 69e9be54afad378438b53b2b3fffa6eb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

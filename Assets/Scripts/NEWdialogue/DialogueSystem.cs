@@ -177,7 +177,7 @@ public class DialogueSystem : MonoBehaviour
             yield return StartCoroutine(FadeToBySpeed(dialogueBoxCanvasGroup, 0f, fadeSpeed));
 
         if (dialogueBox != null) dialogueBox.SetActive(false);
-        if (dialogueCanvas != null && !wasCanvasActive) dialogueCanvas.gameObject.SetActive(false);
+        //if (dialogueCanvas != null && !wasCanvasActive) dialogueCanvas.gameObject.SetActive(false);
 
         isAnimating = false;
         OnDialogueComplete?.Invoke();

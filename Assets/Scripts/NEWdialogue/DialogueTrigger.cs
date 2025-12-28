@@ -10,6 +10,8 @@ public class DialogueTrigger : MonoBehaviour
 
     [Header("對話內容")]
     public DialogueData[] dialogues;
+    public AudioManager audioManager;
+    public Player player;
 
     [Header("觸發方式")]
     public TriggerMode triggerMode = TriggerMode.Manual;
@@ -28,6 +30,9 @@ public class DialogueTrigger : MonoBehaviour
     private bool playerInRange = false;
     private bool isDialogueActive = false;
     private bool hasTriggered = false;
+
+    //private bool hasTriggered = false;
+    private bool isThisDialogueActive = false;
 
     private void Start()
     {
@@ -62,6 +67,14 @@ public class DialogueTrigger : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+
+
+
+        if (Player.instance != null)
+            Player.instance.GetOnBusy();
+            Player.instance.SetZeroVelocity();
+
+        //Time.timeScale = 0f;
 
         playerInRange = true;
 
@@ -103,6 +116,7 @@ public class DialogueTrigger : MonoBehaviour
         if (isDialogueActive) return;
 
         isDialogueActive = true;
+        isThisDialogueActive = true;
         hasTriggered = true;
 
         if (interactHint != null)
@@ -113,10 +127,28 @@ public class DialogueTrigger : MonoBehaviour
 
     private void OnDialogueEnd()
     {
+        if(!isThisDialogueActive) return;
+
         isDialogueActive = false;
+        isThisDialogueActive = false;
+
+        Player.instance.GetOffBusy();
+
+        //Time.timeScale = 1f;
 
         // Manual：對話結束後，如果玩家仍在範圍內就把提示再打開
         if (triggerMode == TriggerMode.Manual && playerInRange && interactHint != null)
             interactHint.SetActive(true);
+
+        if (triggerOnce && gameObject.activeSelf)
+        {
+            // 先關掉互動提示，避免 UI 殘留
+            if (interactHint != null)
+                interactHint.SetActive(false);
+
+            // 只關閉當前物件
+            this.gameObject.SetActive(false);
+        }
+
     }
 }

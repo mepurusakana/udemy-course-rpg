@@ -138,6 +138,7 @@ MonoBehaviour:
   ignorePlayerByCode: 1
   fragmentsUseTrigger: 0
   fragmentsLayerName: Debris
+  audioManager: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
 --- !u!61 &6610638800416844749
 BoxCollider2D:
   m_ObjectHideFlags: 0

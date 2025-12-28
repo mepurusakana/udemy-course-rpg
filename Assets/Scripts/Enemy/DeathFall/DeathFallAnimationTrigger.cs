@@ -13,6 +13,8 @@ public class DeathFallAnimationTriggers : MonoBehaviour
 
     private void AttackTrigger()
     {
+        AudioManager.instance.PlaySFX(9, null);
+
         Collider2D[] colliders = Physics2D.OverlapCircleAll(enemy.attackCheck.position, enemy.attackCheckRadius);
 
         foreach (var hit in colliders)

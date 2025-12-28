@@ -33,6 +33,8 @@ public class PlayerHealingState : PlayerGroundedState
         {
             Debug.LogWarning("PlayerHealingState: healingFX 未設置！");
         }
+
+        AudioManager.instance.PlayLoopSFX(12);
     }
 
     public override void Exit()
@@ -44,6 +46,8 @@ public class PlayerHealingState : PlayerGroundedState
         {
             player.healingFX.StopHealingEffects();
         }
+
+        AudioManager.instance.StopSFX(12);
     }
 
     public override void Update()

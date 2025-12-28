@@ -424,7 +424,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1560428347
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 50
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -6885,6 +6885,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!82 &212596386 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2998807879793722009, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
+  m_PrefabInstance: {fileID: 2043328998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &223461712
 GameObject:
   m_ObjectHideFlags: 0
@@ -9309,6 +9314,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 511021807}
   m_CullTransparentMesh: 1
+--- !u!82 &512825372 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 367080369288883262, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
+  m_PrefabInstance: {fileID: 2043328998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &550914205
 GameObject:
   m_ObjectHideFlags: 0
@@ -12988,7 +12998,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -19129,6 +19139,7 @@ MonoBehaviour:
   currentHealth: 100
   currentMP: 100
   mpRegenPerSecond: 1
+  damageParticles: {fileID: 0}
 --- !u!50 &984977970
 Rigidbody2D:
   serializedVersion: 4
@@ -20259,7 +20270,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 15
+  m_SortingLayer: 16
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -26987,7 +26998,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -193160823
-  m_SortingLayer: 8
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f923dace6682ad148a20b5ff9313b21c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -28298,7 +28309,7 @@ MonoBehaviour:
   popUpTextPrefab: {fileID: 2894285104381243520, guid: 4b0d5792d42704c4bb5071d4a04d11b2, type: 3}
   flashDuration: 0.2
   hitMat: {fileID: 2100000, guid: 78758ed07969e5449922bd9487087aa7, type: 2}
-  hitFx: {fileID: 4431538376159538090, guid: 2f387d67210ae6246b602d015d7b9968, type: 3}
+  hitFx: {fileID: 789795642022691181, guid: 67c919ee5bb211d4bb2b2b53eecd9392, type: 3}
   criticalHitFx: {fileID: 3347290265377545998, guid: b74d5da7ef04de04099c0144d41367ce, type: 3}
   invincibilityFlashSpeed: 0.1
   invincibilityColor: {r: 1, g: 1, b: 1, a: 0.5}
@@ -29261,7 +29272,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1560428347
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3ec03815c36201c429b96eeceb6b8c55, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -31605,11 +31616,6 @@ RectTransform:
   m_AnchoredPosition: {x: 712.815, y: 10.076007}
   m_SizeDelta: {x: 883.15, y: 144.84}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!82 &1705002974 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 5540552216887238123, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
-  m_PrefabInstance: {fileID: 2043328998}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1708117521
 GameObject:
   m_ObjectHideFlags: 0
@@ -33224,7 +33230,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_Sprite: {fileID: 990703528, guid: d187eb1c02753154897ff36aa36c5c26, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -33481,7 +33487,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 15
+  m_SortingLayer: 16
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -39069,7 +39075,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: playBgm
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: bgm.Array.size
@@ -39077,19 +39083,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: defaultBgmIndex
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: bgm.Array.data[3]
       value: 
-      objectReference: {fileID: 2076071803}
+      objectReference: {fileID: 512825372}
     - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: bgm.Array.data[4]
       value: 
-      objectReference: {fileID: 1705002974}
+      objectReference: {fileID: 212596386}
     - target: {fileID: 750423732261972060, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: bgmIndex
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3801536446806435942, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: m_Name
@@ -39288,11 +39294,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062398908}
   m_CullTransparentMesh: 1
---- !u!82 &2076071803 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 4445268292387149983, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
-  m_PrefabInstance: {fileID: 2043328998}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2098418321
 GameObject:
   m_ObjectHideFlags: 0
@@ -39810,7 +39811,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 15
+  m_SortingLayer: 16
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -44620,6 +44621,7 @@ MonoBehaviour:
   currentHealth: 0
   currentMP: 0
   mpRegenPerSecond: 1
+  damageParticles: {fileID: 0}
   soulsDropAmount:
     baseValue: 0
     modifiers: 

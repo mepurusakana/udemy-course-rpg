@@ -5,6 +5,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class SpriteShatter2D : MonoBehaviour
 {
+
+
     public enum TriggerMode { TriggerAndKey, Manual }
 
     [Header("目標渲染器(可選)")]
@@ -84,6 +86,8 @@ public class SpriteShatter2D : MonoBehaviour
     private bool _hasShattered;
     private bool _playerInside;
     private Sprite _runtimeWhiteSquare; // 若沒給 overrideBlockSprite，動態產生 1x1 白方塊
+
+    public AudioManager audioManager;
 
     void Awake()
     {
@@ -342,7 +346,7 @@ public class SpriteShatter2D : MonoBehaviour
                 }
             }
         }
-
+        AudioManager.instance.PlaySFX(7, null);
         _hasShattered = true;
     }
 

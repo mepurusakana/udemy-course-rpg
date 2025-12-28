@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class HealingCrossBehaviour : MonoBehaviour
+public class HealingEffectsBehaviour : MonoBehaviour
 {
     private float riseSpeed;
     private float lifetime;

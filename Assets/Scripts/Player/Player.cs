@@ -120,6 +120,7 @@ public class Player : Entity, ISaveable
     {
         base.Awake();
 
+        instance = this;
 
         stateMachine = new PlayerStateMachine();
 
@@ -293,6 +294,16 @@ public class Player : Entity, ISaveable
         isBusy = true;
 
         yield return new WaitForSeconds(_seconds);
+        isBusy = false;
+    }
+
+    public void GetOnBusy()
+    {
+        isBusy = true;
+    }
+
+    public void GetOffBusy()
+    {
         isBusy = false;
     }
 

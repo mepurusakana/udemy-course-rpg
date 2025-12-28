@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Video; // 需要引用
 [RequireComponent(typeof(RectTransform))]
-public class ProximityText_ByTextBounds : MonoBehaviour
+public class ProximityText : MonoBehaviour
 {
     [Header("玩家與顯示物件")]
     [Tooltip("玩家 Transform；留空會自動找 Tag=Player")]

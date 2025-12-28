@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossAnimationTriggers : MonoBehaviour
+public class BossAnimationTrigger : MonoBehaviour
 {
     private EnemyBoss enemy => GetComponentInParent<EnemyBoss>();
     private BossHand hand => GetComponentInParent<BossHand>();

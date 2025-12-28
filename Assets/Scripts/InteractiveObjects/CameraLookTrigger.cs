@@ -14,6 +14,14 @@ public class CameraLookTrigger : MonoBehaviour
     [Header("Follow Damping")]
     public float followDamping = 20f;
 
+    [Header("Follow Parameters")]
+    public float TargetSoftZoneWidth;
+    public float TargetSoftZoneHeight;
+    public float TargetDeadZoneWidth;
+    public float TargetDeadZoneHeight;
+    public float TargetBiasX;
+    public float TargetBiasY;
+
     // ===== 原始參數備份 =====
     private float originalSoftZoneWidth;
     private float originalSoftZoneHeight;

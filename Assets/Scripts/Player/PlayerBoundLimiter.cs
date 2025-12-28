@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerBoundsLimiter : MonoBehaviour
+public class PlayerBoundLimiter : MonoBehaviour
 {
     private Transform player;
     private PolygonCollider2D cameraBound;

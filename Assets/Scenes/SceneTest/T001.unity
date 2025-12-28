@@ -3788,7 +3788,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -193160823
-  m_SortingLayer: 8
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.22000003, y: 0.22000003, z: 0}
@@ -27473,7 +27473,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 15
+  m_SortingLayer: 16
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -34172,7 +34172,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_Sprite: {fileID: 990703528, guid: d187eb1c02753154897ff36aa36c5c26, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -35229,7 +35229,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 15
+  m_SortingLayer: 16
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -42453,6 +42453,8 @@ MonoBehaviour:
     nameTagColor: {r: 0, g: 0, b: 0, a: 0}
     characterPosition: 0
     dialogueBoxPosition: 0
+  audioManager: {fileID: 0}
+  player: {fileID: 0}
   triggerMode: 1
   interactKey: 101
   triggerOnce: 1
@@ -59891,6 +59893,7 @@ MonoBehaviour:
   currentHealth: 100
   currentMP: 100
   mpRegenPerSecond: 1
+  damageParticles: {fileID: 0}
 --- !u!50 &1724099069
 Rigidbody2D:
   serializedVersion: 4
@@ -60825,6 +60828,8 @@ MonoBehaviour:
   characterSlideSpeed: 0.5
   dialogueBoxSlideSpeed: 0.3
   textSpeed: 0.05
+  enableMoveFade: 1
+  moveFadeMinAlpha: 0
   nextDialogueKey: 102
   leftEnterPosition: {x: -928, y: -307}
   leftCenterPosition: {x: -828, y: -307}
@@ -62840,7 +62845,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -261313079
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -68567,7 +68572,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1515849559
-  m_SortingLayer: 15
+  m_SortingLayer: 16
   m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -74573,7 +74578,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1560428347
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 2
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.22000003, y: 0.22000003, z: 0}
@@ -80514,7 +80519,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2134874914
 RectTransform:
   m_ObjectHideFlags: 0
@@ -84676,6 +84681,7 @@ MonoBehaviour:
   currentHealth: 0
   currentMP: 0
   mpRegenPerSecond: 1
+  damageParticles: {fileID: 0}
   soulsDropAmount:
     baseValue: 0
     modifiers: 
@@ -88141,7 +88147,7 @@ GameObject:
   - component: {fileID: 7957790690592224956}
   - component: {fileID: 9015797504786816284}
   m_Layer: 0
-  m_Name: sfx_evil voice
+  m_Name: sfx_GetHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92587,6 +92593,7 @@ MonoBehaviour:
   currentHealth: 0
   currentMP: 0
   mpRegenPerSecond: 1
+  damageParticles: {fileID: 0}
   soulsDropAmount:
     baseValue: 0
     modifiers: 
@@ -93093,7 +93100,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -8458497694684626364, guid: b7725e6b8fda8d845bed26b071ee56d1, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 84c106569adbeaf49a72263dab00d3fc, type: 3}
+  m_audioClip: {fileID: 8300000, guid: f93c4b14aeeb3914d8fd0a552debb06c, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

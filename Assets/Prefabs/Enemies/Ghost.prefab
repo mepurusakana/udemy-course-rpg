@@ -502,6 +502,7 @@ MonoBehaviour:
   currentHealth: 0
   currentMP: 0
   mpRegenPerSecond: 1
+  damageParticles: {fileID: 329009935225345767, guid: 7944337bd2027c64eaa77aa976df24a8, type: 3}
   soulsDropAmount:
     baseValue: 0
     modifiers: 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BossIntroController : MonoBehaviour
+public class BossIntroTimelineController : MonoBehaviour
 {
     public Player player;
     public Cinemachine.CinemachineVirtualCamera vcam;
