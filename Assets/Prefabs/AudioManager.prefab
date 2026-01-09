@@ -1792,9 +1792,9 @@ MonoBehaviour:
   - {fileID: 5540552216887238123}
   - {fileID: 367080369288883262}
   - {fileID: 2998807879793722009}
-  playBgm: 1
-  autoPlayOnStart: 1
-  defaultBgmIndex: 0
+  playBgm: 0
+  autoPlayOnStart: 0
+  defaultBgmIndex: -1
   useDistanceGate: 0
   playerTransform: {fileID: 0}
   playerTag: Player
@@ -3446,7 +3446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e6447b9f08b3f04f8168cb6a7ccb306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgmIndex: 0
+  bgmIndex: -1
   playOnStart: 0
   audioManager: {fileID: 432596551510734587}
 --- !u!1 &6888936178966660723

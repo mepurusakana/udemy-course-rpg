@@ -316,7 +316,7 @@ public class BossHand : MonoBehaviour
             if (playerStats != null)
             {
                 playerStats.TakeDamage(sweepDamage, this.transform);
-                Debug.Log($"長矛擊中敵人，造成 {sweepDamage} 點傷害！");
+                //Debug.Log($"長矛擊中敵人，造成 {sweepDamage} 點傷害！");
             }
 
             // 可選：擊中敵人後立即消失
