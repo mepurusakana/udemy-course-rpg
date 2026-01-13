@@ -140,6 +140,10 @@ PrefabInstance:
       value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
+      propertyPath: autoPlayOnStart
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: defaultBgmIndex
       value: 0
       objectReference: {fileID: 0}
