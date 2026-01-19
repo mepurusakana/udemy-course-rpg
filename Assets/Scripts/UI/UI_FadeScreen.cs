@@ -6,6 +6,7 @@ public class UI_FadeScreen : MonoBehaviour
 {
     [SerializeField] private Animator anim;
     [SerializeField] private float fadeDuration = 1f;  // 淡入淡出持續時間（需與動畫時長一致）
+    
 
     private static UI_FadeScreen instance;
 
@@ -46,7 +47,7 @@ public class UI_FadeScreen : MonoBehaviour
     IEnumerator AutoFadeIn()
     {
         yield return new WaitForSeconds(0.1f);
-        FadeIn();
+        FadeIn(1f);
     }
 
     // 初始化或重新獲取 Animator
@@ -76,7 +77,7 @@ public class UI_FadeScreen : MonoBehaviour
         }
     }
 
-    public void FadeOut()
+    public void FadeOut(float duration)
     {
         // 使用前再次檢查並嘗試初始化
         if (anim == null)
@@ -86,7 +87,7 @@ public class UI_FadeScreen : MonoBehaviour
         }
         if (anim != null)
         {
-            StartCoroutine(FadeCoroutine("fadeOut"));
+            StartCoroutine(FadeCoroutine("fadeOut", duration));
             Debug.Log("[UI_FadeScreen] 執行 FadeOut");
         }
         else
@@ -95,7 +96,7 @@ public class UI_FadeScreen : MonoBehaviour
         }
     }
 
-    public void FadeIn()
+    public void FadeIn(float duration)
     {
         // 使用前再次檢查並嘗試初始化
         if (anim == null)
@@ -105,7 +106,7 @@ public class UI_FadeScreen : MonoBehaviour
         }
         if (anim != null)
         {
-            StartCoroutine(FadeCoroutine("fadeIn"));
+            StartCoroutine(FadeCoroutine("fadeIn", duration));
             Debug.Log("[UI_FadeScreen] 執行 FadeIn");
         }
         else
@@ -115,7 +116,7 @@ public class UI_FadeScreen : MonoBehaviour
     }
 
     // 淡入淡出協程：控制對話觸發器的啟用狀態
-    private IEnumerator FadeCoroutine(string triggerName)
+    private IEnumerator FadeCoroutine(string triggerName, float duration)
     {
         // 淡入淡出開始時，禁用所有對話觸發器
         DialogueStarter[] allStarters = FindObjectsOfType<DialogueStarter>();

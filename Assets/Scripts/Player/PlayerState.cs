@@ -34,6 +34,12 @@ public class PlayerState
     {
         stateTimer -= Time.deltaTime;
 
+        if (player.inputLocked || player.isBusy)
+        {
+            player.rawMoveInput = Vector2.zero;
+            return;
+        }
+
         xInput = Input.GetAxisRaw("Horizontal");
         yInput = Input.GetAxisRaw("Vertical");
         player.anim.SetFloat("yVelocity", rb.velocity.y);

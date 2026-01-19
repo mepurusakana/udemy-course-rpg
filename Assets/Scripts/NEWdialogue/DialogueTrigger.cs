@@ -71,8 +71,10 @@ public class DialogueTrigger : MonoBehaviour
 
 
         if (Player.instance != null)
+        {
             Player.instance.GetOnBusy();
             Player.instance.SetZeroVelocity();
+        }
 
         //Time.timeScale = 0f;
 
@@ -133,6 +135,7 @@ public class DialogueTrigger : MonoBehaviour
         isThisDialogueActive = false;
 
         Player.instance.GetOffBusy();
+        Player.instance.UnlockInput();
 
         //Time.timeScale = 1f;
 

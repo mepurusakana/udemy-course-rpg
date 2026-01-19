@@ -76,7 +76,8 @@ public class Player : Entity, ISaveable
     public MovingPlatform currentPlatform;
     [HideInInspector] public Transform lastAttacker; // 記錄最近攻擊你的敵人
 
-
+    public bool inputLocked {  get; private set; }
+    public Vector2 rawMoveInput;
 
 
     //public SkillManager skill { get; private set; }
@@ -305,6 +306,19 @@ public class Player : Entity, ISaveable
     public void GetOffBusy()
     {
         isBusy = false;
+    }
+
+    public void LockInput()
+    {
+        inputLocked = true;
+
+        rawMoveInput = Vector2.zero;
+        SetZeroVelocity();
+    }
+
+    public void UnlockInput()
+    {
+        inputLocked = false;
     }
 
     public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();

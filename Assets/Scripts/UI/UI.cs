@@ -177,7 +177,7 @@ public class UI : MonoBehaviour, ISaveable
 
     public void SwitchOnEndScreen()
     {
-        fadeScreen.FadeOut();
+        fadeScreen.FadeOut(1f);
         StartCoroutine(EndScreenCorutione());
     }
 

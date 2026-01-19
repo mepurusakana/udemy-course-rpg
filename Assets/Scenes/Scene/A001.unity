@@ -14888,7 +14888,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &780416317
 Transform:
   m_ObjectHideFlags: 0
@@ -14911,7 +14911,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 780416316}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -15697,7 +15697,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8736662041697780512, guid: a91d7fa923ed6b04d8cf1730a67f56ab, type: 3}
       propertyPath: damage.baseValue
-      value: 10
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 8736662041697780512, guid: a91d7fa923ed6b04d8cf1730a67f56ab, type: 3}
       propertyPath: maxHealth.baseValue
@@ -29238,7 +29238,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8736662041697780512, guid: a91d7fa923ed6b04d8cf1730a67f56ab, type: 3}
       propertyPath: damage.baseValue
-      value: 10
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 8736662041697780512, guid: a91d7fa923ed6b04d8cf1730a67f56ab, type: 3}
       propertyPath: maxHealth.baseValue
@@ -55956,7 +55956,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1983904652
 Transform:
   m_ObjectHideFlags: 0
@@ -55979,7 +55979,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1983904651}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -63055,12 +63055,12 @@ MonoBehaviour:
     baseValue: 15
     modifiers: 
   maxHealth:
-    baseValue: 100
+    baseValue: 10000
     modifiers: 
   maxMP:
     baseValue: 100
     modifiers: 
-  currentHealth: 100
+  currentHealth: 10000
   currentMP: 100
   mpRegenPerSecond: 1
   damageParticles: {fileID: 329009935225345767, guid: 9afbfdf82385f1943a062eb11258c5a7, type: 3}
@@ -82768,7 +82768,7 @@ MonoBehaviour:
   - {fileID: 5889396846958392088}
   - {fileID: 4341046058920473713}
   holdTime: 0
-  healHoldTime: 2
+  healHoldTime: 0.7
   healingVFX: {fileID: 0}
   attackLight: {fileID: 6286356077165250540}
   moveDustEffect: {fileID: 7869058284962254273}
@@ -82779,6 +82779,7 @@ MonoBehaviour:
   defaultGravity: 20
   currentPlatform: {fileID: 0}
   lastAttacker: {fileID: 0}
+  rawMoveInput: {x: 0, y: 0}
 --- !u!114 &8369330404049711240
 MonoBehaviour:
   m_ObjectHideFlags: 0

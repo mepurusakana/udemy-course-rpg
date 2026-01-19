@@ -54,54 +54,67 @@ public class PlayerHealingState : PlayerGroundedState
     {
         base.Update();
 
-        // 保持玩家靜止
-        if (player.IsGroundDetected() && player.rb.velocity.y <= 0.1f)
+        // 強制靜止
+        player.SetZeroVelocity();
+
+        // 純計時，不看輸入
+        player.holdTime += Time.deltaTime;
+
+        if (player.holdTime >= player.healHoldTime)
         {
-            Collider2D hit = Physics2D.OverlapCircle(player.groundCheck.position, 0.1f, player.whatIsGround);
-            if (hit != null)
-            {
-                MovingPlatform platform = hit.GetComponent<MovingPlatform>();
-                if (platform != null)
-                {
-                    Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
-
-                    float maxSpeed = 5f;//The maximum speed you want to limit
-
-                    newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
-
-                    if (platform.waitTimer > 0)
-                    {
-                        player.rb.velocity = Vector2.zero;
-                    }
-                    else
-                        player.rb.velocity = newVelocity;
-
-                }
-            }
-        }
-        else
-        {
-            player.rb.velocity = Vector2.zero;
-        }
-
-        if (Input.GetKey(KeyCode.Q))
-        {
-            player.holdTime += Time.deltaTime;
-
-            // 達到治療時間
-            if (player.holdTime >= player.healHoldTime)
-            {
-                player.Heal(100);            // 回血量
-                player.UseChantCharge();    // 扣掉一格血藥
-                stateMachine.ChangeState(player.idleState);
-                // Exit() 會自動調用 StopHealingEffects()
-            }
-        }
-        else
-        {
-            // 若玩家鬆開 Q，則取消治療
+            player.Heal(100);
+            player.UseChantCharge();
             stateMachine.ChangeState(player.idleState);
-            // Exit() 會自動調用 StopHealingEffects()
         }
+
+        // 保持玩家靜止
+        //if (player.IsGroundDetected() && player.rb.velocity.y <= 0.1f)
+        //{
+        //    Collider2D hit = Physics2D.OverlapCircle(player.groundCheck.position, 0.1f, player.whatIsGround);
+        //    if (hit != null)
+        //    {
+        //        MovingPlatform platform = hit.GetComponent<MovingPlatform>();
+        //        if (platform != null)
+        //        {
+        //            Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
+
+        //            float maxSpeed = 5f;//The maximum speed you want to limit
+
+        //            newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
+
+        //            if (platform.waitTimer > 0)
+        //            {
+        //                player.rb.velocity = Vector2.zero;
+        //            }
+        //            else
+        //                player.rb.velocity = newVelocity;
+
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    player.rb.velocity = Vector2.zero;
+        //}
+
+        //if (Input.GetKey(KeyCode.Q))
+        //{
+        //    player.holdTime += Time.deltaTime;
+
+        //    // 達到治療時間
+        //    if (player.holdTime >= player.healHoldTime)
+        //    {
+        //        player.Heal(100);            // 回血量
+        //        player.UseChantCharge();    // 扣掉一格血藥
+        //        stateMachine.ChangeState(player.idleState);
+        //        // Exit() 會自動調用 StopHealingEffects()
+        //    }
+        //}
+        //else
+        //{
+        //    // 若玩家鬆開 Q，則取消治療
+        //    stateMachine.ChangeState(player.idleState);
+        //    // Exit() 會自動調用 StopHealingEffects()
+        //}
     }
 }

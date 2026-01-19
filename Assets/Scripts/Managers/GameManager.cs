@@ -173,7 +173,7 @@ public class GameManager : MonoBehaviour
             UI_FadeScreen fadeScreen = UI.instance.GetFadeScreen();
             if (fadeScreen != null)
             {
-                fadeScreen.FadeOut();
+                fadeScreen.FadeOut(1f);
             }
         }
 
@@ -248,7 +248,7 @@ public class GameManager : MonoBehaviour
                 UI_FadeScreen fadeScreen = UI.instance.GetFadeScreen();
                 if (fadeScreen != null)
                 {
-                    fadeScreen.FadeIn();
+                    fadeScreen.FadeIn(1f);
                 }
             }
 
