@@ -202,7 +202,7 @@ public class UI_Manager : MonoBehaviour
 
     private IEnumerator LoadSceneWithFadeEffect(float delay)
     {
-        if (fadeScreen) fadeScreen.FadeIn(1f);
+        if (fadeScreen) fadeScreen.FadeIn();
         yield return new WaitForSeconds(delay);
     }
 

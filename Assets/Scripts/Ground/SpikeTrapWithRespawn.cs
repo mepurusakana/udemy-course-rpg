@@ -54,7 +54,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
         // --- 階段 2：黑屏漸入 ---
         if (fadeScreen != null)
-            fadeScreen.FadeOut(1f);
+            fadeScreen.FadeOut();
 
 
         player.TakeDamageAndEnterHurtState(transform, bounceForce);
@@ -80,7 +80,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
         // --- 階段 5：黑屏漸出 ---
         if (fadeScreen != null)
-            fadeScreen.FadeIn(1f);
+            fadeScreen.FadeIn();
         yield return new WaitForSeconds(fadeInDuration);
 
         // --- 階段 6：恢復控制與重力 ---

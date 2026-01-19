@@ -66,7 +66,7 @@ public class UI_MainMenu : MonoBehaviour
     {
         if (fadeScreen)
         {
-            fadeScreen.FadeOut(1f);
+            fadeScreen.FadeOut();
             if (enableLogs) Debug.Log("[UI_MainMenu] 執行 FadeOut，準備切換場景");
         }
         yield return new WaitForSeconds(delay);
@@ -101,7 +101,7 @@ public class UI_MainMenu : MonoBehaviour
     {
         if (fadeScreen)
         {
-            fadeScreen.FadeOut(1f);
+            fadeScreen.FadeOut();
             if (enableLogs) Debug.Log("[UI_MainMenu] 執行 FadeOut，準備載入新遊戲");
         }
         yield return new WaitForSeconds(delay);
