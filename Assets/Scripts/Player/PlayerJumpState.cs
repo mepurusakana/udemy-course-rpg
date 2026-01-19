@@ -44,39 +44,51 @@ public class PlayerJumpState : PlayerState
             return;
         }
 
-        // 若持續按著跳躍鍵且仍可繼續跳
-        if (Input.GetKey(KeyCode.Space) && isJumping)
+        if (jumpTimeCounter > 0)
         {
-            if (jumpTimeCounter > 0)
-            {
-                // 持續給予較弱的上升力，模擬「長按跳得更高」
-                player.SetVelocity(rb.velocity.x, player.jumpForce);
-                jumpTimeCounter -= Time.deltaTime;
-            }
-            else
-            {
-                // 到時間了 -> 結束跳躍
-                isJumping = false;
-                stateMachine.ChangeState(player.airState);
-            }
+            // 持續給予較弱的上升力，模擬「長按跳得更高」
+            player.SetVelocity(rb.velocity.x, player.jumpForce);
+            jumpTimeCounter -= Time.deltaTime;
         }
 
-        // 一旦放開空白鍵，就立即結束跳躍
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            isJumping = false;
-            stateMachine.ChangeState(player.airState);
-
-            // 強制降低上升速度，增加「放開鍵即下落」的靈敏度
-            if (rb.velocity.y > 0)
-                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
-        }
-
-        // 當上升結束（自然頂點）也轉入空中狀態
         if (rb.velocity.y <= 0)
         {
             stateMachine.ChangeState(player.airState);
         }
+
+        //// 若持續按著跳躍鍵且仍可繼續跳
+        //if (Input.GetKey(KeyCode.Space) && isJumping)
+        //{
+        //    if (jumpTimeCounter > 0)
+        //    {
+        //        // 持續給予較弱的上升力，模擬「長按跳得更高」
+        //        player.SetVelocity(rb.velocity.x, player.jumpForce);
+        //        jumpTimeCounter -= Time.deltaTime;
+        //    }
+        //    else
+        //    {
+        //        // 到時間了 -> 結束跳躍
+        //        isJumping = false;
+        //        stateMachine.ChangeState(player.airState);
+        //    }
+        //}
+
+        //// 一旦放開空白鍵，就立即結束跳躍
+        //if (Input.GetKeyUp(KeyCode.Space))
+        //{
+        //    isJumping = false;
+        //    stateMachine.ChangeState(player.airState);
+
+        //    // 強制降低上升速度，增加「放開鍵即下落」的靈敏度
+        //    if (rb.velocity.y > 0)
+        //        rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+        //}
+
+        //// 當上升結束（自然頂點）也轉入空中狀態
+        //if (rb.velocity.y <= 0)
+        //{
+        //    stateMachine.ChangeState(player.airState);
+        //}
     }
 
 

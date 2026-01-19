@@ -5110,7 +5110,7 @@ MonoBehaviour:
   sweepSmokeSpawnPoint: {fileID: 1825656243}
   groundImpactPrefab: {fileID: 6815955584813335643, guid: 13b79b7c85268354f89068174c74643b, type: 3}
   defaultLocalPos: {x: -21, y: 5.7, z: 0}
-  handAnimator: {fileID: 0}
+  handAnimator: {fileID: 1162973617}
 --- !u!60 &152458472
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -6987,7 +6987,7 @@ MonoBehaviour:
   sweepSmokeSpawnPoint: {fileID: 1726329146}
   groundImpactPrefab: {fileID: 6815955584813335643, guid: 13b79b7c85268354f89068174c74643b, type: 3}
   defaultLocalPos: {x: 21, y: 5.7, z: 0}
-  handAnimator: {fileID: 0}
+  handAnimator: {fileID: 1212930589}
 --- !u!60 &1262132884
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -8414,7 +8414,7 @@ MonoBehaviour:
   battleTime: 0
   agroDistance: 0
   attackDistance: 0
-  attackCooldown: 2
+  attackCooldown: 4
   minAttackCooldown: 0
   maxAttackCooldown: 0
   lastAttackTime: 0
@@ -8426,8 +8426,8 @@ MonoBehaviour:
   rightHand: {fileID: 152458471}
   attackDuration: 10
   tiredDuration: 5
-  handAttackIntervalMin: 2
-  handAttackIntervalMax: 4
+  handAttackIntervalMin: 6
+  handAttackIntervalMax: 8
   ultimateCooldown: 10
   isPreparingTired: 0
   isUsingSkill: 0

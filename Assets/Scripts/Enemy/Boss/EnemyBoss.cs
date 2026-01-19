@@ -34,8 +34,8 @@ public class EnemyBoss : Enemy
     //[HideInInspector] public float lastAttackTime;
 
     [Header("Independent Cooldowns")]
-    public float handAttackIntervalMin = 2f;
-    public float handAttackIntervalMax = 4f;
+    public float handAttackIntervalMin = 4f;
+    public float handAttackIntervalMax = 8f;
     public float ultimateCooldown = 10f; // 大招冷卻時間
 
     private float leftHandTimer;
@@ -262,7 +262,7 @@ public class EnemyBoss : Enemy
         Vector3 centerPos = new Vector3(centerX, centerY, 0f);
         GameObject energyBall = Instantiate(energyBallPrefab, centerPos, Quaternion.identity);
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(4.6f);
         if (energyBall != null) Destroy(energyBall);
 
         // 結束後復位

@@ -63055,12 +63055,12 @@ MonoBehaviour:
     baseValue: 15
     modifiers: 
   maxHealth:
-    baseValue: 10000
+    baseValue: 100
     modifiers: 
   maxMP:
     baseValue: 100
     modifiers: 
-  currentHealth: 10000
+  currentHealth: 100
   currentMP: 100
   mpRegenPerSecond: 1
   damageParticles: {fileID: 329009935225345767, guid: 9afbfdf82385f1943a062eb11258c5a7, type: 3}
@@ -93812,8 +93812,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dea3df7d21d4c854d88c1f2793c8ce24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 0}
-  fadeDuration: 1
 --- !u!1 &9186661747865048668
 GameObject:
   m_ObjectHideFlags: 0
