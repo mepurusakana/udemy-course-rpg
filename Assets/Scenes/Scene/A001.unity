@@ -1006,26 +1006,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
-      propertyPath: playBgm
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
-      propertyPath: autoPlayOnStart
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
-      propertyPath: defaultBgmIndex
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 750423732261972060, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
-      propertyPath: bgmIndex
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 750423732261972060, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
-      propertyPath: playOnStart
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3801536446806435942, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: m_Name
       value: AudioManager
@@ -15697,7 +15677,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8736662041697780512, guid: a91d7fa923ed6b04d8cf1730a67f56ab, type: 3}
       propertyPath: damage.baseValue
-      value: 1000
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8736662041697780512, guid: a91d7fa923ed6b04d8cf1730a67f56ab, type: 3}
       propertyPath: maxHealth.baseValue
@@ -29238,7 +29218,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8736662041697780512, guid: a91d7fa923ed6b04d8cf1730a67f56ab, type: 3}
       propertyPath: damage.baseValue
-      value: 1000
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8736662041697780512, guid: a91d7fa923ed6b04d8cf1730a67f56ab, type: 3}
       propertyPath: maxHealth.baseValue
@@ -82728,7 +82708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   knockbackPower: {x: 0, y: 0}
   knockbackOffset: {x: 0, y: 0}
-  knockbackDuration: 0.3
+  knockbackDuration: 0.1
   isKnocked: 0
   attackCheck: {fileID: 6313747612053026565}
   attackCheckRadius: 4

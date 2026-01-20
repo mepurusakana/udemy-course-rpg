@@ -454,6 +454,14 @@ public class Player : Entity, ISaveable
         }
     }
 
+    public void AttackMovement()
+    {
+        if(stateMachine.currentState is PlayerPrimaryAttackState attackState)
+        {
+            attackState.UnlockAttackMovement();
+        }
+    }
+
     private IEnumerator InvincibilityFlashEffect(float duration)
     {
         float elapsed = 0f;

@@ -17,11 +17,14 @@ public class PlayerJumpState : PlayerState
         player.SetVelocity(rb.velocity.x, player.jumpForce);
         jumpTimeCounter = player.jumpTimer;
         isJumping = true;
+
     }
 
     public override void Exit()
     {
         base.Exit();
+
+
         isJumping = false;
     }
 
@@ -33,6 +36,10 @@ public class PlayerJumpState : PlayerState
         if (Input.GetKeyDown(KeyCode.Mouse0) && !player.isBusy)
         {
             stateMachine.ChangeState(player.primaryAttack);
+        }
+        else if (rb.velocity.y <= 0)
+        {
+            stateMachine.ChangeState(player.airState);
         }
 
         //  空中衝刺
@@ -51,11 +58,12 @@ public class PlayerJumpState : PlayerState
             jumpTimeCounter -= Time.deltaTime;
         }
 
-        if (rb.velocity.y <= 0)
-        {
-            stateMachine.ChangeState(player.airState);
-        }
 
+        if (Input.GetKeyDown(KeyCode.Space) && player.airJumpCount < player.maxAirJumps)
+        {
+            player.airJumpCount++;
+            stateMachine.ChangeState(player.jumpState);
+        }
         //// 若持續按著跳躍鍵且仍可繼續跳
         //if (Input.GetKey(KeyCode.Space) && isJumping)
         //{

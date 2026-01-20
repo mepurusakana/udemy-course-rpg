@@ -19,8 +19,9 @@ public class PlayerAnimationTriggers : MonoBehaviour
 
     private void CloseAttackZeroVelocity()
     {
-        player.rb.gravityScale = player.defaultGravity;
-        player.rb.velocity += Vector2.up * Physics2D.gravity.y * (player.fallMultiplier - 1) * Time.deltaTime;
+        player.AttackMovement();
+        //player.rb.gravityScale = player.defaultGravity;
+        //player.rb.velocity += Vector2.up * Physics2D.gravity.y * (player.fallMultiplier - 1) * Time.deltaTime;
     }
 
     private void AttackTrigger()

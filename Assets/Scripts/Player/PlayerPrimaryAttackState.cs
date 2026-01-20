@@ -10,6 +10,8 @@ public class PlayerPrimaryAttackState : PlayerState
     private float lastTimeAttacked;
     private float comboWindow = 2;
 
+    protected bool lockAttackMovement = true;
+
     public PlayerPrimaryAttackState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
         : base(_player, _stateMachine, _animBoolName)
     {
@@ -54,7 +56,7 @@ public class PlayerPrimaryAttackState : PlayerState
         else
         {
             // 確保進入攻擊時停下
-            player.SetZeroVelocity();
+            //player.SetZeroVelocity();
             xInput = 0;
         }
 
@@ -79,6 +81,8 @@ public class PlayerPrimaryAttackState : PlayerState
 
         // 攻擊持續時間
         stateTimer = 0.1f;
+
+        lockAttackMovement = true;
     }
 
     public override void Exit()
@@ -102,7 +106,6 @@ public class PlayerPrimaryAttackState : PlayerState
     {
         base.Update();
 
-        // 攻擊結束後歸零速度
 
         if (triggerCalled)
             stateMachine.ChangeState(player.airState);
@@ -136,10 +139,19 @@ public class PlayerPrimaryAttackState : PlayerState
         {
             return;
         }
-        else
+
+        if(!player.IsGroundDetected())
         {
             if (stateTimer < 0)
-                player.SetZeroVelocity();
+                if (lockAttackMovement)
+                    player.SetZeroVelocity();
+                    //player.rb.velocity = Vector2.zero;
         }
+    }
+
+    public void UnlockAttackMovement()
+    {
+        lockAttackMovement = false;
+        player.rb.gravityScale = player.defaultGravity;
     }
 }

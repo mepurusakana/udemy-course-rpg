@@ -192,6 +192,7 @@
     <Compile Include="Assets\Scripts\AreaSound.cs" />
     <Compile Include="Assets\Scripts\Player\Player.cs" />
     <Compile Include="Assets\Scripts\Background\CloudFollow.cs" />
+    <Compile Include="Assets\Scripts\Ground\SwordFlyingTarget.cs" />
     <Compile Include="Assets\Scripts\UI\BG_Start\MultiButtonHoverFontSwap.cs" />
     <Compile Include="Assets\Scripts\Background\CloudSpawner.cs" />
     <Compile Include="Assets\Scripts\LostCurrencyController.cs" />
