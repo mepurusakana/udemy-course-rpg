@@ -202,20 +202,25 @@ public class AudioManager : MonoBehaviour
             foreach (var a in bgm)
             {
                 if (!a) continue;
-                if (forceBgm2D) a.spatialBlend = 0f;  // BGM 永遠 2D
+
+                a.Stop();                 // 【新增】立刻停掉任何自動播放
                 a.playOnAwake = false;
                 a.loop = true;
+
+                if (forceBgm2D) a.spatialBlend = 0f;
+
                 a.ignoreListenerPause = true;
                 a.ignoreListenerVolume = true;
                 a.bypassListenerEffects = true;
             }
         }
+
         if (forceSfx2D && sfx != null)
         {
             foreach (var a in sfx)
             {
                 if (!a) continue;
-                a.spatialBlend = 0f; // SFX 也改 2D（可選）
+                a.spatialBlend = 0f;
             }
         }
     }

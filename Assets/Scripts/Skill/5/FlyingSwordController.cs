@@ -54,7 +54,15 @@ public class FlyingSwordController : MonoBehaviour
         if (target != null)
         {
             StickToTarget(collision.transform, true);
-            target.Hit(this);
+            //target.Hit(this);
+            return;
+        }
+
+        SwordFlyingTarget flyTarget = collision.GetComponent<SwordFlyingTarget>();
+        if (target != null)
+        {
+            StickToTarget(collision.transform, true);
+            //target.Hit(this);
             return;
         }
 
