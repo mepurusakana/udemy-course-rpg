@@ -74,6 +74,8 @@ public class Player : Entity, ISaveable
     public float defaultGravity = 20f;
 
     public MovingPlatform currentPlatform;
+    public bool isOnPlatform;
+
     [HideInInspector] public Transform lastAttacker; // 記錄最近攻擊你的敵人
 
     public bool inputLocked {  get; private set; }
@@ -243,9 +245,21 @@ public class Player : Entity, ISaveable
         CheckMovingPlatform();
     }
 
+    private void FixedUpdate()
+    {
+        //if (currentPlatform != null)
+        //{
+        //    rb.MovePosition(rb.position + currentPlatform.DeltaPosition);
+        //}
+    }
+
     private void CheckMovingPlatform()
     {
+        isOnPlatform = false;
         currentPlatform = null;
+
+        if (!IsGroundDetected() || rb.velocity.y > 0.05f)
+            return;
 
         Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, 0.1f, whatIsGround);
         if (hit != null)
@@ -254,6 +268,7 @@ public class Player : Entity, ISaveable
             if (platform != null)
             {
                 currentPlatform = platform;
+                isOnPlatform = true;
             }
         }
     }

@@ -37,18 +37,21 @@ public class PlayerPrimaryAttackState : PlayerState
                 MovingPlatform platform = hit.GetComponent<MovingPlatform>();
                 if (platform != null)
                 {
-                    Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
 
-                    float maxSpeed = 5f;//The maximum speed you want to limit
+                    //player.rb.position += platform.DeltaPosition;
 
-                    newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
+                    //Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
 
-                    if (platform.waitTimer > 0)
-                    {
-                        player.rb.velocity = Vector2.zero;
-                    }
-                    else
-                        player.rb.velocity = newVelocity;
+                    //float maxSpeed = 5f;//The maximum speed you want to limit
+
+                    //newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
+
+                    //if (platform.waitTimer > 0)
+                    //{
+                    //    player.rb.velocity = Vector2.zero;
+                    //}
+                    //else
+                    //    player.rb.velocity = newVelocity;
 
                 }
             }

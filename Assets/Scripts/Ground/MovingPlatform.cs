@@ -27,10 +27,18 @@ public class MovingPlatform : MonoBehaviour
 
     public Vector2 CurrentVelocity => velocity;
 
+
+    public Vector2 DeltaPosition { get; private set; }
+
+    private Vector2 lastPosition;
+
+    public Vector2 moveVelocity { get; private set; }
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.isKinematic = true;
+        lastPosition = rb.position;
 
         if (waypoints.Length < 2)
         {
@@ -99,6 +107,10 @@ public class MovingPlatform : MonoBehaviour
             rb.MovePosition(currentPos + dir * distanceThisFrame);
             velocity = dir * distanceThisFrame;
         }
+
+        DeltaPosition = rb.position - lastPosition;
+        moveVelocity = DeltaPosition / Time.fixedDeltaTime;
+        lastPosition = rb.position;
     }
 
     public void StartMoving() => isMovingAtStart = true;

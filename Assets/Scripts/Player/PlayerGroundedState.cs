@@ -66,18 +66,28 @@ public class PlayerGroundedState : PlayerState
                 MovingPlatform platform = hit.GetComponent<MovingPlatform>();
                 if (platform != null)
                 {
-                    Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
+                    Vector2 finalVelocity = new Vector2(xInput * player.moveSpeed, rb.velocity.y);
 
-                    float maxSpeed = 5f;//The maximum speed you want to limit
-
-                    newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
-
-                    if (platform.waitTimer > 0)
+                    if (player.isOnPlatform && player.currentPlatform != null && player.currentPlatform.waitTimer <= 0)
                     {
-                        player.rb.velocity = Vector2.zero;
+                        finalVelocity.x += player.currentPlatform.moveVelocity.x;
                     }
-                    else
-                        player.rb.velocity = newVelocity;
+
+                    player.rb.velocity = finalVelocity;
+
+                    //player.rb.position += platform.DeltaPosition;
+                    //Vector2 newVelocity = player.rb.velocity + platform.CurrentVelocity;
+
+                    //float maxSpeed = 5f;//The maximum speed you want to limit
+
+                    //newVelocity = Vector2.ClampMagnitude(newVelocity, maxSpeed);
+
+                    //if (platform.waitTimer > 0)
+                    //{
+                    //    player.rb.velocity = Vector2.zero;
+                    //}
+                    //else
+                    //    player.rb.velocity = newVelocity;
 
                 }
             }
