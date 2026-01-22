@@ -169,6 +169,11 @@ public class UI_SwitchToOpenSkills : MonoBehaviour
             Debug.LogError("[UI_SwitchToOpenSkills] 沒有 UI.instance 也沒有後備 UI_Skill");
         }
 
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.SetPause(true);
+            if (showDebugLogs) Debug.Log("[UI_SwitchToOpenSkills]遊戲已暫停");
+        }
     }
 
     private void CloseSkillsUI()
@@ -182,6 +187,12 @@ public class UI_SwitchToOpenSkills : MonoBehaviour
         {
             skillsUIRootFallback.SetActive(false);
             if (showDebugLogs) Debug.Log("[UI_SwitchToOpenSkills] 已關閉 Skills UI (後備)", this);
+        }
+
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.SetPause(false);
+            if (showDebugLogs) Debug.Log("[UI_SwitchToOpenSkills] 遊戲已恢復");
         }
     }
 

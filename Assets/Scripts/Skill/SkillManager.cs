@@ -337,6 +337,8 @@ public class SkillManager : MonoBehaviour
 
     private void ExecuteHitGroundSkill(SkillData skill)
     {
+        //StartCoroutine(TemporaryInvincible(skill.skillDuration));
+
         // 生成技能效果
         if (skill.skillPrefab != null)
         {
@@ -363,6 +365,15 @@ public class SkillManager : MonoBehaviour
 
 
 
+
+    //private IEnumerator TemporaryInvincible(float duration)
+    //{
+    //    player.stats.MakeInvincible(true);
+    //    Debug.Log("進入無敵");
+    //    yield return new WaitForSeconds(duration);
+    //    player.stats.MakeInvincible(false);
+    //    Debug.Log("退出無敵");
+    //}
 
     // 獲取技能冷卻剩餘時間（用於UI顯示）
     public float GetCooldownRemainingByIndex(int index)

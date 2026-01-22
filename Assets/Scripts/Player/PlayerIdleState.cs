@@ -22,7 +22,14 @@ public class PlayerIdleState : PlayerGroundedState
     public override void Update()
     {
         base.Update();
-        
+
+        if(player.isOnPlatform)
+        {
+
+        }
+        else
+            player.SetVelocity(0, rb.velocity.y);
+
         if (xInput == player.facingDir && player.IsWallDetected())
             return;
 

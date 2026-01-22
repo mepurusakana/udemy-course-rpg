@@ -8,6 +8,7 @@ public class PlayerSkillState : PlayerState
     private int skillIndex;
 
     protected bool lockMovement = true;
+    private Coroutine invincibleCoroutine;
 
     public PlayerSkillState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
         : base(_player, _stateMachine, _animBoolName)
@@ -31,6 +32,13 @@ public class PlayerSkillState : PlayerState
 
             player.SetZeroVelocity();
             player.isBusy = true; // 同步忙碌
+
+            if (skillData.isHitGround)
+            {
+                invincibleCoroutine = player.StartCoroutine(
+                    HitGroundInvincible(skillData.skillDuration)
+                );
+            }
         }
     }
 
@@ -38,6 +46,14 @@ public class PlayerSkillState : PlayerState
     {
         base.Exit(); // 設置 Bool false
         player.isBusy = false; // 同步忙碌結束
+
+        if (skillData != null && skillData.isHitGround)
+        {
+            if (invincibleCoroutine != null)
+                player.StopCoroutine(invincibleCoroutine);
+
+            player.stats.MakeInvincible(false);
+        }
     }
 
     public override void Update()
@@ -56,5 +72,12 @@ public class PlayerSkillState : PlayerState
     public void UnlockMovement()
     {
         lockMovement = false;
+    }
+
+    private IEnumerator HitGroundInvincible(float duration)
+    {
+        player.stats.MakeInvincible(true);
+        yield return new WaitForSeconds(duration);
+        player.stats.MakeInvincible(false);
     }
 }

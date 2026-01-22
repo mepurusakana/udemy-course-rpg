@@ -56,10 +56,10 @@ public class SwordFlyingTarget : MonoBehaviour
         if (sword == null) return;
         else
         {
+            onHit.Invoke();
+
             canMove = false;
             transform.position = startPosition;
-
-            onHit.Invoke();
         }
     }
     //Player player = collision.GetComponent<Player>();
@@ -101,10 +101,10 @@ public class SwordFlyingTarget : MonoBehaviour
     /// <summary>
     /// 如果你之後需要重置標靶（例如重新挑戰）
     /// </summary>
-    public void ResetTarget()
-    {
-        triggered = false;
-        canMove = true;
-        transform.position = startPosition;
-    }
+    //public void ResetTarget()
+    //{
+    //    triggered = false;
+    //    canMove = true;
+    //    transform.position = startPosition;
+    //}
 }

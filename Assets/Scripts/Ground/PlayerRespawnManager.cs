@@ -19,6 +19,9 @@ public class PlayerRespawnManager : MonoBehaviour
     private Vector3 previousPosition;
     private int safePositionUpdateCount = 0; // 記錄更新次數
 
+    [Header("重生判定")]
+    [SerializeField] private LayerMask respawnGroundMask;
+
     private void Awake()
     {
         // 單例模式
@@ -83,16 +86,23 @@ public class PlayerRespawnManager : MonoBehaviour
         }
     }
 
+    private bool IsOnRespawnGround()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(player.groundCheck.position, Vector2.down, 0.3f, respawnGroundMask);
+        return hit;
+    }
+
     private void CheckAndUpdateSafePosition()
     {
         // 檢查條件（簡化版，更寬鬆）
-        bool isGrounded = player.IsGroundDetected();
+        //bool isGrounded = player.IsGroundDetected();
+        bool isOnSafeGround = IsOnRespawnGround();
         bool isNotBusy = !player.isBusy;
         bool isNotKnocked = !player.isKnocked;
         bool isAboveMinHeight = player.transform.position.y > minimumSafeHeight;
 
         // 只要在地面上且高度足夠就記錄（移除 isBusy 和 isKnocked 的限制）
-        if (isGrounded && isAboveMinHeight)
+        if (isOnSafeGround && isAboveMinHeight)
         {
             // 計算移動距離
             float movedDistance = Vector3.Distance(player.transform.position, previousPosition);
@@ -114,7 +124,7 @@ public class PlayerRespawnManager : MonoBehaviour
         // 除錯資訊（可選）
         if (showDebugInfo && Time.frameCount % 120 == 0) // 每2秒顯示一次狀態
         {
-            Debug.Log($"<color=yellow>[狀態檢查]</color> 著地:{isGrounded} | 忙碌:{!isNotBusy} | 擊退:{!isNotKnocked} | 高度OK:{isAboveMinHeight}");
+            Debug.Log($"<color=yellow>[狀態檢查]</color> 著地:{isOnSafeGround} | 忙碌:{!isNotBusy} | 擊退:{!isNotKnocked} | 高度OK:{isAboveMinHeight}");
         }
     }
 

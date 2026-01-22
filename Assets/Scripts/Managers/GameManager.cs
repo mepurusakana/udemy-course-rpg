@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Vector3 forcedStartPosition = Vector3.zero;
 
     private bool pasuedGame;
+
+    public bool IsPaused => pasuedGame;
+
     public bool isRespawning = false; // 新增:防止重複重生
 
     private void Awake()
@@ -73,6 +76,15 @@ public class GameManager : MonoBehaviour
         {
             player = PlayerManager.instance.player.transform;
         }
+    }
+
+    public void SetPause(bool pause)
+    {
+        if (pasuedGame == pause)
+            return;
+
+        pasuedGame = pause;
+        PauseGame(pasuedGame);
     }
 
     private void RefreshCheckpoints()

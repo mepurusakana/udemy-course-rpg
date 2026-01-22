@@ -983,6 +983,9 @@ MonoBehaviour:
   minimumMoveDistance: 0.1
   showDebugInfo: 1
   showDebugGizmos: 1
+  respawnGroundMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!4 &52014550
 Transform:
   m_ObjectHideFlags: 0
@@ -82758,6 +82761,7 @@ MonoBehaviour:
     m_Bits: 2048
   defaultGravity: 20
   currentPlatform: {fileID: 0}
+  isOnPlatform: 0
   lastAttacker: {fileID: 0}
   rawMoveInput: {x: 0, y: 0}
 --- !u!114 &8369330404049711240
