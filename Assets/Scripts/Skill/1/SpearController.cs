@@ -151,6 +151,13 @@ public class SpearController : MonoBehaviour
         // 只在飛行時才能造成傷害
         if (!isFlying) return;
 
+        if (collision.TryGetComponent(out SpriteShatter2D shatter))
+        {
+            shatter.Shatter();
+
+        }
+
+
         // 檢查是否碰到敵人
         if (collision.CompareTag("Enemy"))
         {
@@ -171,6 +178,8 @@ public class SpearController : MonoBehaviour
             Debug.Log("長矛碰到地面！");
             StartOutro();
         }
+
+
     }
 
     // 在編輯器中顯示飛行軌跡

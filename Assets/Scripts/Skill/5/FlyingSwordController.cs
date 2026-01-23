@@ -49,6 +49,15 @@ public class FlyingSwordController : MonoBehaviour
     {
         if (isStuck) return;
 
+        if (collision.TryGetComponent(out SpriteShatter2D shatter))
+        {
+            shatter.Shatter();
+
+            // 你可以選擇是否讓長矛消失
+            //StartOutro();
+            Destroy(gameObject);
+        }
+
         // 命中靶子
         SwordTarget target = collision.GetComponent<SwordTarget>();
         if (target != null)
