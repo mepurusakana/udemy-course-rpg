@@ -58,7 +58,8 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
 
         player.TakeDamageAndEnterHurtState(transform, bounceForce);
-        player.isBusy = true;
+        Player.instance.GetOnBusy();
+        player.stateMachine.ChangeState(player.idleState);
         player.rb.gravityScale = 0f;
         player.SetZeroVelocity();
 
