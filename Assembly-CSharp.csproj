@@ -186,6 +186,7 @@
     <Compile Include="Assets\Scripts\Enemy\Slime\SlimeAttackState.cs" />
     <Compile Include="Assets\Scripts\Enemy\Boss\EnemyBossTiredState.cs" />
     <Compile Include="Assets\Scripts\UI\CameraShake\CameraShakeManager.cs" />
+    <Compile Include="Assets\Scripts\Audio\VolumeSettings.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerCounterAttackState.cs" />
     <Compile Include="Assets\Scripts\UI\UI_Dialogue.cs" />
     <Compile Include="Assets\Scripts\DestroyObjects\SpriteShatter2D.cs" />

@@ -48,7 +48,7 @@ public class PlayerAirState : PlayerState
         }
 
         //  ¤G¬q¸õ
-        if (Input.GetKeyDown(KeyCode.Space) && player.airJumpCount < player.maxAirJumps)
+        if (Input.GetKeyDown(KeyCode.Space) && player.airJumpCount < player.maxAirJumps && !player.isBusy)
         {
             player.airJumpCount++;
             stateMachine.ChangeState(player.jumpState);

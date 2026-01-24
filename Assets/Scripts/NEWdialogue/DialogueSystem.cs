@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class DialogueSystem : MonoBehaviour
 {
@@ -116,6 +117,23 @@ public class DialogueSystem : MonoBehaviour
 
         if (needRestore && dialogueCanvas != null)
             dialogueCanvas.gameObject.SetActive(wasCanvasActive);
+
+        AutoBindDialogueUI();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        AutoBindDialogueUI();
     }
 
     private void Update()
@@ -123,6 +141,56 @@ public class DialogueSystem : MonoBehaviour
         if (Input.GetKeyDown(nextDialogueKey) && !isAnimating)
             NextDialogue();
     }
+
+    private void AutoBindDialogueUI()
+    {
+        // 找 DialogueCanvas（包含 inactive）
+        dialogueCanvas = FindObjectOfType<Canvas>(true);
+
+        if (dialogueCanvas == null)
+        {
+            Debug.LogError("[DialogueSystem] 找不到 DialogueCanvas");
+            return;
+        }
+
+        // 用名稱或結構找（推薦用 Transform.Find）
+        Transform canvasTf = dialogueCanvas.transform;
+
+        dialogueBox = canvasTf.Find("DialogueBox")?.gameObject;
+
+        if (dialogueBox == null)
+        {
+            Debug.LogError("[DialogueSystem] 找不到 DialogueBox");
+            return;
+        }
+
+        dialogueBoxRectTransform = dialogueBox.GetComponent<RectTransform>();
+
+        // TMP & Image
+        characterNameText = dialogueBox.GetComponentInChildren<TextMeshProUGUI>(true);
+        dialogueTextUI = dialogueBox.transform.Find("DialogueText")?.GetComponent<TextMeshProUGUI>();
+        characterImageUI = dialogueBox.transform.Find("CharacterImage")?.GetComponent<Image>();
+        nameTagBackground = dialogueBox.transform.Find("NameTagBackground")?.GetComponent<Image>();
+        continueIndicator = dialogueBox.transform.Find("ContinueIndicator")?.gameObject;
+
+        // CanvasGroup（不存在就補）
+        dialogueBoxCanvasGroup = dialogueBox.GetComponent<CanvasGroup>();
+        if (dialogueBoxCanvasGroup == null)
+            dialogueBoxCanvasGroup = dialogueBox.AddComponent<CanvasGroup>();
+
+        if (characterImageUI != null)
+        {
+            characterCanvasGroup = characterImageUI.GetComponent<CanvasGroup>();
+            if (characterCanvasGroup == null)
+                characterCanvasGroup = characterImageUI.gameObject.AddComponent<CanvasGroup>();
+
+            characterRectTransform = characterImageUI.GetComponent<RectTransform>();
+        }
+
+        Debug.Log("[DialogueSystem] Dialogue UI 自動綁定完成");
+    }
+
+
 
     public void StartDialogue(DialogueData[] dialogues)
     {
