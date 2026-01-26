@@ -1,14 +1,19 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio; // <--- [新增] 1. 引用 Audio 命名空間
 
-[DefaultExecutionOrder(-1000)]   // 確保先於其他腳本初始化
+[DefaultExecutionOrder(-1000)]
 [DisallowMultipleComponent]
 public class AudioManager : MonoBehaviour
 {
-    // ===== 場景範圍單例（Scene-scoped）=====
     private static AudioManager _instance;
 
     public bool muteFootsteps = false;
+
+    // [新增] 2. 加入 Mixer Group 欄位，讓你能在 Inspector 把 Mixer 拉進來
+    [Header("Mixer 設定 (請拖入對應群組)")]
+    public AudioMixerGroup bgmMixerGroup; // <--- [新增]
+    public AudioMixerGroup sfxMixerGroup; // <--- [新增]
 
     public static AudioManager instance
     {
@@ -31,7 +36,6 @@ public class AudioManager : MonoBehaviour
     {
         var current = instance;
 
-        // 只在「同場景」已有另一個 AudioManager 時，才視為重複並刪除自己
         if (current != null && current != this &&
             current.gameObject.scene == gameObject.scene)
         {
@@ -40,29 +44,25 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        // 跨場景交接：永遠讓新場景這個接管靜態實例（不要自刪）
         instance = this;
+        DontDestroyOnLoad(gameObject); // <--- [重要] 3. 確保切換場景時，音樂管理器不會消失
 
-        // （選用）初始化玩家變數
         if (!playerTransform && !string.IsNullOrEmpty(playerTag))
         {
             var go = GameObject.FindGameObjectWithTag(playerTag);
             if (go) playerTransform = go.transform;
         }
 
-        // —— 保命設定：避免距離/Listener 造成「聽不到」 —— 
         ConfigureSourcesSafety();
-
         Invoke(nameof(AllowSFX), 1f);
     }
 
     private void OnDestroy()
     {
-        // 只有當自己仍是現任實例時才清空；若已被新場景接手，不動
         if (instance == this) instance = null;
     }
 
-    // ===== 你的原有欄位 =====
+    // ===== 原有欄位 =====
     [Header("SFX / BGM 設定")]
     [SerializeField] private float sfxMinimumDistance = 10f;
     [SerializeField] private AudioSource[] sfx;
@@ -78,11 +78,10 @@ public class AudioManager : MonoBehaviour
     public Transform playerTransform;
     public string playerTag = "Player";
 
-    // 兩個保命選項（建議如下注解所述開啟）
     [Header("Safety Options")]
-    [Tooltip("建議開：BGM 強制 2D，不吃距離/Listener 影響")]
+    [Tooltip("建議開：BGM 強制 2D")]
     public bool forceBgm2D = true;
-    [Tooltip("可開：SFX 也改為 2D（若不需要 3D 方位感）")]
+    [Tooltip("可開：SFX 也改為 2D")]
     public bool forceSfx2D = false;
 
     private int bgmIndex = -1;
@@ -94,16 +93,19 @@ public class AudioManager : MonoBehaviour
             PlayBGM(Mathf.Clamp(defaultBgmIndex, 0, bgm.Length - 1));
     }
 
-    private void Update()
+    // [重要修改] 4. 徹底刪除 Update
+    // 原因：Update 會強制每一幀檢查播放，導致你無法暫停音樂。
+    // Unity 的 loop 功能會自己處理循環，不需要這裡寫。
+    /* private void Update()
     {
         if (!playBgm) { StopAllBGM(); return; }
-
         if (bgmIndex >= 0 && bgmIndex < (bgm?.Length ?? 0))
         {
             var a = bgm[bgmIndex];
-            if (a && !a.isPlaying) a.Play();    // 對應 AudioSource.loop 勾選
+            if (a && !a.isPlaying) a.Play();   
         }
     }
+    */
 
     public void PlaySFX(int index, Transform source = null)
     {
@@ -119,20 +121,18 @@ public class AudioManager : MonoBehaviour
         }
 
         a.pitch = Random.Range(0.85f, 1.10f);
-        a.Play();
+        a.PlayOneShot(a.clip); // [建議] 改用 PlayOneShot 避免短音效互相截斷
     }
-
 
     public void PlayLoopSFX(int index)
     {
-        if (muteFootsteps) return;   // 對話期間直接禁止
+        if (muteFootsteps) return;
         if (sfx == null || index < 0 || index >= sfx.Length) return;
 
         var a = sfx[index];
         if (!a) return;
 
-        if (!a.isPlaying)
-            a.Play();
+        if (!a.isPlaying) a.Play();
     }
 
     public void StopSFX(int index)
@@ -140,8 +140,6 @@ public class AudioManager : MonoBehaviour
         if (sfx == null || index < 0 || index >= sfx.Length) return;
         if (sfx[index]) sfx[index].Stop();
     }
-
-
 
     public void StopSFXWithTime(int index)
     {
@@ -172,6 +170,9 @@ public class AudioManager : MonoBehaviour
     {
         if (bgm == null || index < 0 || index >= bgm.Length) return;
 
+        // 如果是同一首且正在播，就不重頭開始
+        if (bgmIndex == index && bgm[index].isPlaying) return;
+
         bgmIndex = index;
         StopAllBGM();
         var a = bgm[bgmIndex];
@@ -185,6 +186,26 @@ public class AudioManager : MonoBehaviour
             if (bgm[i]) bgm[i].Stop();
     }
 
+    // [新增] 5. 暫停功能 (UI Manager 需要用這個)
+    public void PauseAllBGM()
+    {
+        if (bgm == null) return;
+        foreach (var a in bgm)
+        {
+            if (a != null && a.isPlaying) a.Pause();
+        }
+    }
+
+    // [新增] 6. 恢復播放功能
+    public void ResumeAllBGM()
+    {
+        if (bgm == null) return;
+        foreach (var a in bgm)
+        {
+            if (a != null) a.UnPause();
+        }
+    }
+
     private void AllowSFX() => canPlaySFX = true;
 
     public static AudioManager InstanceInScene
@@ -194,7 +215,6 @@ public class AudioManager : MonoBehaviour
         => FindObjectOfType<AudioManager>();
 #endif
 
-    // —— 將 BGM 強制 2D；SFX 視需求 —— 
     void ConfigureSourcesSafety()
     {
         if (bgm != null)
@@ -203,24 +223,33 @@ public class AudioManager : MonoBehaviour
             {
                 if (!a) continue;
 
-                a.Stop();                 // 【新增】立刻停掉任何自動播放
+                // [新增] 自動將 BGM 連接到 Mixer 的 Music 群組
+                if (bgmMixerGroup != null) a.outputAudioMixerGroup = bgmMixerGroup;
+
                 a.playOnAwake = false;
                 a.loop = true;
 
                 if (forceBgm2D) a.spatialBlend = 0f;
 
+                // [重要保留] 讓 BGM 無視 Time.timeScale 暫停，這樣我們才能手動控制 Pause
                 a.ignoreListenerPause = true;
-                a.ignoreListenerVolume = true;
-                a.bypassListenerEffects = true;
+
+                // [刪除] 這些設定會導致 Audio Mixer 調整音量無效，必須刪除！
+                // a.ignoreListenerVolume = true; 
+                // a.bypassListenerEffects = true;
             }
         }
 
-        if (forceSfx2D && sfx != null)
+        if (sfx != null)
         {
             foreach (var a in sfx)
             {
                 if (!a) continue;
-                a.spatialBlend = 0f;
+
+                // [新增] 自動將 SFX 連接到 Mixer 的 SFX 群組
+                if (sfxMixerGroup != null) a.outputAudioMixerGroup = sfxMixerGroup;
+
+                if (forceSfx2D) a.spatialBlend = 0f;
             }
         }
     }
@@ -232,10 +261,6 @@ public class AudioManager : MonoBehaviour
         {
             var a = bgm[bgmIndex];
             if (a && !a.isPlaying) a.Play();
-        }
-        else if (autoPlayOnStart && bgm != null && bgm.Length > 0)
-        {
-            PlayBGM(Mathf.Clamp(defaultBgmIndex, 0, bgm.Length - 1));
         }
     }
 }

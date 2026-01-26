@@ -1,55 +1,62 @@
 using UnityEngine;
-using UnityEngine.UI;     // Unity 的舊 Text
-using TMPro;              // TextMeshPro
+using UnityEngine.UI;
+using TMPro;
 
 public class UI_QualitySelector : MonoBehaviour
 {
-    [Header("畫質頁面（索引 0=低,1=中,2=高 ...）")]
+    [Header("畫質頁面（對應 低/中/高 的圖示或物件）")]
     public GameObject[] pages;
 
-    [Header("顯示文字（兩者擇一或都填，留空則不顯示）")]
-    public Text legacyText;                 // UnityEngine.UI.Text
-    public TextMeshProUGUI tmpText;         // TextMeshProUGUI
+    [Header("顯示文字")]
+    public Text legacyText;
+    public TextMeshProUGUI tmpText;
 
-    [Header("自訂顯示標籤（對應 pages 長度）")]
+    [Header("設定")]
     public string[] labels = new string[] { "低", "中", "高" };
+    public string displayFormat = "畫質：{0}";
 
-    [Header("可選：前綴格式")]
-    [Tooltip("例如：\"畫質模式：{0}\"，{0} 會被替換成標籤文字")]
-    public string displayFormat = "畫質模式：{0}";  // ← 改這裡!
+    private int currentIndex = 1; // 預設為中
 
-    private int currentIndex = 2;
-
-    // 畫質變更事件（其他 UI 可訂閱）
+    // 事件：當畫質改變時通知外界
     public static System.Action<int> OnQualityChanged;
 
-    void Start()  // ← 改用 Start 避免 NullReferenceException
+    void Start()
     {
-        // 從服務抓目前畫質並安全夾在 0 ~ (pages.Length-1)
-        int saved = (SettingsService.Instance != null)
-            ? SettingsService.Instance.Settings.qualityIndex
-            : 0;
-        currentIndex = Mathf.Clamp(saved, 0, Mathf.Max(0, pages.Length - 1));
-        ApplyCurrentPage();
+        // 1. 嘗試從 Service 讀取，若無則讀取 Unity 目前設定
+        if (SettingsService.Instance != null)
+        {
+            currentIndex = SettingsService.Instance.Settings.qualityIndex;
+        }
+        else
+        {
+            currentIndex = QualitySettings.GetQualityLevel();
+        }
+
+        // 2. 確保索引不超出範圍
+        currentIndex = Mathf.Clamp(currentIndex, 0, Mathf.Max(0, labels.Length - 1));
+
+        // 3. 初始化畫面
+        ApplyCurrentPage(false); // false = 初始化時不要重複存檔
     }
 
     public void NextPage()
     {
-        if (pages == null || pages.Length == 0) return;
-        currentIndex = (currentIndex + 1) % pages.Length;
-        ApplyCurrentPage();
+        // 循環切換： (0 -> 1 -> 2 -> 0)
+        currentIndex = (currentIndex + 1) % labels.Length;
+        ApplyCurrentPage(true);
     }
 
     public void PreviousPage()
     {
-        if (pages == null || pages.Length == 0) return;
-        currentIndex = (currentIndex - 1 + pages.Length) % pages.Length;
-        ApplyCurrentPage();
+        // 循環切換： (0 -> 2 -> 1 -> 0)
+        currentIndex = (currentIndex - 1 + labels.Length) % labels.Length;
+        ApplyCurrentPage(true);
     }
 
-    void ApplyCurrentPage()
+    // save: 是否要寫入設定 (Start 時不需要)
+    void ApplyCurrentPage(bool save = true)
     {
-        // 顯示目前頁
+        // 1. 切換頁面顯示
         if (pages != null)
         {
             for (int i = 0; i < pages.Length; i++)
@@ -59,43 +66,40 @@ public class UI_QualitySelector : MonoBehaviour
             }
         }
 
-        // 寫回服務（也可在這裡呼叫 Unity 內建畫質）
-        SettingsService.Instance?.SetQualityIndex(currentIndex);
-        // QualitySettings.SetQualityLevel(currentIndex, true); // 若要連動 Unity 內建畫質，取消註解
-
-        // 更新顯示文字
-        UpdateLabelText();
-
-        // 廣播事件（讓其他 UI 能同步）
-        OnQualityChanged?.Invoke(currentIndex);
-
-        Debug.Log($"[畫質切換] {GetLabel(currentIndex)}（Index: {currentIndex}）");
-    }
-
-    void UpdateLabelText()
-    {
-        string label = GetLabel(currentIndex);
-        string finalText = string.IsNullOrEmpty(displayFormat) ? label : string.Format(displayFormat, label);
-
-        if (tmpText != null) tmpText.text = finalText;
-        if (legacyText != null) legacyText.text = finalText;
-    }
-
-    string GetLabel(int index)
-    {
-        // 優先用自訂 labels
-        if (labels != null && index >= 0 && index < labels.Length && !string.IsNullOrEmpty(labels[index]))
-            return labels[index];
-
-        // 預設三檔時給直覺中文
-        if (pages != null && pages.Length == 3)
+        // 2. 執行畫質變更
+        if (save)
         {
-            if (index == 0) return "低";
-            if (index == 1) return "中";
-            if (index == 2) return "高";
+            if (SettingsService.Instance != null)
+            {
+                SettingsService.Instance.SetQualityIndex(currentIndex);
+            }
+            else
+            {
+                QualitySettings.SetQualityLevel(currentIndex, true);
+            }
+
+            OnQualityChanged?.Invoke(currentIndex);
+
+            // === 修正這裡 ===
+            // 使用 labels[currentIndex] 來取得文字，並加入簡單防呆
+            string currentLabel = (labels != null && currentIndex >= 0 && currentIndex < labels.Length)
+                                  ? labels[currentIndex]
+                                  : currentIndex.ToString();
+
+            Debug.Log($"【驗證報告】 請求畫質: {currentLabel} (Index: {currentIndex}) | 實際生效畫質 Index: {QualitySettings.GetQualityLevel()}");
         }
 
-        // 其他情況：模式 i
-        return $"模式 {index}";
+        // 3. 更新 UI 文字
+        UpdateLabelText();
+    }
+    void UpdateLabelText()
+    {
+        if (currentIndex < 0 || currentIndex >= labels.Length) return;
+
+        string label = labels[currentIndex];
+        string finalText = string.IsNullOrEmpty(displayFormat) ? label : string.Format(displayFormat, label);
+
+        if (tmpText) tmpText.text = finalText;
+        if (legacyText) legacyText.text = finalText;
     }
 }
