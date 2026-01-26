@@ -21,11 +21,14 @@ public class PlayerIdleState : PlayerGroundedState
 
     public override void Update()
     {
+        //  完全鎖定時，Idle 不做任何事
+        if (player.inputLocked)
+            return;
+
         base.Update();
 
-        if(player.isOnPlatform)
+        if (player.isOnPlatform)
         {
-
         }
         else
             player.SetVelocity(0, rb.velocity.y);
@@ -33,7 +36,7 @@ public class PlayerIdleState : PlayerGroundedState
         if (xInput == player.facingDir && player.IsWallDetected())
             return;
 
-        if(xInput != 0 && !player.isBusy)
+        if (xInput != 0)
             stateMachine.ChangeState(player.moveState);
     }
 }

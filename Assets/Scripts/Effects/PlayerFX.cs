@@ -11,7 +11,7 @@ public class PlayerFX : EntityFX
     [SerializeField] private float shakeMultiplier;
     public Vector3 shakeSwordImpact;
     public Vector3 shakeHighDamage;
-    private CinemachineImpulseSource screenShake;
+    public CinemachineImpulseSource impulseSource;
 
     [Header("After image fx")]
     [SerializeField] private GameObject afterImagePrefab;
@@ -33,7 +33,7 @@ public class PlayerFX : EntityFX
     protected override void Start()
     {
         base.Start();
-        screenShake = GetComponent<CinemachineImpulseSource>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void Update()
@@ -41,10 +41,11 @@ public class PlayerFX : EntityFX
         afterImageCooldownTimer -= Time.deltaTime;
     }
 
-    public void ScreenShake(Vector3 _shakePower)
+    public void ScreenShake(float force = 1f)
     {
-        screenShake.m_DefaultVelocity = new Vector3(_shakePower.x * player.facingDir, _shakePower.y) * shakeMultiplier;
-        screenShake.GenerateImpulse();
+        if (impulseSource == null) return;
+
+        impulseSource.GenerateImpulseWithForce(force);
     }
 
     public void CreateAfterImage()

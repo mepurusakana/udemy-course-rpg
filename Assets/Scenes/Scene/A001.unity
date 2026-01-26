@@ -1008,6 +1008,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 432596551510734587, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
+      propertyPath: defaultBgmIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3801536446806435942, guid: 369c70aca4afe434f8bc7c8d3cead33b, type: 3}
       propertyPath: m_Name
       value: AudioManager
@@ -10591,6 +10595,68 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &479270163
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 479270166}
+  - component: {fileID: 479270165}
+  - component: {fileID: 479270164}
+  m_Layer: 0
+  m_Name: CameraPostFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &479270164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 479270163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add595e3f1d0a4a4abd9bfb61190f417, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &479270165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 479270163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: bc62a46eaf5463045a0f89635ae9e80d, type: 2}
+--- !u!4 &479270166
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 479270163}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &480258739
 GameObject:
   m_ObjectHideFlags: 0
@@ -23321,11 +23387,11 @@ RectTransform:
   m_LocalScale: {x: 0.4145833, y: 0.4145833, z: 0.4145833}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2069166338935139285}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1355.5781, y: 762.5127}
+  m_AnchoredPosition: {x: 1751.1562, y: 985.0254}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &1529125329 stripped
@@ -60656,6 +60722,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5321476844006657246}
+  - {fileID: 1528446536}
   m_Father: {fileID: 8067164124741694999}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -61882,6 +61949,7 @@ MonoBehaviour:
   shakeMultiplier: 0
   shakeSwordImpact: {x: 0, y: 0, z: 0}
   shakeHighDamage: {x: 0, y: 0, z: 0}
+  impulseSource: {fileID: 0}
   afterImagePrefab: {fileID: 0}
   colorLooseRate: 0
   afterImageCooldown: 0
@@ -64355,7 +64423,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ImpulseDefinition:
     m_ImpulseChannel: 1
-    m_ImpulseShape: 2
+    m_ImpulseShape: 3
     m_CustomImpulseShape:
       serializedVersion: 2
       m_Curve: []
@@ -64363,8 +64431,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_ImpulseDuration: 0.2
-    m_ImpulseType: 0
-    m_DissipationRate: 0.25
+    m_ImpulseType: 1
+    m_DissipationRate: 0.5
     m_RawSignal: {fileID: 0}
     m_AmplitudeGain: 1
     m_FrequencyGain: 1
@@ -93634,4 +93702,4 @@ SceneRoots:
   - {fileID: 27696879}
   - {fileID: 65551839}
   - {fileID: 255766011}
-  - {fileID: 1528446536}
+  - {fileID: 479270166}

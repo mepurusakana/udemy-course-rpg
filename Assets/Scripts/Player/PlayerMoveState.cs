@@ -24,6 +24,10 @@ public class PlayerMoveState : PlayerGroundedState
 
     public override void Update()
     {
+        if (player.inputLocked)
+            stateMachine.ChangeState(player.idleState);
+
+
         base.Update();
 
         player.SetVelocity(xInput * player.moveSpeed, rb.velocity.y);

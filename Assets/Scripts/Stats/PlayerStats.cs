@@ -58,33 +58,15 @@ public class PlayerStats : CharacterStats
     {
         currentHealth -= _damage;
 
-        // === 新增：只要玩家真的扣血，就先做「小幅」螢幕晃動 ===
         if (_damage > 0 && player != null)
         {
-            // 優先找較輕微的設定（如果你有做 shakeLowDamage / shakeDamage / shakeOnHit）
-            // 找不到就退回使用 shakeHighDamage（至少不會沒反應）
-            TryScreenShake(player, preferredFieldName: "shakeLowDamage",
-                                 fallbackFieldName: "shakeHighDamage");
+            // 鏡頭晃動
+            if (player.fx != null)
+                player.fx.ScreenShake(1f);
 
-            // === 原本的大傷害強震邏輯：保留 ===
-            if (_damage > GetMaxHealthValue() * 0.3f)
-            {
-                player.SetupKnockbackPower(new Vector2(10, 6));
-                TryScreenShake(player, preferredFieldName: "shakeHighDamage",
-                                     fallbackFieldName: "shakeHighDamage");
-            }
-        }
-
-        // 死亡判定
-        if (currentHealth <= 0 && !isDead)
-        {
-            isDead = true;
-
-            if (player != null)
-            {
-                player.TakeDamageAndEnterHurtState(player.transform, Vector2.zero);
-                player.StartCoroutine(NotifyDeathToGameManager());
-            }
+            // 受傷模糊
+            if (CameraPostFXController.instance != null)
+                CameraPostFXController.instance.PlayHitBlur(0.35f, 0.12f);
         }
     }
 

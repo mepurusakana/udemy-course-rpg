@@ -13,7 +13,13 @@ public class PlayerHealingState : PlayerGroundedState
         base.Enter();
 
         player.holdTime = 0f;
-        player.rb.velocity = Vector2.zero;
+
+        if (player.isOnPlatform && player.currentPlatform != null)
+        {
+
+        }
+        else
+            player.rb.velocity = Vector2.zero;
 
         // 檢查是否有咏唱次數
         if (player.chantCharges <= 0)
@@ -22,7 +28,12 @@ public class PlayerHealingState : PlayerGroundedState
             return;
         }
 
-        player.SetZeroVelocity();
+        if (player.isOnPlatform && player.currentPlatform != null)
+        {
+
+        }
+        else
+            player.SetZeroVelocity();
 
         //  啟動治療特效（Light2D 和 Particle System）
         if (player.healingFX != null)
@@ -55,7 +66,12 @@ public class PlayerHealingState : PlayerGroundedState
         base.Update();
 
         // 強制靜止
-        player.SetZeroVelocity();
+        if (player.isOnPlatform && player.currentPlatform != null)
+        {
+
+        }
+        else
+            player.SetZeroVelocity();
 
         // 純計時，不看輸入
         player.holdTime += Time.deltaTime;

@@ -218,6 +218,8 @@ public class Player : Entity, ISaveable
             stateMachine.ChangeState(hurtState);
     }
 
+
+
     /// <summary>
     /// 獲取當前設定的擊退力道
     /// </summary>
@@ -323,17 +325,22 @@ public class Player : Entity, ISaveable
         isBusy = false;
     }
 
-    public void LockInput()
+
+    public void LockCompletely()
     {
         inputLocked = true;
+        isBusy = true;
 
-        rawMoveInput = Vector2.zero;
-        SetZeroVelocity();
+        rb.velocity = Vector2.zero;
+        rb.gravityScale = 0f;
     }
 
-    public void UnlockInput()
+    public void UnlockCompletely()
     {
         inputLocked = false;
+        isBusy = false;
+
+        rb.gravityScale = defaultGravity;
     }
 
     public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();

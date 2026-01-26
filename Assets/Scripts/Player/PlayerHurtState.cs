@@ -44,7 +44,10 @@ public class PlayerHurtState : PlayerState
     {
         yield return new WaitForSeconds(hurtDuration);
 
-        // 若血量 > 0 且不忙碌 才轉狀態
+        //  若完全鎖定中（陷阱 / 黑屏），不自動切狀態
+        if (player.inputLocked)
+            yield break;
+
         if (player.stats.currentHealth > 0)
             stateMachine.ChangeState(player.airState);
     }

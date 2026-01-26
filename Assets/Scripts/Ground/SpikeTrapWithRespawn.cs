@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class SpikeTrapWithRespawn : MonoBehaviour
 {
+    public Player player;
+
     [Header("傷害設定")]
     [SerializeField] private int damage = 10;
 
@@ -31,12 +33,13 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isProcessing) return; // 防止多次觸發
+        if (isProcessing) return;
 
         Player player = collision.GetComponent<Player>();
         if (player == null) return;
 
-        player.lastAttacker = transform; // 取消無敵 player.stats.MakeInvincible(false);
+        // 立刻鎖，避免同一幀吃輸入
+        player.LockCompletely();
 
         PlayerStats stats = player.GetComponent<PlayerStats>();
         if (stats == null) return;
@@ -48,20 +51,26 @@ public class SpikeTrapWithRespawn : MonoBehaviour
     {
         isProcessing = true;
 
-        // --- 階段 1：立即進入 HurtState ---
-        stats.MakeInvincible(false); // 暫時關閉無敵，確保傷害生效
+        // --- 階段 1：傷害 + 完全鎖定 ---
+        stats.MakeInvincible(false);
         stats.TakeDamage(damage, transform);
+
+        player.TakeDamageAndEnterHurtState(transform, bounceForce);
+
+        //  完全鎖死
+        player.LockCompletely();
+
+        // 強制回 Idle（避免 Attack / Air State）
+        player.stateMachine.ChangeState(player.idleState);
 
         // --- 階段 2：黑屏漸入 ---
         if (fadeScreen != null)
             fadeScreen.FadeOut();
 
-
-        player.TakeDamageAndEnterHurtState(transform, bounceForce);
-        Player.instance.GetOnBusy();
-        player.stateMachine.ChangeState(player.idleState);
-        player.rb.gravityScale = 0f;
-        player.SetZeroVelocity();
+        //Player.instance.GetOnBusy();
+        //player.stateMachine.ChangeState(player.idleState);
+        //player.rb.gravityScale = 0f;
+        //player.SetZeroVelocity();
 
         yield return new WaitForSeconds(fadeOutDuration);
         yield return new WaitForSeconds(pauseDuration);
@@ -86,8 +95,10 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
         // --- 階段 6：恢復控制與重力 ---
         player.stateMachine.ChangeState(player.idleState);
-        player.rb.gravityScale = player.defaultGravity;
-        player.isBusy = false;
+        player.UnlockCompletely();
+        //player.stateMachine.ChangeState(player.idleState);
+        //player.rb.gravityScale = player.defaultGravity;
+        //player.isBusy = false;
 
         // --- 階段 7：等待無敵結束 ---
         yield return new WaitForSeconds(invincibilityAfterRespawn);

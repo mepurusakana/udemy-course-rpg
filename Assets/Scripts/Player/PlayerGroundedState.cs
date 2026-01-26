@@ -24,6 +24,9 @@ public class PlayerGroundedState : PlayerState
 
     public override void Update()
     {
+        if (player.inputLocked || player.isBusy)
+            return;
+
         base.Update();
 
         if (Input.GetKeyDown(KeyCode.Mouse0) && !player.isBusy)

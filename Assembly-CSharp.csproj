@@ -135,6 +135,7 @@
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMoveState.cs" />
     <Compile Include="Assets\Scripts\Enemy\Archer\ArcherDeadState.cs" />
+    <Compile Include="Assets\Scripts\Camera\CameraPostFXController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAnimationTriggers.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerHurtState.cs" />
     <Compile Include="Assets\Scripts\UI\Object_Merchant.cs" />

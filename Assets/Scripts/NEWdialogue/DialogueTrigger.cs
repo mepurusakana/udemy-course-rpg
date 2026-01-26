@@ -47,6 +47,8 @@ public class DialogueTrigger : MonoBehaviour
 
         if (interactHint != null)
             interactHint.SetActive(false);
+
+        TryFindPlayerAndAudio();
     }
 
     private void OnDestroy()
@@ -64,6 +66,34 @@ public class DialogueTrigger : MonoBehaviour
             TriggerDialogue();
     }
 
+    private void TryFindPlayerAndAudio()
+    {
+        // 首先從 UI 單例取得
+        if (PlayerManager.instance != null && Player.instance != null)
+        {
+            player = Player.instance;
+            //if (showDebugLogs) Debug.Log("[UI_SwitchToOpenSkills] 已從 UI.instance 綁定 UI_Skill", this);
+            //return;
+        }
+
+        //  若 UI.instance 還沒初始化，用 FindObjectOfType (含 inactive)
+        //var foundSkillUI = FindObjectOfType<TwoStateButtonGroup>(true);
+        //if (foundSkillUI != null)
+        //{
+        //    skillsUIRootFallback = foundSkillUI.gameObject;
+        //    if (showDebugLogs) Debug.Log("[UI_SwitchToOpenSkills] 已透過 FindObjectOfType 綁定 UI_Skill", this);
+        //}
+
+        if (AudioManager.instance != null)
+        {
+            audioManager = AudioManager.instance;
+            //if (showDebugLogs) Debug.Log("[UI_SwitchToOpenSkills] 已從 UI.instance 綁定 UI_Skill", this);
+            //return;
+        }
+
+        
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
@@ -72,7 +102,10 @@ public class DialogueTrigger : MonoBehaviour
 
         if (Player.instance != null)
         {
-            Player.instance.GetOnBusy();
+            //  完全鎖死
+            player.LockCompletely();
+
+            // 強制回 Idle（避免 Attack / Air State）
             player.stateMachine.ChangeState(player.idleState);
         }
 
@@ -135,7 +168,7 @@ public class DialogueTrigger : MonoBehaviour
         isThisDialogueActive = false;
 
         Player.instance.GetOffBusy();
-        Player.instance.UnlockInput();
+        Player.instance.UnlockCompletely();
 
         //Time.timeScale = 1f;
 
