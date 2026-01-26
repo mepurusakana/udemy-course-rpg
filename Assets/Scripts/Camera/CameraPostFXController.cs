@@ -8,8 +8,7 @@ public class CameraPostFXController : MonoBehaviour
     public static CameraPostFXController instance;
 
     private Volume volume;
-    private MotionBlur motionBlur;
-
+    private DepthOfField dof;
     private Coroutine blurCoroutine;
 
     private void Awake()
@@ -24,23 +23,29 @@ public class CameraPostFXController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         volume = GetComponent<Volume>();
-        volume.profile.TryGet(out motionBlur);
+        volume.profile.TryGet(out dof);
+
+        // 確保一開始是清楚的
+        if (dof != null)
+            dof.active = false;
     }
 
-    public void PlayHitBlur(float intensity = 0.4f, float duration = 0.15f)
+    public void PlayHitBlur(float duration = 0.12f)
     {
-        if (motionBlur == null) return;
+        if (dof == null) return;
 
         if (blurCoroutine != null)
             StopCoroutine(blurCoroutine);
 
-        blurCoroutine = StartCoroutine(HitBlurRoutine(intensity, duration));
+        blurCoroutine = StartCoroutine(HitBlurRoutine(duration));
     }
 
-    private IEnumerator HitBlurRoutine(float intensity, float duration)
+    private IEnumerator HitBlurRoutine(float duration)
     {
-        motionBlur.intensity.value = intensity;
+        dof.active = true;
+
         yield return new WaitForSeconds(duration);
-        motionBlur.intensity.value = 0f;
+
+        dof.active = false;
     }
 }

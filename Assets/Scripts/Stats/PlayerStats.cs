@@ -66,7 +66,9 @@ public class PlayerStats : CharacterStats
 
             // ¨ü¶Ë¼Ò½k
             if (CameraPostFXController.instance != null)
-                CameraPostFXController.instance.PlayHitBlur(0.35f, 0.12f);
+                CameraPostFXController.instance.PlayHitBlur();
+
+            AudioManager.instance?.PlaySFX(15, player.transform);
         }
     }
 

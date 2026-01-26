@@ -45,7 +45,7 @@ public class AudioManager : MonoBehaviour
         }
 
         instance = this;
-        DontDestroyOnLoad(gameObject); // <--- [重要] 3. 確保切換場景時，音樂管理器不會消失
+        //DontDestroyOnLoad(gameObject); // <--- [重要] 3. 確保切換場景時，音樂管理器不會消失
 
         if (!playerTransform && !string.IsNullOrEmpty(playerTag))
         {
