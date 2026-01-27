@@ -34,6 +34,8 @@ public class DialogueTrigger : MonoBehaviour
     //private bool hasTriggered = false;
     private bool isThisDialogueActive = false;
 
+    public System.Action OnThisDialogueFinished;
+
     private void Start()
     {
         dialogueSystem = FindObjectOfType<DialogueSystem>();
@@ -172,6 +174,8 @@ public class DialogueTrigger : MonoBehaviour
 
         //Time.timeScale = 1f;
 
+        OnThisDialogueFinished?.Invoke();
+
         // Manual：對話結束後，如果玩家仍在範圍內就把提示再打開
         if (triggerMode == TriggerMode.Manual && playerInRange && interactHint != null)
             interactHint.SetActive(true);
@@ -186,5 +190,10 @@ public class DialogueTrigger : MonoBehaviour
             this.gameObject.SetActive(false);
         }
 
+    }
+
+    public DialogueSystem GetDialogueSystem()
+    {
+        return dialogueSystem;
     }
 }

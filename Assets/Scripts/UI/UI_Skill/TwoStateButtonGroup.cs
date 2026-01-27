@@ -75,6 +75,10 @@ public class TwoStateButtonGroup : MonoBehaviour
     // === 主要互動 ===
     private void OnClickLight(int index)
     {
+        // 播放 SFX（第五個）
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlaySFX(5);
+
         // 點到已選中的 Light：若允許反選 -> 關閉，否則不動
         if (SelectedIndex == index && allowDeselect)
         {
@@ -86,6 +90,10 @@ public class TwoStateButtonGroup : MonoBehaviour
 
     private void OnClickDark(int index)
     {
+        // 播放 SFX（第五個）
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlaySFX(5);
+
         // 任一 Dark 都是要求選取該項
         if (SelectedIndex == index) return; // 本來就選中，不必重複
         Select(index);

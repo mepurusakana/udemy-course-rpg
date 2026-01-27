@@ -72,6 +72,7 @@ public class Player : Entity, ISaveable
 
     [Header("Physics")]
     public float defaultGravity = 20f;
+    public bool lockInputMovement = false;
 
     public MovingPlatform currentPlatform;
     public bool isOnPlatform;

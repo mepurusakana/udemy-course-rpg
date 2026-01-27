@@ -95,6 +95,12 @@ public class PlayerGroundedState : PlayerState
                 }
             }
         }
+
+        if (!player.lockInputMovement)
+        {
+            Vector2 finalVelocity = new Vector2(xInput * player.moveSpeed, rb.velocity.y);
+            player.rb.velocity = finalVelocity;
+        }
     }
 
     private bool HasNoSword()

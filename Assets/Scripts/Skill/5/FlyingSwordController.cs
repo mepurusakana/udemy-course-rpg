@@ -33,8 +33,11 @@ public class FlyingSwordController : MonoBehaviour
         direction = (int)_direction;
 
         rb.velocity = new Vector2(speed * direction, 0);
+
         if (spriteRenderer != null)
             spriteRenderer.flipX = (direction == -1);
+
+        Invoke(nameof(DestroyIfNotStuck), 3f);
     }
 
     private void Update()
@@ -93,6 +96,10 @@ public class FlyingSwordController : MonoBehaviour
 
     private void StickToTarget(Transform target, bool playHitAnim)
     {
+        if (isStuck) return;
+
+        CancelInvoke(nameof(DestroyIfNotStuck));
+
         isStuck = true;
         rb.velocity = Vector2.zero;
         rb.isKinematic = true;
@@ -135,6 +142,19 @@ public class FlyingSwordController : MonoBehaviour
 
 
         animator.SetTrigger("Hit");
+
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlaySFX(4);
+
         Destroy(gameObject, 5f); // 5秒後自動刪除
     }
+
+    private void DestroyIfNotStuck()
+    {
+        if (!isStuck)
+        {
+            Destroy(gameObject);
+        }
+    }
+
 }

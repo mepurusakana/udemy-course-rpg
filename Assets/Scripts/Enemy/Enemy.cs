@@ -35,6 +35,7 @@ public class Enemy : Entity
     [HideInInspector] public float lastAttackTime;
 
     public bool isDead { get; protected set; } = false;
+    public System.Action<Enemy> OnEnemyDead;
     
 
 
@@ -161,9 +162,9 @@ public class Enemy : Entity
 
     public override void Die()
     {
-        if (isDead) return; // 避免重複死亡
-        isDead = true;
+        if (isDead) return;
 
-        // 其他死亡處理
+        isDead = true;
+        OnEnemyDead?.Invoke(this);
     }
 }

@@ -107,6 +107,7 @@
     <Compile Include="Assets\Scripts\Ground\SwordTarget.cs" />
     <Compile Include="Assets\Scripts\Enemy\Mummy\MummyGroundedState.cs" />
     <Compile Include="Assets\Scripts\Enemy\Enemy_DeathBringerTriggers.cs" />
+    <Compile Include="Assets\Scripts\Managers\DialogueFlowController.cs" />
     <Compile Include="Assets\Scripts\Enemy\Slime\Enemy_Slime.cs" />
     <Compile Include="Assets\Scripts\Ground\DropThroughPlatform.cs" />
     <Compile Include="Assets\Scripts\Ground\PlatformReveal.cs" />

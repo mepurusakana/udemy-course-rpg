@@ -56,12 +56,6 @@ public class PlayerPrimaryAttackState : PlayerState
                 }
             }
         }
-        else
-        {
-            // 確保進入攻擊時停下
-            //player.SetZeroVelocity();
-            xInput = 0;
-        }
 
 
         // Combo 計數重設邏輯
@@ -85,7 +79,6 @@ public class PlayerPrimaryAttackState : PlayerState
         // 攻擊持續時間
         stateTimer = 0.1f;
 
-        lockAttackMovement = true;
     }
 
     public override void Exit()
@@ -103,6 +96,7 @@ public class PlayerPrimaryAttackState : PlayerState
 
         comboCounter++;
         lastTimeAttacked = Time.time;
+
     }
 
     public override void Update()
@@ -134,6 +128,10 @@ public class PlayerPrimaryAttackState : PlayerState
                     else
                         player.rb.velocity = newVelocity;
 
+                }
+                else
+                {
+                    player.rb.velocity = Vector2.zero;
                 }
             }
         }

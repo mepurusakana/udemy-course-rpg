@@ -70,6 +70,17 @@ public class PlayerStats : CharacterStats
 
             AudioManager.instance?.PlaySFX(15, player.transform);
         }
+
+        if (currentHealth <= 0 && !isDead)
+        {
+            isDead = true;
+
+            if (player != null)
+            {
+                player.TakeDamageAndEnterHurtState(player.transform, Vector2.zero);
+                player.StartCoroutine(NotifyDeathToGameManager());
+            }
+        }
     }
 
     private static void TryScreenShake(Player player, string preferredFieldName, string fallbackFieldName)
