@@ -55,40 +55,39 @@ public class UI_DisplaySelector : MonoBehaviour
 
     void ApplyCurrentPage(bool applyToScreen = true)
     {
-        // 1. 更新頁面物件顯示
-        if (pages != null && pages.Length > 0)
-        {
-            for (int i = 0; i < pages.Length; i++)
-            {
-                if (i < pages.Length && pages[i])
-                    pages[i].SetActive(i == currentIndex);
-            }
-        }
+        // ... (省略前半段 UI 更新) ...
 
-        // 2. 套用螢幕設定
         var targetMode = modes[currentIndex];
 
         if (applyToScreen)
         {
             if (SettingsService.Instance != null)
-            {
                 SettingsService.Instance.SetScreenMode(targetMode);
+
+            // ===  修改這裡：針對視窗模式給一個明顯的測試解析度 ===
+
+            int w = Screen.width;
+            int h = Screen.height;
+
+            // 如果目標是「視窗化」，強制縮小解析度，不然會看起來像全螢幕
+            if (targetMode == FullScreenMode.Windowed)
+            {
+                w = 1280;
+                h = 720;
             }
+            // 如果是全螢幕或無邊框，就用螢幕原始最大解析度 (或你指定的解析度)
             else
             {
-                Screen.SetResolution(Screen.width, Screen.height, targetMode);
+                w = Screen.currentResolution.width;
+                h = Screen.currentResolution.height;
             }
 
-            // ===原本只有這行 (顯示目標)  ===
-            Debug.Log($"[顯示模式] 請求切換為：{labels[currentIndex]}");
+            // 補上 refreshRate: 0 (代表使用最大更新率)，避免因為更新率不對而被系統拒絕切換
+            Screen.SetResolution(w, h, targetMode, 0);
 
-            // ===【新增】這行才是真正的驗證 (顯示實際結果) ===
-            // 注意：Unity 編輯器中 SetResolution 不會立即生效，數值可能會慢一幀才變，
-            // 建議 Build 出來測試時看這行最準。
-            Debug.Log($"【驗證報告】 實際解析度: {Screen.width} x {Screen.height} | 實際模式: {Screen.fullScreenMode}");
+            Debug.Log($"[強制執行] SetResolution: {w}x{h}, Mode: {targetMode}");
         }
 
-        // 3. 更新文字
         UpdateLabelText();
     }
 

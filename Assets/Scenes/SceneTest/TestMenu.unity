@@ -1858,7 +1858,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5fc27418a2a1d64b85506fef729e43c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingsSceneName: A001
+  settingsSceneName: T001
   settingUIName: UI_Setting
   audioUIName: Audio_Setting
   videoUIName: Video_Setting
@@ -1878,10 +1878,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba4a2ccfa5563d459a90653849d99a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: A001
+  sceneName: T001
   targetSceneName: SaveSlot
   fadeScreen: {fileID: 1647152935}
-  settingsSceneName: A001
+  settingsSceneName: T001
   unloadSettingsSceneOnClose: 1
   pauseWhenOpenSettings: 0
   settingsCanvasSortingOrder: 5000
