@@ -33,17 +33,16 @@ public class UI_AudioSetting : MonoBehaviour
     public bool hoverOnSlider = true;
     public bool hoverOnDisplayImage = true;
 
-    // 五檔對應線性音量
-    private readonly float[] volumes = { 0f, 0.25f, 0.5f, 0.75f, 1f };
-
     private bool _hoverMaster, _hoverBGM, _hoverSFX;
 
     private void Awake()
     {
+        // 確保 Slider 設定正確 (雖然 VolumeSettings 也會做，但多做無妨)
         ConfigureDiscreteSlider(masterSlider);
         ConfigureDiscreteSlider(bgmSlider);
         ConfigureDiscreteSlider(sfxSlider);
 
+        // 設定滑鼠懸停 (Hover) 事件
         WireHover(masterSlider ? masterSlider.gameObject : null, v => { _hoverMaster = v; UpdateMasterUI(); }, hoverOnSlider);
         WireHover(masterDisplayImage ? masterDisplayImage.gameObject : null, v => { _hoverMaster = v; UpdateMasterUI(); }, hoverOnDisplayImage);
 
@@ -56,59 +55,20 @@ public class UI_AudioSetting : MonoBehaviour
 
     private void OnEnable()
     {
-        // 從服務讀目前值 → 更新 UI
-        var s = SettingsService.Instance.Settings;
-        masterSlider.SetValueWithoutNotify(Mathf.RoundToInt(s.master * 4f));
-        bgmSlider.SetValueWithoutNotify(Mathf.RoundToInt(s.bgm * 4f));
-        sfxSlider.SetValueWithoutNotify(Mathf.RoundToInt(s.sfx * 4f));
+        // 當視窗打開時，根據 Slider 目前的位置刷新圖片
+        // 不再去讀 SettingsService，而是直接信賴 Slider 上的值 (因為 VolumeSettings 已經幫你設好值了)
         UpdateAllUI();
-
-        // 別的場景也可能在改 → 訂閱事件來同步 UI
-        SettingsService.onChanged += OnSettingsChanged;
-    }
-    private void OnDisable()
-    {
-        SettingsService.onChanged -= OnSettingsChanged;
     }
 
     private void Start()
     {
-        // 值改變 → 呼叫服務（會立即套用 + 存檔 + 廣播）
-        if (masterSlider) masterSlider.onValueChanged.AddListener(_ => { ApplyMasterFromUI(); });
-        if (bgmSlider) bgmSlider.onValueChanged.AddListener(_ => { ApplyBGMFromUI(); });
-        if (sfxSlider) sfxSlider.onValueChanged.AddListener(_ => { ApplySFXFromUI(); });
+        // 監聽 Slider 數值變化 -> 只更新圖片，不處理音量
+        if (masterSlider) masterSlider.onValueChanged.AddListener(_ => { UpdateMasterUI(); });
+        if (bgmSlider) bgmSlider.onValueChanged.AddListener(_ => { UpdateBGMUI(); });
+        if (sfxSlider) sfxSlider.onValueChanged.AddListener(_ => { UpdateSFXUI(); });
     }
 
-    private void OnSettingsChanged(GameSettings gs)
-    {
-        // 其他場景動到時，同步我們面板的顯示
-        masterSlider.SetValueWithoutNotify(Mathf.RoundToInt(gs.master * 4f));
-        bgmSlider.SetValueWithoutNotify(Mathf.RoundToInt(gs.bgm * 4f));
-        sfxSlider.SetValueWithoutNotify(Mathf.RoundToInt(gs.sfx * 4f));
-        UpdateAllUI();
-    }
-
-    // ---------- 從 UI 套用到服務 ----------
-    private void ApplyMasterFromUI()
-    {
-        int idx = ToIndex(masterSlider);
-        SettingsService.Instance.SetMaster(volumes[idx]);
-        UpdateMasterUI();
-    }
-    private void ApplyBGMFromUI()
-    {
-        int idx = ToIndex(bgmSlider);
-        SettingsService.Instance.SetBGM(volumes[idx]);
-        UpdateBGMUI();
-    }
-    private void ApplySFXFromUI()
-    {
-        int idx = ToIndex(sfxSlider);
-        SettingsService.Instance.SetSFX(volumes[idx]);
-        UpdateSFXUI();
-    }
-
-    // ---------- UI 圖 + 文字 ----------
+    // ---------- UI 圖 + 文字 更新邏輯 ----------
     private void UpdateAllUI()
     {
         UpdateMasterUI();
@@ -118,18 +78,23 @@ public class UI_AudioSetting : MonoBehaviour
 
     private void UpdateMasterUI()
     {
+        if (masterSlider == null) return;
         int idx = ToIndex(masterSlider);
         SetDisplay(masterDisplayImage, masterLevelSprites, masterHoverSprites, idx, _hoverMaster);
         SetPercent(masterValueText, idx);
     }
+
     private void UpdateBGMUI()
     {
+        if (bgmSlider == null) return;
         int idx = ToIndex(bgmSlider);
         SetDisplay(bgmDisplayImage, bgmLevelSprites, bgmHoverSprites, idx, _hoverBGM);
         SetPercent(bgmValueText, idx);
     }
+
     private void UpdateSFXUI()
     {
+        if (sfxSlider == null) return;
         int idx = ToIndex(sfxSlider);
         SetDisplay(sfxDisplayImage, sfxLevelSprites, sfxHoverSprites, idx, _hoverSFX);
         SetPercent(sfxValueText, idx);
@@ -143,17 +108,24 @@ public class UI_AudioSetting : MonoBehaviour
         s.minValue = 0;
         s.maxValue = 4;
     }
+
     private static int ToIndex(Slider s) => !s ? 0 : Mathf.Clamp(Mathf.RoundToInt(s.value), 0, 4);
 
     private static void SetDisplay(Image img, Sprite[] normal, Sprite[] hover, int index, bool isHovering)
     {
         if (!img) return;
         Sprite pick = null;
+
+        // 嘗試抓取 Hover 圖片
         if (isHovering && IsValid(hover)) pick = hover[index];
+        // 如果沒有 Hover 或沒設定，抓取普通圖片
         if (pick == null && IsValid(normal)) pick = normal[index];
+
         if (pick) img.sprite = pick;
     }
-    private static bool IsValid(Sprite[] arr) => arr != null && arr.Length == 5;
+
+    private static bool IsValid(Sprite[] arr) => arr != null && arr.Length == 5 && arr[0] != null;
+
     private static void SetPercent(TextMeshProUGUI label, int index)
     {
         if (label) label.text = $"{index * 25}%";
@@ -167,6 +139,7 @@ public class UI_AudioSetting : MonoBehaviour
         AddOrBindEvent(et, EventTriggerType.PointerEnter, _ => setHover(true));
         AddOrBindEvent(et, EventTriggerType.PointerExit, _ => setHover(false));
     }
+
     private static void AddOrBindEvent(EventTrigger et, EventTriggerType type, System.Action<BaseEventData> action)
     {
         var entry = et.triggers.Find(e => e.eventID == type);
