@@ -226,6 +226,7 @@ public class AudioManager : MonoBehaviour
                 // [新增] 自動將 BGM 連接到 Mixer 的 Music 群組
                 if (bgmMixerGroup != null) a.outputAudioMixerGroup = bgmMixerGroup;
 
+                a.Stop();
                 a.playOnAwake = false;
                 a.loop = true;
 
