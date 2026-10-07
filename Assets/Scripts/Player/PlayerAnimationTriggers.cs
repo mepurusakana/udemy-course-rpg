@@ -49,7 +49,7 @@ public class PlayerAnimationTriggers : MonoBehaviour
                 BossCore bossCore = hit.GetComponent<BossCore>();
                 if (bossCore != null)
                 {
-                    bossCore.TakeCoreDamage(player);
+                    bossCore.TakeCoreDamage(15, this.transform);
                 }
             }
 

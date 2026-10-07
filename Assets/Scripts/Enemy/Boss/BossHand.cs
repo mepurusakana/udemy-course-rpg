@@ -7,8 +7,8 @@ public class BossHand : MonoBehaviour
     public bool isLeftHand = true;
     public float sweepSpeed;
     public float swordStabSpeed;
-    public int swordDamage = 40;
-    public int sweepDamage = 30;
+    public int swordDamage = 12;
+    public int sweepDamage = 8;
 
 
     [Header("References")]

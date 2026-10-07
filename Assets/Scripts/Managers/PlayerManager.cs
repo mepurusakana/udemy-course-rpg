@@ -8,6 +8,8 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager instance;
     public Player player;
 
+    public GameObject playerPrefab;
+
     private bool playerInitialized = false;
 
     private void Awake()
@@ -56,6 +58,12 @@ public class PlayerManager : MonoBehaviour
             // 尋找場景中的 Player
             player = FindObjectOfType<Player>();
 
+            if (player == null)
+            {
+                GameObject obj = Instantiate(playerPrefab, transform);
+                player = obj.GetComponent<Player>();
+            }
+
             if (player != null && !playerInitialized)
             {
                 DontDestroyOnLoad(player.gameObject);
@@ -78,18 +86,48 @@ public class PlayerManager : MonoBehaviour
     {
         Player[] allPlayers = FindObjectsOfType<Player>();
 
-        if (allPlayers.Length > 1)
-        {
-            Debug.LogWarning($"Found {allPlayers.Length} players in scene. Removing duplicates...");
+        if (allPlayers.Length <= 1)
+            return;
 
+        Player scenePlayer = null;
+
+        //  找「場景內的 Player」（不是 DontDestroyOnLoad 的）
+        foreach (Player p in allPlayers)
+        {
+            if (p.gameObject.scene.name != "DontDestroyOnLoad")
+            {
+                scenePlayer = p;
+                break;
+            }
+        }
+
+        if (scenePlayer != null)
+        {
+            Debug.Log("Scene has its own Player  keep scene Player");
+
+            //  刪掉舊的（DDOL）Player
             foreach (Player p in allPlayers)
             {
-                // 保留我們已經設定的 player，刪除其他的
-                if (p != player)
+                if (p != scenePlayer)
                 {
-                    Debug.Log($"Destroying duplicate player: {p.name}");
+                    Debug.Log($"Destroying old Player: {p.name}");
                     Destroy(p.gameObject);
                 }
+            }
+
+            //  更新 PlayerManager 參考
+            player = scenePlayer;
+            playerInitialized = true;
+        }
+        else
+        {
+            Debug.Log("No scene Player → keep DontDestroyOnLoad Player");
+
+            // fallback：保留原本 player（你原本邏輯）
+            foreach (Player p in allPlayers)
+            {
+                if (p != player)
+                    Destroy(p.gameObject);
             }
         }
     }

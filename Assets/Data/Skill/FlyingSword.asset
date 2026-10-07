@@ -1,31 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f01ae8c1ec27474e956b69ed1a3bc22, type: 3}
-  m_Name: FlyingSword
-  m_EditorClassIdentifier: 
-  skillName: 
-  activationKey: 101
-  cooldown: 2
-  mpCost: 5
-  spawnPoint: {fileID: 0}
-  skillPrefab: {fileID: 1311407157767030158, guid: ead152c922d36bf4bb542b86a2bbef3d, type: 3}
-  animationBoolName: FlyingSword
-  damageAmount: 10
-  skillDuration: 1
-  requiresAirborne: 0
-  requiresGrounded: 0
-  isHitGround: 0
-  isProjectile: 0
-  isClone: 0
-  isSummon: 0
-  isFlyingSword: 1
-  isDimensionGun: 0
+version https://git-lfs.github.com/spec/v1
+oid sha256:61c05164638fb79a12ad4718cfd0639717fe2f0edbd339284aafcb7da74c1cbb
+size 797

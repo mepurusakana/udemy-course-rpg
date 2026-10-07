@@ -33,7 +33,7 @@ public class PlayerAirState : PlayerState
         }
 
         //  空中攻擊
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !player.isBusy)
+        if (Input.GetKeyDown(KeyCode.J) && !player.isBusy)
         {
             stateMachine.ChangeState(player.primaryAttack);
         }
@@ -71,8 +71,8 @@ public class PlayerAirState : PlayerState
         player.jumpTimer = 0.2f;
         player.SetVelocity(rb.velocity.x, player.jumpForce); // 再次施加跳躍力
         //player.fx.CreateJumpEffect(); // 若你有 PlayerFX，可播放跳躍特效
-        if (player.doubleJumpVFX != null)
-            player.doubleJumpVFX.Play(); // 播放額外特效
+        //if (player.doubleJumpVFX != null)
+        //    player.doubleJumpVFX.Play(); // 播放額外特效
     }
 
 

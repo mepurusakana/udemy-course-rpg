@@ -161,6 +161,12 @@ public class DiamondMissile : MonoBehaviour
                 Debug.Log($"飛彈擊中敵人 {collision.name}，造成 {damage} 點傷害！");
             }
 
+            BossCore bossCore = collision.GetComponent<BossCore>();
+            if (bossCore != null)
+            {
+                bossCore.TakeCoreDamage(damage, this.transform);
+            }
+
             hasHit = true;
             OnHitEnemy();
         }

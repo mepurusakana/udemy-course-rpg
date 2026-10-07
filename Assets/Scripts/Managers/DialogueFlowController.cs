@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class DialogueFlowController : MonoBehaviour
+public class DialogueFlowController : MonoBehaviour, ISaveable
 {
     [Header("需要被殺光的敵人")]
     public List<Enemy> requiredEnemies;
@@ -14,6 +14,8 @@ public class DialogueFlowController : MonoBehaviour
 
     private int aliveEnemyCount;
     private bool dialogueFinished = false;
+
+    [SerializeField] private string flowId;
 
     private void Start()
     {
@@ -39,6 +41,12 @@ public class DialogueFlowController : MonoBehaviour
         //// 監聽對話結束
         //if (dialogueTrigger != null)
         //    dialogueTrigger.GetDialogueSystem().OnDialogueComplete += OnDialogueFinished;
+    }
+
+    private void Awake()
+    {
+        if (string.IsNullOrEmpty(flowId))
+            flowId = System.Guid.NewGuid().ToString();
     }
 
     private void OnDestroy()
@@ -74,7 +82,32 @@ public class DialogueFlowController : MonoBehaviour
         if (dialogueFinished) return;
         dialogueFinished = true;
 
+        SaveManager.instance?.GetGameData()
+            .finishedDialogueFlowIds.Add(flowId);
+
+
         if (targetGate != null)
             targetGate.gameObject.SetActive(true);
+
+    }
+
+
+    public void LoadData(GameData data)
+    {
+        if (data.finishedDialogueFlowIds.Contains(flowId))
+        {
+            dialogueFinished = true;
+
+            if (dialogueTrigger != null)
+                dialogueTrigger.gameObject.SetActive(false);
+
+            if (targetGate != null)
+                targetGate.gameObject.SetActive(true);
+        }
+    }
+
+    public void SaveData(ref GameData data)
+    {
+
     }
 }

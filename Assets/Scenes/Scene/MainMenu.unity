@@ -255,6 +255,7 @@ MonoBehaviour:
       z: 0
   currentSlotIndex: 0
   encryptData: 1
+  skipLoad: 0
 --- !u!4 &426808581
 Transform:
   m_ObjectHideFlags: 0
@@ -1267,7 +1268,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &3503623069136891604
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1789,7 +1790,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &5262509891564844798
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2280,8 +2281,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dea3df7d21d4c854d88c1f2793c8ce24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 0}
-  fadeDuration: 1
 --- !u!224 &6363598719447620151
 RectTransform:
   m_ObjectHideFlags: 0

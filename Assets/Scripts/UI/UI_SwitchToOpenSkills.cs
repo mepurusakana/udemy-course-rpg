@@ -108,6 +108,17 @@ public class UI_SwitchToOpenSkills : MonoBehaviour
                 TryOpenSkillsUI();
             }
         }
+
+        if (IsPlayerInRange && Input.GetKeyDown(KeyCode.Escape))
+        {
+            bool isActive = skillsUIRootFallback.activeSelf;
+
+            if (isActive)
+            {
+                // 若已開啟則關閉
+                CloseSkillsUI();
+            }
+        }
     }
 
     private void TryFindSkillUI()

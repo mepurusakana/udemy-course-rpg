@@ -146,7 +146,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1768169261
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: -10
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 0.6862745}
@@ -349,7 +349,7 @@ GameObject:
   - component: {fileID: 8852628554198968350}
   - component: {fileID: 7650254326881213727}
   - component: {fileID: 2848151031867171891}
-  - component: {fileID: 5353812141692157237}
+  - component: {fileID: 6974331306406636483}
   m_Layer: 7
   m_Name: Script
   m_TagString: Enemy
@@ -420,6 +420,7 @@ MonoBehaviour:
   maxAttackCooldown: 2
   lastAttackTime: 0
   player: {fileID: 0}
+  enemyId: 
   leftPoint: {fileID: 288655972266971462}
   rightPoint: {fileID: 6953521041557830231}
   projectilePrefab: {fileID: 7094881826884899634, guid: 3438314941e30654c97fc92dfd093788, type: 3}
@@ -508,8 +509,8 @@ MonoBehaviour:
     modifiers: 
   level: 2
   percantageModifier: 0.4
---- !u!70 &5353812141692157237
-CapsuleCollider2D:
+--- !u!61 &6974331306406636483
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -540,9 +541,19 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.61452675, y: -0.9821656}
-  m_Size: {x: 3.742463, y: 6.3797345}
-  m_Direction: 0
+  m_Offset: {x: -0.61144257, y: -1.00157}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3.7656097, y: 6.351978}
+  m_EdgeRadius: 0
 --- !u!1 &2622019932923689309
 GameObject:
   m_ObjectHideFlags: 0
@@ -868,7 +879,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1768169261
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: -392495836, guid: 35b2adc35dfb7d443ada4431fe664f08, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

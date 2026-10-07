@@ -1,4 +1,7 @@
+//using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
 public class DialogueTrigger : MonoBehaviour
 {
@@ -11,7 +14,8 @@ public class DialogueTrigger : MonoBehaviour
     [Header("對話內容")]
     public DialogueData[] dialogues;
     public AudioManager audioManager;
-    public Player player;
+    //public Player player;
+    private Player player;
 
     [Header("觸發方式")]
     public TriggerMode triggerMode = TriggerMode.Manual;
@@ -26,6 +30,9 @@ public class DialogueTrigger : MonoBehaviour
     [Header("互動提示（可選）")]
     public GameObject interactHint;
 
+    [Header("教學提示")]
+    public TutorialPopupUI tutorialPopup;
+
     private DialogueSystem dialogueSystem;
     private bool playerInRange = false;
     private bool isDialogueActive = false;
@@ -35,6 +42,10 @@ public class DialogueTrigger : MonoBehaviour
     private bool isThisDialogueActive = false;
 
     public System.Action OnThisDialogueFinished;
+
+    public System.Action OnThisDialogueStarted;
+
+    private Coroutine forceIdleRoutine;
 
     private void Start()
     {
@@ -104,11 +115,19 @@ public class DialogueTrigger : MonoBehaviour
 
         if (Player.instance != null)
         {
-            //  完全鎖死
             player.LockCompletely();
 
-            // 強制回 Idle（避免 Attack / Air State）
-            player.stateMachine.ChangeState(player.idleState);
+            // 強制讓重力正常
+            player.rb.gravityScale = player.defaultGravity;
+
+            // 不管現在什麼狀態，統一進 AirState
+            player.stateMachine.ChangeState(player.airState);
+
+            // 啟動「延遲回 Idle」流程
+            if (forceIdleRoutine != null)
+                StopCoroutine(forceIdleRoutine);
+
+            forceIdleRoutine = StartCoroutine(ForceIdleAfterLanding());
         }
 
         //Time.timeScale = 0f;
@@ -132,6 +151,21 @@ public class DialogueTrigger : MonoBehaviour
 
             TriggerDialogue();
         }
+    }
+
+    private IEnumerator ForceIdleAfterLanding()
+    {
+        // 等待玩家落地
+        yield return new WaitUntil(() => Player.instance.IsGroundDetected());
+
+        // 再給一點緩衝（動畫 / 手感）
+        yield return new WaitForSeconds(0.1f);
+
+        // 停止動能
+        Player.instance.SetZeroVelocity();
+
+        // 強制進 Idle
+        Player.instance.stateMachine.ChangeState(Player.instance.idleState);
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -159,6 +193,8 @@ public class DialogueTrigger : MonoBehaviour
         if (interactHint != null)
             interactHint.SetActive(false);
 
+        OnThisDialogueStarted?.Invoke();
+
         dialogueSystem.StartDialogue(dialogues);
     }
 
@@ -175,6 +211,14 @@ public class DialogueTrigger : MonoBehaviour
         //Time.timeScale = 1f;
 
         OnThisDialogueFinished?.Invoke();
+
+        // 顯示教學圖片
+        //if (tutorialPopup != null)
+        //{
+        //    tutorialPopup.ShowTutorial();
+        //    return;
+        //}
+
 
         // Manual：對話結束後，如果玩家仍在範圍內就把提示再打開
         if (triggerMode == TriggerMode.Manual && playerInRange && interactHint != null)

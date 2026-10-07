@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4886751599393732854}
   m_Layer: 0
   m_Name: Spear
-  m_TagString: Untagged
+  m_TagString: Skill
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,7 +94,7 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 9.670483, y: 0.048453733}
+  m_Offset: {x: 4.67, y: 0.048453733}
   m_Size: {x: 7.753724, y: 3.9521878}
   m_Direction: 1
 --- !u!114 &4886751599393732854
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 453525116009777844}
   m_Layer: 0
   m_Name: Sprite
-  m_TagString: Untagged
+  m_TagString: Skill
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -143,7 +143,7 @@ Transform:
   m_GameObject: {fileID: 8611979761029308216}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -4.67, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -188,7 +188,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1285100665
-  m_SortingLayer: 7
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_Sprite: {fileID: -1385065364, guid: a859d05203fe6c246af35ab76775cf35, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

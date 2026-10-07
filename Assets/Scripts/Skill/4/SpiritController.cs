@@ -221,7 +221,7 @@ public class SpiritController : MonoBehaviour
 
         if (enemies.Length > 0)
         {
-            Transform closestEnemy = GetClosestEnemy(enemies);
+            Transform closestEnemy = GetPriorityTarget(enemies);
 
             if (closestEnemy != null)
             {
@@ -256,26 +256,44 @@ public class SpiritController : MonoBehaviour
         anim.SetBool("Idle", true);
     }
 
-    private Transform GetClosestEnemy(Collider2D[] enemies)
+    private Transform GetPriorityTarget(Collider2D[] enemies)
     {
-        Transform closest = null;
-        float minDistance = Mathf.Infinity;
+        Transform closestCore = null;
+        Transform closestEnemy = null;
 
-        foreach (Collider2D enemy in enemies)
+        float minCoreDistance = Mathf.Infinity;
+        float minEnemyDistance = Mathf.Infinity;
+
+        foreach (Collider2D col in enemies)
         {
-            // 確保敵人還活著
-            if (enemy == null || !enemy.gameObject.activeInHierarchy)
+            if (col == null || !col.gameObject.activeInHierarchy)
                 continue;
 
-            float distance = Vector2.Distance(transform.position, enemy.transform.position);
-            if (distance < minDistance)
+            float distance = Vector2.Distance(transform.position, col.transform.position);
+
+            //  判斷是否是 BossCore
+            BossCore core = col.GetComponent<BossCore>();
+
+            if (core != null)
             {
-                minDistance = distance;
-                closest = enemy.transform;
+                if (distance < minCoreDistance)
+                {
+                    minCoreDistance = distance;
+                    closestCore = col.transform;
+                }
+            }
+            else
+            {
+                if (distance < minEnemyDistance)
+                {
+                    minEnemyDistance = distance;
+                    closestEnemy = col.transform;
+                }
             }
         }
 
-        return closest;
+        //  優先回傳 BossCore
+        return closestCore != null ? closestCore : closestEnemy;
     }
 
     private void FireMissile(Transform target)

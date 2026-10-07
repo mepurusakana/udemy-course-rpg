@@ -42,42 +42,29 @@ public class FileDataHandler
 
     public GameData LoadData()
     {
-        GameData loadData = null;
-        //1.確認存檔存在
-        //if(File.Exists(fullPath))
-        //{
-        //    try
-        //    {
-        //        string dataToLoad = "";
-        //        //2.開啟檔案
-        //        using (FileStream stream = new FileStream(fullPath, FileMode.Open))
-        //        using (StreamReader reader = new StreamReader(stream))
-        //            //3.閱讀檔案內容
-        //            {
-        //                dataToLoad = reader.ReadToEnd();
-        //            }
+        if (!File.Exists(fullPath))
+            return null;
 
-        //        if(string.IsNullOrWhiteSpace(dataToLoad))
-        //        {
-        //            Debug.LogWarning($"存檔檔案是空的：{fullPath}");
-        //            return null;
-        //        }
+        try
+        {
+            string dataToLoad;
 
-        //        if(encryptData)
-        //            dataToLoad =EncryptDecrypt(dataToLoad);
+            using (FileStream stream = new FileStream(fullPath, FileMode.Open))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                dataToLoad = reader.ReadToEnd();
+            }
 
-        //        Debug.Log($"讀取到的JSON:\n{dataToLoad}");
+            if (encryptData)
+                dataToLoad = EncryptDecrypt(dataToLoad);
 
-        //        //4.將Json檔回傳進GameData物件
-        //        loadData = JsonUtility.FromJson<GameData>(dataToLoad);
-        //    }
-
-        //    catch (Exception e)
-        //    {
-        //        Debug.LogError("Error on trying to load data from file:" + fullPath + "\n" + e);
-        //    }
-        //}
-        return loadData;
+            return JsonUtility.FromJson<GameData>(dataToLoad);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Load failed: " + e);
+            return null;
+        }
     }
 
     public void Delete()

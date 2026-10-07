@@ -1,5 +1,7 @@
-using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class PlatformReveal : MonoBehaviour
 {
@@ -14,6 +16,8 @@ public class PlatformReveal : MonoBehaviour
     private SpriteRenderer[] renderers;
     private Collider2D[] colliders;
 
+    private Light2D[] lights;
+
     private Vector3 finalPosition;
     private Vector3 startPosition;
 
@@ -21,6 +25,7 @@ public class PlatformReveal : MonoBehaviour
     {
         renderers = GetComponentsInChildren<SpriteRenderer>(true);
         colliders = GetComponentsInChildren<Collider2D>(true);
+        lights = GetComponentsInChildren<Light2D>(true);
 
         finalPosition = transform.position;
         startPosition = finalPosition - Vector3.up * floatUpDistance;
@@ -31,6 +36,8 @@ public class PlatformReveal : MonoBehaviour
 
         if (disableColliderUntilVisible)
             SetColliders(false);
+
+        SetLightIntensity(0);
     }
 
     public void Reveal()
@@ -52,7 +59,10 @@ public class PlatformReveal : MonoBehaviour
             float alpha = Mathf.Lerp(0f, 1f, normalized);
             float floatT = floatCurve.Evaluate(normalized);
 
+            float light = Mathf.Lerp(0f, 1.75f, normalized);
+
             SetAlpha(alpha);
+            SetLightIntensity(light);
             transform.position = Vector3.Lerp(startPosition, finalPosition, floatT);
 
             yield return null;
@@ -63,6 +73,8 @@ public class PlatformReveal : MonoBehaviour
 
         if (disableColliderUntilVisible)
             SetColliders(true);
+
+        SetLightIntensity(1.75f);
     }
 
     private void SetAlpha(float a)
@@ -73,6 +85,15 @@ public class PlatformReveal : MonoBehaviour
             Color c = sr.color;
             c.a = a;
             sr.color = c;
+        }
+    }
+
+    private void SetLightIntensity(float value)
+    {
+        foreach (var light in lights)
+        {
+            if (light != null)
+                light.intensity = value;
         }
     }
 

@@ -20,22 +20,22 @@ public class Object_Checkpoint : MonoBehaviour, ISaveable
     {
         // TODO: 播動畫/開燈效果
     }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.GetComponent<Player>() != null)
-        {
-            if (!checkpoint.activationStatus)
-            {
-                checkpoint.ActivateCheckpoint();
-                Debug.Log("Checkpoint activated!");
-                // 可以加音效
-                AudioManager.instance?.PlaySFX(15, transform);
-            }
-            var data = SaveManager.instance.GetGameData();
-            data.savedCheckpoint = new SerializableVector3(transform.position);  //  修改 1
-            SaveManager.instance.SaveGame();
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.GetComponent<Player>() != null)
+    //    {
+    //        if (!checkpoint.activationStatus)
+    //        {
+    //            checkpoint.ActivateCheckpoint();
+    //            Debug.Log("Checkpoint activated!");
+    //            // 可以加音效
+    //            AudioManager.instance?.PlaySFX(15, transform);
+    //        }
+    //        var data = SaveManager.instance.GetGameData();
+    //        data.savedCheckpoint = new SerializableVector3(transform.position);  //  修改 1
+    //        SaveManager.instance.SaveGame();
+    //    }
+    //}
     public void LoadData(GameData data)
     {
         // 不直接移動玩家，移動玩家的動作放到 SaveManager.LoadGame 之後統一處理

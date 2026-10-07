@@ -136,7 +136,7 @@ public class CloneController : MonoBehaviour
 
         foreach (var hit in colliders)
         {
-            if (hit.GetComponent<Enemy>() != null)
+            if (hit.GetComponent<Enemy>() != null || hit.GetComponent<BossCore>()) 
             {
                 float distance = Vector2.Distance(transform.position, hit.transform.position);
                 if (distance < closestDistance)

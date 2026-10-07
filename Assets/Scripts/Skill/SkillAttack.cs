@@ -1,7 +1,10 @@
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class SkillAttack : MonoBehaviour
 {
+    private Player player => GetComponent<Player>();
+
     private int damage;
 
     public void Setup(int _damage)
@@ -17,6 +20,12 @@ public class SkillAttack : MonoBehaviour
             if (enemyStats != null)
             {
                 enemyStats.TakeDamage(damage, this.transform);
+            }
+
+            BossCore bossCore = collision.GetComponent<BossCore>();
+            if (bossCore != null)
+            {
+                bossCore.TakeCoreDamage(damage, this.transform);
             }
         }
     }

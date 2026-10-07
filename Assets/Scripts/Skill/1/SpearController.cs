@@ -168,6 +168,13 @@ public class SpearController : MonoBehaviour
                 Debug.Log($"長矛擊中敵人，造成 {damage} 點傷害！");
             }
 
+            BossCore bossCore = collision.GetComponent<BossCore>();
+            if (bossCore != null)
+            {
+                bossCore.TakeCoreDamage(damage, this.transform);
+                Debug.Log($"長矛擊中核心，造成 {damage} 點傷害！");
+            }
+
             // 可選：擊中敵人後立即消失
             // StartOutro();
         }

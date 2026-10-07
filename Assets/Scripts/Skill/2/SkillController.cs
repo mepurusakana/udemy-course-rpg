@@ -50,6 +50,12 @@ public class SkillController : MonoBehaviour
             }
         }
 
+        BossCore bossCore = collision.GetComponent<BossCore>();
+        if (bossCore != null)
+        {
+            bossCore.TakeCoreDamage(damage, this.transform);
+        }
+
         //if (collision.TryGetComponent(out SpriteShatter2D shatter))
         //{
         //    shatter.Shatter();

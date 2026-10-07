@@ -18,6 +18,29 @@ public class PlayerJumpState : PlayerState
         jumpTimeCounter = player.jumpTimer;
         isJumping = true;
 
+        player.smokeFX.Play();
+
+        // 生成跳躍特效
+        if(player.airJumpCount==0)
+        {
+            if (player.jumpFXPrefab != null)
+            {
+                GameObject fx = GameObject.Instantiate(
+                    player.jumpFXPrefab,
+                    player.groundCheck.position,
+                    Quaternion.identity
+                );
+            }
+        }
+        else if(player.airJumpCount>0)
+            if (player.doubleJumpFXPrefab != null)
+            {
+                GameObject fx = GameObject.Instantiate(
+                    player.doubleJumpFXPrefab,
+                    player.groundCheck.position,
+                    Quaternion.identity
+                );
+            }
     }
 
     public override void Exit()
@@ -33,7 +56,7 @@ public class PlayerJumpState : PlayerState
         base.Update();
 
         //  空中攻擊
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !player.isBusy)
+        if (Input.GetKeyDown(KeyCode.J) && !player.isBusy)
         {
             stateMachine.ChangeState(player.primaryAttack);
         }

@@ -14,25 +14,57 @@ public class CloneAnimationTrigger : MonoBehaviour
 
     private void AttackTrigger()
     {
+        //AudioManager.instance.PlaySFX(2, null);
+
+        //Collider2D[] colliders = Physics2D.OverlapCircleAll(clone.attackCheck.position, clone.attackRange);
+
+        //foreach (var hit in colliders)
+        //{
+        //    if (hit.GetComponent<Enemy>() != null)
+        //    {
+        //        EnemyStats _target = hit.GetComponent<EnemyStats>();
+
+        //        if (_target != null)
+        //            _target.TakeDamage(10, this.transform);
+
+        //        //ItemData_Equipment weaponData = Inventory.instance.GetEquipment(EquipmentType.Weapon);
+
+        //        //if (weaponData != null)
+        //        //    weaponData.Effect(_target.transform);
+
+
+        //    }
+        //}
+
         AudioManager.instance.PlaySFX(2, null);
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(clone.attackCheck.position, clone.attackRange);
 
         foreach (var hit in colliders)
         {
-            if (hit.GetComponent<Enemy>() != null)
+            if (hit == null) continue;
+
+            if (hit.GetComponent<Enemy>() != null || hit.GetComponent<BossCore>() != null)
             {
                 EnemyStats _target = hit.GetComponent<EnemyStats>();
 
+                AudioManager.instance.PlaySFX(2, null);
+
                 if (_target != null)
+                {
                     _target.TakeDamage(10, this.transform);
+                }
 
-                //ItemData_Equipment weaponData = Inventory.instance.GetEquipment(EquipmentType.Weapon);
+                BossCore bossCore = hit.GetComponent<BossCore>();
+                if (bossCore != null)
+                {
+                    bossCore.TakeCoreDamage(15, this.transform);
+                }
+            }
 
-                //if (weaponData != null)
-                //    weaponData.Effect(_target.transform);
-
-
+            if (hit.TryGetComponent(out SpriteShatter2D shatter))
+            {
+                shatter.Shatter();
             }
         }
     }

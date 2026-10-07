@@ -24,12 +24,12 @@ public class BossCore : MonoBehaviour
         SetVulnerable(false);
     }
 
-    public void TakeCoreDamage(Player player)
+    public void TakeCoreDamage(int _damage, Transform attacker)
     {
         if (!isVulnerable) return;
         if (boss == null || boss.stats == null) return;
 
-        player.stats.DoDamage(boss.stats, player.transform);
+        boss.stats.TakeDamage(_damage, attacker);
 
         EntityFX fx=GetComponent<EntityFX>();
         if (fx != null)
@@ -53,7 +53,7 @@ public class BossCore : MonoBehaviour
         if (!isVulnerable) return;
 
         // 檢測玩家的攻擊
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") || collision.CompareTag("Skill")) 
         {
             // 通知 Boss 受到攻擊（可以在這裡處理傷害邏輯）
             if (boss != null && boss.stats != null)

@@ -137,6 +137,13 @@ public class CharacterStats : MonoBehaviour
         onHealthChanged?.Invoke();
     }
 
+    public virtual void IncreaseMPBy(int _amount)
+    {
+        currentMP += _amount;
+        currentMP = Mathf.Min(currentMP, GetMaxMPValue());
+        onHealthChanged?.Invoke();
+    }
+
     protected virtual void DecreaseHealthBy(int _damage)
     {
         currentHealth -= _damage;

@@ -534,5 +534,6 @@ public class EnemyBoss : Enemy
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.gravityScale = 2f;
         stateMachine.ChangeState(defeatedState);
+        gameObject.SetActive(false);
     }
 }

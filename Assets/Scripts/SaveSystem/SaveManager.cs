@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
-using System.IO;
+using UnityEngine.SceneManagement;
 
 public class SaveManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class SaveManager : MonoBehaviour
     public int currentSlotIndex = 0;
     [SerializeField] private bool encryptData = true;
 
+    public bool skipLoad = false;
+
     private void Awake()
     {
         if (instance == null)
@@ -25,6 +28,55 @@ public class SaveManager : MonoBehaviour
         else
             Destroy(gameObject);
     }
+
+    private IEnumerator Start()
+    {
+        yield return new WaitForSeconds(.01f);
+
+        if (skipLoad)
+        {
+            skipLoad = false;
+            yield break;
+        }
+
+        LoadGame();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (gameData == null) return;
+
+        allSaveables = FindISaveables();
+
+        foreach (var saveable in allSaveables)
+        {
+            saveable.LoadData(gameData);
+        }
+
+        Debug.Log("[SaveManager] Scene reloaded and data applied");
+    }
+
+    //private IEnumerator Start()
+    //{
+    //    Debug.Log(Application.persistentDataPath);
+
+    //    string fileName = $"saveSlot{currentSlotIndex}.json";
+    //    dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
+    //    allSaveables = FindISaveables();
+
+    //    yield return new WaitForSeconds(.01f);
+    //    LoadGame();
+    //}
 
     public void InitSlot(int slotIndex)
     { 
@@ -67,20 +119,38 @@ public class SaveManager : MonoBehaviour
         }
 
         allSaveables = FindISaveables().Where(s => s != null).ToList();
+
+        allSaveables = FindISaveables();
+
+        foreach (var saveable in allSaveables)
+        {
+            saveable.LoadData(gameData);
+        }
     }
     public void SaveGame()
     {
+        if (gameData == null)
+        {
+            Debug.LogError("[SaveManager] gameData is NULL > 自動建立");
+            gameData = new GameData();
+        }
+
+        if (dataHandler == null)
+        {
+            Debug.LogError("[SaveManager] dataHandler is NULL > InitSlot");
+            InitSlot(currentSlotIndex);
+        }
+
         allSaveables = FindISaveables().Where(s => s != null).ToList();
 
         foreach (var saveable in allSaveables)
         {
-            if (saveable != null)
-                saveable.SaveData(ref gameData);
+            saveable.SaveData(ref gameData);
         }
 
         dataHandler.SaveData(gameData);
-        Debug.Log("Game saved successfully.");
     }
+
     public bool HasSaveInSlot(int slotIndex)
     {
         string path = Path.Combine(Application.persistentDataPath, $"saveSlot{slotIndex}.json");
@@ -96,17 +166,6 @@ public class SaveManager : MonoBehaviour
             .ToList();
     }
 
-    private IEnumerator Start()
-    {
-        Debug.Log(Application.persistentDataPath);
-
-        string fileName = $"saveSlot{currentSlotIndex}.json";
-        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
-        allSaveables = FindISaveables();
-
-        yield return new WaitForSeconds(.01f);
-        LoadGame();
-    }
 
 
     public GameData GetGameData() => gameData;

@@ -122,20 +122,20 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.M))
             RestartScene();
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            if (!pasuedGame)
-            {
-                pasuedGame = true;
-                GameManager.instance.PauseGame(pasuedGame);
-            }
-            else
-            {
-                pasuedGame = false;
-                GameManager.instance.PauseGame(pasuedGame);
-            }
+        //if (Input.GetKeyDown(KeyCode.G))
+        //{
+        //    if (!pasuedGame)
+        //    {
+        //        pasuedGame = true;
+        //        GameManager.instance.PauseGame(pasuedGame);
+        //    }
+        //    else
+        //    {
+        //        pasuedGame = false;
+        //        GameManager.instance.PauseGame(pasuedGame);
+        //    }
 
-        }
+        //}
     }
     public void RestartScene()
     {
@@ -185,7 +185,7 @@ public class GameManager : MonoBehaviour
             UI_FadeScreen fadeScreen = UI.instance.GetFadeScreen();
             if (fadeScreen != null)
             {
-                fadeScreen.FadeOut();
+                fadeScreen.FadeOut(2f);
             }
         }
 
@@ -260,7 +260,7 @@ public class GameManager : MonoBehaviour
                 UI_FadeScreen fadeScreen = UI.instance.GetFadeScreen();
                 if (fadeScreen != null)
                 {
-                    fadeScreen.FadeIn();
+                    fadeScreen.FadeIn(1f);
                 }
             }
 
@@ -502,5 +502,16 @@ public class GameManager : MonoBehaviour
 
         // 讓 CineMachine 立即跟上（避免一禎的拉扯）
         SetupCameraAfterRespawn();
+    }
+
+    public void ResetState()
+    {
+        lastCheckpointId = "";
+        lastCheckpointSceneName = "";
+        lastCheckpointPosition = Vector3.zero;
+
+        isRespawning = false;
+
+        Debug.Log("[GameManager] Reset complete");
     }
 }

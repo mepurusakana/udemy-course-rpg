@@ -45,6 +45,8 @@ public class PlayerDashState : PlayerState
         //  播放特效或音效
         AudioManager.instance.PlaySFX(3, null); // 假設3是dash音效
         // player.fx.CreateAfterImage();
+
+        player.smokeFX.Play();
     }
 
     public override void Exit()

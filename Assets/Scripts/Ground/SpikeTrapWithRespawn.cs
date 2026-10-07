@@ -13,7 +13,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
     [Header("畫面淡出設定")]
     [SerializeField] private float fadeOutDuration = 2f;
-    [SerializeField] private float fadeInDuration = 2f;
+    [SerializeField] private float fadeInDuration = 0.5f;
     [SerializeField] private float pauseDuration = 1f;
 
     [Header("無敵時間設定")]
@@ -65,7 +65,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
         // --- 階段 2：黑屏漸入 ---
         if (fadeScreen != null)
-            fadeScreen.FadeOut();
+            fadeScreen.FadeOut(fadeOutDuration);
 
         //Player.instance.GetOnBusy();
         //player.stateMachine.ChangeState(player.idleState);
@@ -90,7 +90,7 @@ public class SpikeTrapWithRespawn : MonoBehaviour
 
         // --- 階段 5：黑屏漸出 ---
         if (fadeScreen != null)
-            fadeScreen.FadeIn();
+            fadeScreen.FadeIn(0.5f);
         yield return new WaitForSeconds(fadeInDuration);
 
         // --- 階段 6：恢復控制與重力 ---

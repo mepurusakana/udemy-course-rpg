@@ -55,6 +55,18 @@ public class UI_MainMenu : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (fadeScreen == null)
+            fadeScreen = FindObjectOfType<UI_FadeScreen>();
+
+        if (fadeScreen != null)
+        {
+            //fadeScreen.SetAlpha(1f); // 先確保是黑的
+            fadeScreen.FadeIn(1f);     // 再淡入
+        }
+    }
+
     // ====== 你原本就有的功能 ======
     public void ContinueGame()
     {
@@ -66,7 +78,7 @@ public class UI_MainMenu : MonoBehaviour
     {
         if (fadeScreen)
         {
-            fadeScreen.FadeOut();
+            fadeScreen.FadeOut(delay);
             if (enableLogs) Debug.Log("[UI_MainMenu] 執行 FadeOut，準備切換場景");
         }
         yield return new WaitForSeconds(delay);
@@ -101,7 +113,7 @@ public class UI_MainMenu : MonoBehaviour
     {
         if (fadeScreen)
         {
-            fadeScreen.FadeOut();
+            fadeScreen.FadeOut(delay);
             if (enableLogs) Debug.Log("[UI_MainMenu] 執行 FadeOut，準備載入新遊戲");
         }
         yield return new WaitForSeconds(delay);

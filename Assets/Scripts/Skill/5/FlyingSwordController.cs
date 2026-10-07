@@ -85,6 +85,12 @@ public class FlyingSwordController : MonoBehaviour
             if (enemyStats != null)
                 enemyStats.TakeDamage(damage, this.transform);
 
+            BossCore bossCore = collision.GetComponent<BossCore>();
+            if (bossCore != null)
+            {
+                bossCore.TakeCoreDamage(damage, this.transform);
+            }
+
             StickToTarget(collision.transform, true);
         }
         // 命中地面

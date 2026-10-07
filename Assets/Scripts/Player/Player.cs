@@ -24,7 +24,8 @@ public class Player : Entity, ISaveable
     public float lowJumpMultiplier = 2f;
     public int maxAirJumps = 1;    // 空中可額外跳的次數（=1 代表二段跳）
     [HideInInspector] public int airJumpCount = 0;  // 已使用空中跳次數
-    public ParticleSystem doubleJumpVFX;  // 二段跳特效（可為空）
+    //public ParticleSystem doubleJumpVFX;  // 二段跳特效（可為空）
+    public ParticleSystem smokeFX;
 
     public bool isBusy { get;  set; }
     [Header("Move info")]
@@ -86,6 +87,9 @@ public class Player : Entity, ISaveable
     //public SkillManager skill { get; private set; }
     public GameObject sword { get; private set; }
     public PlayerFX fx { get; private set; }
+
+    public GameObject jumpFXPrefab;
+    public GameObject doubleJumpFXPrefab;
 
     public PlayerAimSwordState aimSword { get; private set; }
     public PlayerCatchSwordState catchSword { get; private set; }
@@ -385,6 +389,7 @@ public class Player : Entity, ISaveable
     public void Heal(int amount)
     {
         stats.IncreaseHealthBy(amount);
+        stats.IncreaseMPBy(amount);
     }
 
     public IEnumerator FadeOutLight(Light2D light, float duration)

@@ -19,7 +19,8 @@ public class UI : MonoBehaviour, ISaveable
     [Space]
     
     [SerializeField] private GameObject PauseUI;
-    [SerializeField] private GameObject inGameUI;
+    [SerializeField] public GameObject inGameUI;
+    [SerializeField] private GameObject UI_DefaultInstructions;
     public GameObject UI_Skill;
 
     public static event Action<GameObject> OnSkillUILoaded;
@@ -45,12 +46,23 @@ public class UI : MonoBehaviour, ISaveable
             if (PauseUI) PauseUI.SetActive(false);
             if (inGameUI) inGameUI.SetActive(false);
             Time.timeScale = 1f;
+            //if (fadeScreen != null)
+            //{
+            //    fadeScreen.FadeIn();
+            //}
+
             return;
         }
 
         // 進入關卡場景：下一幀強制切到 InGame_UI（壓過先前的關閉狀態）
-        if (Array.Exists(gameplaySceneNames, n => n == scene.name))
+        if (scene.name == "A001")
+        {
+            StartCoroutine(OpenTutorialUI());
+        }
+        else if (Array.Exists(gameplaySceneNames, n => n == scene.name))
+        {
             StartCoroutine(OpenHudNextFrame());
+        }
     }
 
     private IEnumerator OpenHudNextFrame()
@@ -97,12 +109,25 @@ public class UI : MonoBehaviour, ISaveable
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // 主選單禁止開 PauseUI
             if (SceneManager.GetActiveScene().name != mainMenuSceneName)
             {
+                // 如果技能 UI 開著 → 關掉它，不開 Pause
+                if (UI_Skill != null && UI_Skill.activeSelf)
+                {
+                    HideSkillsUI();
+
+                    if (GameManager.instance != null)
+                        GameManager.instance.SetPause(false);
+
+                    return; // 阻止繼續往下開 PauseUI
+                }
+
+                // 正常開 Pause
                 SwitchWithKeyTo(PauseUI);
             }
         }
+
+
     }
 
     public UI_FadeScreen GetFadeScreen()
@@ -130,6 +155,8 @@ public class UI : MonoBehaviour, ISaveable
             _menu.SetActive(true);
         }
 
+        if (_menu == UI_DefaultInstructions)
+            return;
 
         if (GameManager.instance != null)
         {
@@ -177,7 +204,7 @@ public class UI : MonoBehaviour, ISaveable
 
     public void SwitchOnEndScreen()
     {
-        fadeScreen.FadeOut();
+        fadeScreen.FadeOut(1f);
         StartCoroutine(EndScreenCorutione());
     }
 
@@ -234,5 +261,21 @@ public class UI : MonoBehaviour, ISaveable
         //HideALLTooltips();
         dialogueUI.gameObject.SetActive(true);
         //dialogueUI.PlayDialogueLine(firstLine);
+    }
+
+    private IEnumerator OpenTutorialUI()
+    {
+        // 等一幀，確保場景初始化完成
+        yield return null;
+
+        // 播放 FadeIn
+        if (fadeScreen != null)
+            //fadeScreen.FadeIn(1f);
+
+        // 等 Fade 播放完
+        yield return new WaitForSeconds(1f);
+
+        // 再開 Tutorial UI
+        SwitchTo(UI_DefaultInstructions);
     }
 }

@@ -24,6 +24,10 @@ public class SkillManager : MonoBehaviour
 
     private SkillData pendingSkill;
 
+    [Header("副技能（FlyingSword）")]
+    public SkillData flyingSwordSkill;
+    public KeyCode flyingSwordKey = KeyCode.R;
+
     public int SkillCount => skills.Count;
     public int SelectedIndex => selectedIndex;
     public SkillData SelectedSkill => (selectedIndex >= 0 && selectedIndex < skills.Count) ? skills[selectedIndex] : null;
@@ -55,13 +59,18 @@ public class SkillManager : MonoBehaviour
             }
         }
 
-        // 只監聽 E（或你設定的 unifiedActivationKey），且只嘗試施放「被選中的唯一技能」
+        // 主技能（E）
         if (Input.GetKeyDown(unifiedActivationKey))
         {
             if (SelectedSkill != null)
                 TryUseSkill(SelectedSkill);
-            else
-                Debug.Log("[SkillManager] 尚未選擇任何技能（selectedIndex = -1）。");
+        }
+
+        //  副技能（R）
+        if (Input.GetKeyDown(flyingSwordKey))
+        {
+            if (flyingSwordSkill != null)
+                TryUseSkill(flyingSwordSkill);
         }
     }
 
@@ -70,9 +79,17 @@ public class SkillManager : MonoBehaviour
     public void SetSelectedIndex(int index)
     {
         if (index >= 0 && index < skills.Count)
+        {
+            if (skills[index].isFlyingSword)
+            {
+                Debug.Log("FlyingSword 不能被選中！");
+                return;
+            }
+
             selectedIndex = index;
+        }
         else
-            selectedIndex = -1; // 支援取消選取（TwoState allowDeselect 時會傳 -1）
+            selectedIndex = -1;
 
         Debug.Log($"[SkillManager] 選中技能 => index={selectedIndex}, name={(SelectedSkill ? SelectedSkill.skillName : "None")}");
     }
@@ -122,8 +139,38 @@ public class SkillManager : MonoBehaviour
         }
         playerStats.ConsumeMP(skill.mpCost);
 
+        //if (skill.isFlyingSword)
+        //{
+        //    ExecuteFlyingSwordSkill(skill);
+
+        //    cooldownTimers[skill] = skill.cooldown;
+        //    return;
+        //}
+
+        if (Input.GetKeyDown(flyingSwordKey))
+        {
+            if (flyingSwordSkill != null)
+            {
+                int index = skills.IndexOf(flyingSwordSkill);
+                if (index != -1)
+                    UseSkill(flyingSwordSkill, index);
+            }
+        }
+
+        if (skill.isFlyingSword)
+        {
+            UseSkill(skill, GetSkillIndex(skill));
+            return;
+        }
+
         // 進入技能前置（交由動畫事件呼叫 ExecutePendingSkillEffect 真正生成）
         UseSkill(skill, selectedIndex);
+    }
+
+    private int GetSkillIndex(SkillData skill)
+    {
+        int index = skills.IndexOf(skill);
+        return index;
     }
 
 
@@ -417,5 +464,22 @@ public class SkillManager : MonoBehaviour
         {
             Debug.LogWarning("MP 不足！");
         }
+    }
+
+    public void ResetState()
+    {
+        selectedIndex = -1;
+        cooldownTimers.Clear();
+
+        if (currentSpirit != null)
+            Destroy(currentSpirit);
+
+        if (currentClone != null)
+            Destroy(currentClone);
+
+        currentSpirit = null;
+        currentClone = null;
+
+        Debug.Log("[SkillManager] Reset complete");
     }
 }

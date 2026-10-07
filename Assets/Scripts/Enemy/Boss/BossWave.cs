@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BossWave : MonoBehaviour
 {
-    public int damage = 40;
+    public int damage = 20;
 
     private HashSet<PlayerStats> damagedTargets = new HashSet<PlayerStats>();
 

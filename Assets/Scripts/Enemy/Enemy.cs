@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(EnemyStats))]
 [RequireComponent(typeof(EntityFX))]
 public class Enemy : Entity
@@ -34,18 +34,29 @@ public class Enemy : Entity
     public float maxAttackCooldown= 2;
     [HideInInspector] public float lastAttackTime;
 
-    public bool isDead { get; protected set; } = false;
     public System.Action<Enemy> OnEnemyDead;
-    
 
 
     public EnemyStateMachine stateMachine { get; private set; }
     public EntityFX fx { get; private set; }
     public Player player;
     public string lastAnimBoolName {  get; private set; }
+
+    [Header("Save")]
+    [SerializeField] private string enemyId;
+    public bool isDead { get; protected set; }
+
+
+    public void GenerateIdIfNeeded()
+    {
+        if (string.IsNullOrEmpty(enemyId))
+            enemyId = System.Guid.NewGuid().ToString();
+    }
+
     protected override void Awake()
     {
         base.Awake();
+        GenerateIdIfNeeded();
         stateMachine = new EnemyStateMachine();
 
         defaultMoveSpeed = moveSpeed;
@@ -70,6 +81,8 @@ public class Enemy : Entity
 
 
     }
+
+
 
     public virtual void AssignLastAnimName(string _animBoolName) => lastAnimBoolName = _animBoolName;
 
@@ -160,11 +173,29 @@ public class Enemy : Entity
         Gizmos.DrawLine(transform.position, new Vector3(transform.position.x + attackDistance * facingDir, transform.position.y));
     }
 
+    public void SaveData(ref GameData data)
+    {
+        if (isDead)
+            data.deadEnemyIds.Add(enemyId);
+    }
+
+    public void LoadData(GameData data)
+    {
+        if (data.deadEnemyIds.Contains(enemyId))
+        {
+            isDead = true;
+            gameObject.SetActive(false);
+        }
+    }
+
+
     public override void Die()
     {
         if (isDead) return;
 
         isDead = true;
         OnEnemyDead?.Invoke(this);
+
+        //gameObject.SetActive(false);
     }
 }

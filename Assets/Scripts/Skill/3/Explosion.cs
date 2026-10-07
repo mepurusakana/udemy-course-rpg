@@ -61,6 +61,12 @@ public class Explosion : MonoBehaviour
                 enemyStats.TakeDamage(damage, this.transform);
                 Debug.Log("敵人受傷成功！");
             }
+
+            BossCore bossCore = collision.GetComponent<BossCore>();
+            if (bossCore != null)
+            {
+                bossCore.TakeCoreDamage(damage, this.transform);
+            }
         }
     }
 }

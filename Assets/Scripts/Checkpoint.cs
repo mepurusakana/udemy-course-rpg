@@ -61,6 +61,7 @@ public class Checkpoint : MonoBehaviour
         }
 
         activationStatus = true;
+
         if (checkpointSprite != null)
         {
             checkpointSprite.color = activeColor;
@@ -79,6 +80,19 @@ public class Checkpoint : MonoBehaviour
         {
             GameManager.instance.SetLastCheckpoint(this);
             Debug.Log($"Checkpoint '{id}' activated in scene '{sceneName}'");
+        }
+
+        if (SaveManager.instance != null)
+        {
+            var data = SaveManager.instance.GetGameData();
+
+            data.savedCheckpoint = new SerializableVector3(transform.position);
+
+            SaveManager.instance.SaveGame();
+
+            // 關鍵：存檔後清空敵人死亡記錄
+            SaveManager.instance.GetGameData().deadEnemyIds.Clear();
+            SaveManager.instance.GetGameData().finishedDialogueFlowIds.Clear();
         }
     }
 }
